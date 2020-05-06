@@ -6,7 +6,8 @@
     <div class="center">
       <slot></slot>
     </div>
-    <div class="right">
+    <div class="right" style="display:flex;">
+      <dialog-sort v-if="sortBtn" :change-sort="changeSort" :post-sort="postSort"></dialog-sort>
       <dialog-size :change-size="changeSize" :post-font-size="postFontSize"></dialog-size>
     </div>
   </v-ons-toolbar>
@@ -14,9 +15,17 @@
 
 <script>
 import dialogSize from "./dialogSize";
+import dialogSort from "./dialogSort";
 
 export default {
-  props: ["backLabel", "changeSize", "postFontSize"],
-  components: { dialogSize }
+  props: [
+    "sortBtn",
+    "backLabel",
+    "changeSize",
+    "postFontSize",
+    "changeSort",
+    "postSort"
+  ],
+  components: { dialogSize, dialogSort }
 };
 </script>

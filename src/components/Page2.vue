@@ -44,7 +44,8 @@ import customToolbar from "./CustomToolbar";
 export default {
   data() {
     return {
-      editnow: this.myList[this.currentData].content
+      editnow: this.myList[this.currentData].content,
+      sortBtn: false
     };
   },
   watch: {

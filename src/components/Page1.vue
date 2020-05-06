@@ -1,6 +1,12 @@
 <template>
   <v-ons-page @show="show">
-    <custom-toolbar :change-size="changeSize" :post-font-size="postFontSize">一覧</custom-toolbar>
+    <custom-toolbar
+      :change-size="changeSize"
+      :post-font-size="postFontSize"
+      :sort-btn="sortBtn"
+      :change-sort="changeSort"
+      :post-sort="postSort"
+    >一覧</custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
         <v-ons-list id="memo-list">
@@ -97,7 +103,8 @@ export default {
         "#8bc34a",
         "#03a9f4",
         "#673ab7"
-      ]
+      ],
+      sortBtn: true
     };
   },
   methods: {
@@ -144,7 +151,15 @@ export default {
       }
     }
   },
-  props: ["pageStack", "myList", "currentData", "changeSize", "postFontSize"],
+  props: [
+    "pageStack",
+    "myList",
+    "currentData",
+    "changeSize",
+    "postFontSize",
+    "changeSort",
+    "postSort"
+  ],
   components: { customToolbar },
   key: "key_page1"
 };

@@ -1,6 +1,5 @@
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
-import _ from 'lodash';
 
 import Vue from 'vue';
 import ons from 'onsenui';
