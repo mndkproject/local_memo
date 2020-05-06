@@ -12,8 +12,9 @@
     "lodash": "^4.17.15",
     "onsenui": "^2.10.10",
     "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11",
-    "vue-onsenui": "^2.6.2"
+    "vue": "^2.5.22",
+    "vue-onsenui": "^2.6.2",
+    "yargs-parser": "^13.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
@@ -25,6 +26,6 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.5.22"
   }
 }
