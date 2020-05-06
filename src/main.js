@@ -1,5 +1,20 @@
-import Vue from 'vue'
+import 'onsenui/css/onsenui.css';
+import 'onsenui/css/onsen-css-components.css';
+import _ from 'lodash';
+
+import Vue from 'vue';
+import ons from 'onsenui';
+import VueOnsen from 'vue-onsenui';
+
 import App from './App.vue'
+
+if (ons.platform.isIPhoneX()) {
+  document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
+  document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
+}
+
+Vue.use(VueOnsen);
+
 import './registerServiceWorker'
 
 Vue.config.productionTip = false
