@@ -6,7 +6,7 @@
     <div class="center">
       <slot></slot>
     </div>
-    <div class="right" style="display:flex;">
+    <div class="right" style="display:flex; justify-content:flex-end;">
       <dialog-sort v-if="sortBtn"></dialog-sort>
       <dialog-size></dialog-size>
     </div>
