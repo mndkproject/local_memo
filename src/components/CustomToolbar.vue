@@ -7,7 +7,9 @@
       <slot></slot>
     </div>
     <div class="right" style="display:flex; justify-content:flex-end;">
+      <dialog-filter v-if="filterBtn"></dialog-filter>
       <dialog-sort v-if="sortBtn"></dialog-sort>
+      <dialog-label v-if="labelBtn"></dialog-label>
       <dialog-size></dialog-size>
     </div>
   </v-ons-toolbar>
@@ -15,10 +17,12 @@
 
 <script>
 import dialogSize from "./dialogSize";
+import dialogLabel from "./dialogLabel";
 import dialogSort from "./dialogSort";
+import dialogFilter from "./dialogFilter";
 
 export default {
-  props: ["sortBtn", "backLabel"],
-  components: { dialogSize, dialogSort }
+  props: ["sortBtn", "labelBtn", "filterBtn", "backLabel"],
+  components: { dialogSize, dialogSort, dialogLabel, dialogFilter }
 };
 </script>

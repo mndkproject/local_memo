@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-ons-toolbar-button @click="alertDialogVisible = true">
+    <v-ons-toolbar-button @click="sizeDialogVisible = true">
       <i class="zmdi zmdi-more-vert"></i>
     </v-ons-toolbar-button>
 
-    <v-ons-alert-dialog modifier="rowfooter" :visible.sync="alertDialogVisible" cancelable>
+    <v-ons-alert-dialog modifier="rowfooter" :visible.sync="sizeDialogVisible" cancelable>
       <span slot="title">フォントサイズ変更</span>
       <v-ons-list>
         <v-ons-list-item v-for="(item, $index) in sizes" :key="item.name" tappable>
@@ -24,7 +24,7 @@
       </v-ons-row>
       <p style="text-align: center;">フォントサイズ: {{ selectedSize }}</p>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="canselSize">Cancel</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="sizeDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
         <v-ons-alert-dialog-button @click="selectSize">Ok</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
@@ -35,7 +35,7 @@
 export default {
   data() {
     return {
-      alertDialogVisible: false,
+      sizeDialogVisible: false,
       sizes: [
         { size: "3", name: "特大（3）" },
         { size: "1.5", name: "大（1.5）" },
@@ -48,14 +48,17 @@ export default {
   mounted() {
     this.selectedSize = this.$store.state.memoData.fontSize;
   },
+  watch: {
+    sizeDialogVisible() {
+      if (!this.sizeDialogVisible) {
+        this.selectedSize = this.$store.state.memoData.fontSize;
+      }
+    }
+  },
   methods: {
     selectSize() {
       this.$store.dispatch("sizeCheck", this.selectedSize);
-      this.alertDialogVisible = false;
-    },
-    canselSize() {
-      this.selectedSize = this.$store.state.memoData.fontSize;
-      this.alertDialogVisible = false;
+      this.sizeDialogVisible = false;
     }
   }
 };

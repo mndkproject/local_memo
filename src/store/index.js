@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import _ from "lodash"
 
 Vue.use(Vuex)
-
 export default new Vuex.Store({
   state: {
     memoData: {
@@ -25,9 +24,9 @@ export default new Vuex.Store({
   },
   getters: {
     filteredList: (state) => {
-      if (state.filterColor !== "" && state.filterColor !== undefined) {
+      if (state.memoData.filterColor !== "" && state.memoData.filterColor !== undefined) {
         //検索もここでやる
-        return state.memoData.memoList.filter(item => item.labelColor === state.filterColor)
+        return state.memoData.memoList.filter(item => item.labelColor === state.memoData.filterColor)
       } else {
         return state.memoData.memoList
       }
@@ -45,7 +44,6 @@ export default new Vuex.Store({
   mutations: {
     load(state, db) {
       if (db) {
-        //これだめ？あとで検証
         state.memoData = db;
       }
     },
@@ -60,13 +58,12 @@ export default new Vuex.Store({
         content: "",
         create_at: new Date().toLocaleString(),
         updated_at: new Date().toLocaleString(),
-        labelColor: "#fafafa"
+        labelColor: state.memoData.filterColor !== "" ? state.memoData.filterColor : "#fafafa"
       });
       state.currentId = ID;
     },
     changeLabel(state, payload) {
       state.memoData.memoList[payload.currentIndex].labelColor = payload.color;
-      state.currentId = "";
     },
     changeId(state, id) {
       state.currentId = id;
@@ -80,6 +77,12 @@ export default new Vuex.Store({
     changeContent(state, payload) {
       state.memoData.memoList[payload.currentIndex].content = payload.newContent;
       state.memoData.memoList[payload.currentIndex].updated_at = new Date().toLocaleString();
+    },
+    changeFilter(state, color) {
+      state.memoData.filterColor = color;
+    },
+    filterRemove(state) {
+      state.memoData.filterColor = "";
     }
   },
   actions: {
@@ -144,6 +147,16 @@ export default new Vuex.Store({
     contentCheck({ commit, getters }, newContent) {
       var payload = { currentIndex: getters.currentIndex, newContent: newContent };
       commit('changeContent', payload);
+    },
+    filterCheck({ commit, state }, color) {
+      if (state.memoData.memoList.filter(item => item.labelColor === color).length >= 0) {
+        commit('changeFilter', color);
+      }
+    },
+    filterRemoveCheck({ commit, state }) {
+      if (state.memoData.filterColor !== "") {
+        commit('filterRemove');
+      }
     }
   },
   modules: {

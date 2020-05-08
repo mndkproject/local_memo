@@ -1,8 +1,11 @@
 <template>
   <v-ons-page>
-    <custom-toolbar :back-label="'戻る'">編集</custom-toolbar>
+    <custom-toolbar :back-label="'戻る'" :label-btn="labelBtn">編集</custom-toolbar>
     <div class="content">
-      <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
+      <p
+        class="update-note"
+        :style="{ borderColor: currentMemo.labelColor }"
+      >更新: {{ currentMemo.updated_at }}</p>
       <textarea
         class="edit-area"
         v-model="editnow"
@@ -18,6 +21,10 @@
   font-size: 60%;
   color: #666;
   text-align: center;
+  border-bottom: 5px solid #fafafa;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  padding-bottom: 1em;
 }
 
 .edit-area {
@@ -45,7 +52,7 @@ export default {
   data() {
     return {
       editnow: "",
-      sortBtn: false
+      labelBtn: true
     };
   },
   mounted() {

@@ -15,7 +15,7 @@
         </v-ons-list-item>
       </v-ons-list>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="canselSort">Cancel</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="sortDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
         <v-ons-alert-dialog-button @click="selectSort">Ok</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
@@ -41,6 +41,13 @@ export default {
   mounted() {
     this.selectedSort = this.$store.getters.memoSortArr;
   },
+  watch: {
+    sortDialogVisible() {
+      if (!this.sortDialogVisible) {
+        this.selectedSort = this.$store.getters.memoSortArr;
+      }
+    }
+  },
   methods: {
     selectSort() {
       var sendSortArr = this.selectedSort.split(",");
@@ -48,10 +55,6 @@ export default {
         key: sendSortArr[0],
         order: sendSortArr[1]
       });
-      this.sortDialogVisible = false;
-    },
-    canselSort() {
-      this.selectedSort = this.$store.getters.memoSortArr;
       this.sortDialogVisible = false;
     }
   }

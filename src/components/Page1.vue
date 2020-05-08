@@ -1,6 +1,6 @@
 <template>
   <v-ons-page @show="show">
-    <custom-toolbar :sort-btn="sortBtn">一覧</custom-toolbar>
+    <custom-toolbar :sort-btn="sortBtn" :filter-btn="filterBtn">一覧</custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
         <v-ons-list id="memo-list">
@@ -25,6 +25,7 @@
             <span v-else class="list-item__subtitle">{{ item.updated_at }}更新</span>
           </v-ons-list-item>
         </v-ons-list>
+        <p v-if="emptyFlag" style="text-align: center;">該当するアイテムがありません。</p>
       </v-ons-gesture-detector>
 
       <v-ons-dialog cancelable :visible.sync="dialogVisible">
@@ -92,7 +93,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      sortBtn: true
+      sortBtn: true,
+      filterBtn: true
     };
   },
   computed: {
@@ -107,6 +109,9 @@ export default {
     },
     fontSize() {
       return this.$store.state.memoData.fontSize;
+    },
+    emptyFlag() {
+      return this.$store.getters.sortedList.length === 0 ? true : false;
     }
   },
   methods: {
@@ -116,6 +121,7 @@ export default {
     },
     selectLabel(color) {
       this.$store.dispatch("labelCheck", color);
+      this.$store.dispatch("idCheck", "");
       this.dialogVisible = false;
     },
     deleteDialog() {
