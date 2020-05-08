@@ -13,7 +13,7 @@ export default {
       pageStack: [page1]
     };
   },
-  mounted() {
+  created() {
     this.$store.dispatch("loadCheck");
 
     this.$store.subscribe((mutation, state) => {

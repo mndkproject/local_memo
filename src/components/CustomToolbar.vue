@@ -7,6 +7,7 @@
       <slot></slot>
     </div>
     <div class="right" style="display:flex; justify-content:flex-end;">
+      <search-box v-if="searchBtn" :page-stack="pageStack"></search-box>
       <dialog-filter v-if="filterBtn"></dialog-filter>
       <dialog-sort v-if="sortBtn"></dialog-sort>
       <dialog-label v-if="labelBtn"></dialog-label>
@@ -20,9 +21,17 @@ import dialogSize from "./dialogSize";
 import dialogLabel from "./dialogLabel";
 import dialogSort from "./dialogSort";
 import dialogFilter from "./dialogFilter";
+import searchBox from "./searchBox";
 
 export default {
-  props: ["sortBtn", "labelBtn", "filterBtn", "backLabel"],
-  components: { dialogSize, dialogSort, dialogLabel, dialogFilter }
+  props: [
+    "sortBtn",
+    "labelBtn",
+    "filterBtn",
+    "searchBtn",
+    "backLabel",
+    "pageStack"
+  ],
+  components: { dialogSize, dialogSort, dialogLabel, dialogFilter, searchBox }
 };
 </script>

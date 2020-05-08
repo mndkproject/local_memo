@@ -28,14 +28,14 @@ export default {
     return {
       sortDialogVisible: false,
       sorts: [
-        { sort: "updated_at,desc", name: "更新日時新しい順" },
-        { sort: "updated_at,asc", name: "更新日時古い順" },
         { sort: "create_at,desc", name: "作成日時新しい順" },
         { sort: "create_at,asc", name: "作成日時古い順" },
+        { sort: "updated_at,desc", name: "更新日時新しい順" },
+        { sort: "updated_at,asc", name: "更新日時古い順" },
         { sort: "content,asc", name: "五十音昇順" },
         { sort: "content,desc", name: "五十音降順" }
       ],
-      selectedSort: "updated_at,desc"
+      selectedSort: "create_at,desc"
     };
   },
   mounted() {

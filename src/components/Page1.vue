@@ -1,6 +1,11 @@
 <template>
   <v-ons-page @show="show">
-    <custom-toolbar :sort-btn="sortBtn" :filter-btn="filterBtn">一覧</custom-toolbar>
+    <custom-toolbar
+      :sort-btn="sortBtn"
+      :filter-btn="filterBtn"
+      :search-btn="searchBtn"
+      :page-stack="pageStack"
+    >一覧</custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
         <v-ons-list id="memo-list">
@@ -94,7 +99,8 @@ export default {
     return {
       dialogVisible: false,
       sortBtn: true,
-      filterBtn: true
+      filterBtn: true,
+      searchBtn: true
     };
   },
   computed: {

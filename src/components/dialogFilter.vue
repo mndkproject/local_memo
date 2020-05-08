@@ -14,7 +14,7 @@
             @click="selectFilter(item)"
           ></v-ons-button>
         </li>
-        <v-ons-alert-dialog-button @click="removeFilter">No Filter</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="removeFilter">Filter Remove</v-ons-alert-dialog-button>
       </ul>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="filterDialogVisible = false;">Cancel</v-ons-alert-dialog-button>

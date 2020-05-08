@@ -8,7 +8,7 @@ export default new Vuex.Store({
     memoData: {
       memoList: [],
       fontSize: "1",
-      memoSort: { key: "updated_at", order: "desc" },
+      memoSort: { key: "create_at", order: "desc" },
       filterColor: "",
     },
     currentId: "",
@@ -20,16 +20,20 @@ export default new Vuex.Store({
       "#8bc34a",
       "#03a9f4",
       "#673ab7"
-    ]
+    ],
+    filterWord: ""
   },
   getters: {
     filteredList: (state) => {
+      var resultList = state.memoData.memoList;
       if (state.memoData.filterColor !== "" && state.memoData.filterColor !== undefined) {
-        //検索もここでやる
-        return state.memoData.memoList.filter(item => item.labelColor === state.memoData.filterColor)
-      } else {
-        return state.memoData.memoList
+        resultList = state.memoData.memoList.filter(item => item.labelColor === state.memoData.filterColor)
       }
+      if (state.filterWord !== "") {
+        var testWords = new RegExp(state.filterWord.split(/\s+/).join("|"), "m");
+        resultList = resultList.filter(item => testWords.test(item.content))
+      }
+      return resultList;
     },
     sortedList: (state, getters) => {
       return _.orderBy(getters.filteredList, state.memoData.memoSort.key, state.memoData.memoSort.order)
@@ -83,6 +87,9 @@ export default new Vuex.Store({
     },
     filterRemove(state) {
       state.memoData.filterColor = "";
+    },
+    changeWordFilter(state, word) {
+      state.filterWord = word;
     }
   },
   actions: {
@@ -157,6 +164,9 @@ export default new Vuex.Store({
       if (state.memoData.filterColor !== "") {
         commit('filterRemove');
       }
+    },
+    searchCheck({ commit }, word) {
+      commit('changeWordFilter', word);
     }
   },
   modules: {
