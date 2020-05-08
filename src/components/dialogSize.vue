@@ -25,7 +25,7 @@
       <p style="text-align: center;">フォントサイズ: {{ selectedSize }}</p>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="canselSize">Cancel</v-ons-alert-dialog-button>
-        <v-ons-alert-dialog-button @click="sendSize">Ok</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="selectSize">Ok</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
@@ -33,7 +33,6 @@
 
 <script>
 export default {
-  props: ["changeSize", "postFontSize"],
   data() {
     return {
       alertDialogVisible: false,
@@ -43,16 +42,19 @@ export default {
         { size: "1", name: "標準（1）" },
         { size: "0.8", name: "小（0.8）" }
       ],
-      selectedSize: localStorage.size ? localStorage.size : this.postFontSize
+      selectedSize: "1"
     };
   },
+  mounted() {
+    this.selectedSize = this.$store.state.memoData.fontSize;
+  },
   methods: {
-    sendSize() {
-      this.changeSize(this.selectedSize);
+    selectSize() {
+      this.$store.dispatch("sizeCheck", this.selectedSize);
       this.alertDialogVisible = false;
     },
     canselSize() {
-      this.selectedSize = this.postFontSize;
+      this.selectedSize = this.$store.state.memoData.fontSize;
       this.alertDialogVisible = false;
     }
   }

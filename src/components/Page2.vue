@@ -1,13 +1,13 @@
 <template>
   <v-ons-page>
-    <custom-toolbar :change-size="changeSize" :post-font-size="postFontSize" :back-label="'戻る'">編集</custom-toolbar>
+    <custom-toolbar :back-label="'戻る'">編集</custom-toolbar>
     <div class="content">
-      <p class="update-note">更新: {{ this.myList[this.currentData].updated_at }}</p>
+      <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
       <textarea
         class="edit-area"
         v-model="editnow"
         placeholder="入力..."
-        :style="{ fontSize: postFontSize + 'rem' }"
+        :style="{ fontSize: fontSize + 'rem' }"
       ></textarea>
     </div>
   </v-ons-page>
@@ -38,15 +38,28 @@
 </style>
 
 <script>
-import _ from "lodash";
 import customToolbar from "./CustomToolbar";
+import _ from "lodash";
 
 export default {
   data() {
     return {
-      editnow: this.myList[this.currentData].content,
+      editnow: "",
       sortBtn: false
     };
+  },
+  mounted() {
+    this.editnow = this.currentMemo.content;
+  },
+  computed: {
+    currentMemo() {
+      return this.$store.state.memoData.memoList[
+        this.$store.getters.currentIndex
+      ];
+    },
+    fontSize() {
+      return this.$store.state.memoData.fontSize;
+    }
   },
   watch: {
     editnow() {
@@ -61,15 +74,12 @@ export default {
       this.pageStack.pop();
     },
     getContent() {
-      this.$set(this.myList[this.currentData], "content", this.editnow);
-      this.$set(
-        this.myList[this.currentData],
-        "updated_at",
-        new Date().toLocaleString()
-      );
+      if (this.editnow !== this.currentMemo.content) {
+        this.$store.dispatch("contentCheck", this.editnow);
+      }
     }
   },
-  props: ["pageStack", "myList", "currentData", "changeSize", "postFontSize"],
+  props: ["pageStack"],
   components: { customToolbar },
   key: "key_page2"
 };

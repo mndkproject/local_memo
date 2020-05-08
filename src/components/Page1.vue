@@ -1,26 +1,28 @@
 <template>
   <v-ons-page @show="show">
-    <custom-toolbar
-      :change-size="changeSize"
-      :post-font-size="postFontSize"
-      :sort-btn="sortBtn"
-      :change-sort="changeSort"
-      :post-sort="postSort"
-    >一覧</custom-toolbar>
+    <custom-toolbar :sort-btn="sortBtn">一覧</custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
         <v-ons-list id="memo-list">
           <v-ons-list-item
             modifier="memo longdivider"
             tappable
-            v-for="(item, index) in myList"
+            v-for="(item, index) in memoList"
             :key="index"
-            @click="pagePush(index)"
-            @hold="menuDialog(index)"
-            :style="{ fontSize: postFontSize + 'rem', borderColor: item.label }"
+            @click="pagePush(item.id)"
+            @hold="menuDialog(item.id)"
+            :style="{ fontSize: fontSize + 'rem', borderColor: item.labelColor }"
           >
             <span class="list-item__title">{{ item.content.slice(0,24) }}</span>
-            <span class="list-item__subtitle">{{ item.updated_at }}</span>
+            <span
+              v-if="memoSortKey === 'updated_at'"
+              class="list-item__subtitle"
+            >{{ item.updated_at }}更新</span>
+            <span
+              v-else-if="memoSortKey === 'create_at'"
+              class="list-item__subtitle"
+            >{{ item.create_at }}作成</span>
+            <span v-else class="list-item__subtitle">{{ item.updated_at }}更新</span>
           </v-ons-list-item>
         </v-ons-list>
       </v-ons-gesture-detector>
@@ -28,21 +30,17 @@
       <v-ons-dialog cancelable :visible.sync="dialogVisible">
         <p style="text-align: center">Label</p>
         <ul class="color-list">
-          <li class="color-list__item" v-for="item in colors" :key="item">
+          <li class="color-list__item" v-for="item in labelColors" :key="item">
             <v-ons-button
               class="color-list__btn"
               :style="{ background: item }"
-              @click="label(selectNum, item)"
+              @click="selectLabel(item)"
             ></v-ons-button>
           </li>
         </ul>
         <p style="text-align: center; padding-top: 1em;">Delete</p>
         <p style="text-align: center">
-          <v-ons-icon
-            icon="ion-ios-trash, material:md-delete"
-            size="32px"
-            @click="deleteDialog(selectNum)"
-          ></v-ons-icon>
+          <v-ons-icon icon="ion-ios-trash, material:md-delete" size="32px" @click="deleteDialog"></v-ons-icon>
         </p>
       </v-ons-dialog>
     </div>
@@ -94,72 +92,53 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      selectNum: "",
-      colors: [
-        "#fafafa",
-        "#e91e63",
-        "#ff5722",
-        "#ffeb3b",
-        "#8bc34a",
-        "#03a9f4",
-        "#673ab7"
-      ],
       sortBtn: true
     };
   },
+  computed: {
+    memoList() {
+      return this.$store.getters.sortedList;
+    },
+    labelColors() {
+      return this.$store.state.labelColors;
+    },
+    memoSortKey() {
+      return this.$store.state.memoData.memoSort.key;
+    },
+    fontSize() {
+      return this.$store.state.memoData.fontSize;
+    }
+  },
   methods: {
-    menuDialog(index) {
-      this.selectNum = index;
+    menuDialog(id) {
+      this.$store.dispatch("idCheck", id);
       this.dialogVisible = true;
     },
-    label(index, color) {
-      this.$emit("change-data", ["label", [index, color]]);
-      this.selectNum = "";
+    selectLabel(color) {
+      this.$store.dispatch("labelCheck", color);
       this.dialogVisible = false;
     },
-    deleteDialog(index) {
+    deleteDialog() {
       this.$ons.notification
         .confirm("削除してよろしいですか？", {
           title: "削除",
           cancelable: true
         })
         .then(response => {
-          if (response === 1) {
-            this.$emit("change-data", ["delete", index]);
-          }
+          this.$store.dispatch("deleteCheck", response);
         });
-      this.selectNum = "";
       this.dialogVisible = false;
     },
-    pop() {
-      this.pageStack.pop();
-    },
-    pagePush(index) {
-      if (index === -1) {
-        this.$emit("change-data", ["add", Object.keys(this.myList).length]);
-        index = Object.keys(this.myList).length - 1;
-      }
-      this.$emit("change-data", ["select", index]);
+    pagePush(id) {
+      this.$store.dispatch("idCheck", id);
+      this.$store.dispatch("addCheck");
       this.pageStack.push(page2);
     },
     show() {
-      if (
-        this.currentData !== "" &&
-        this.myList[this.currentData].content === ""
-      ) {
-        this.$emit("change-data", ["delete", this.currentData]);
-      }
+      this.$store.dispatch("emptyCheck");
     }
   },
-  props: [
-    "pageStack",
-    "myList",
-    "currentData",
-    "changeSize",
-    "postFontSize",
-    "changeSort",
-    "postSort"
-  ],
+  props: ["pageStack"],
   components: { customToolbar },
   key: "key_page1"
 };

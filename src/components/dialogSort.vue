@@ -16,7 +16,7 @@
       </v-ons-list>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="canselSort">Cancel</v-ons-alert-dialog-button>
-        <v-ons-alert-dialog-button @click="sendSort">Ok</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="selectSort">Ok</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
@@ -24,7 +24,6 @@
 
 <script>
 export default {
-  props: ["changeSort", "postSort"],
   data() {
     return {
       sortDialogVisible: false,
@@ -36,16 +35,23 @@ export default {
         { sort: "content,asc", name: "五十音昇順" },
         { sort: "content,desc", name: "五十音降順" }
       ],
-      selectedSort: localStorage.sort ? localStorage.sort : this.postSort
+      selectedSort: "updated_at,desc"
     };
   },
+  mounted() {
+    this.selectedSort = this.$store.getters.memoSortArr;
+  },
   methods: {
-    sendSort() {
-      this.changeSort(this.selectedSort);
+    selectSort() {
+      var sendSortArr = this.selectedSort.split(",");
+      this.$store.dispatch("sortCheck", {
+        key: sendSortArr[0],
+        order: sendSortArr[1]
+      });
       this.sortDialogVisible = false;
     },
     canselSort() {
-      this.selectedSort = this.postSort;
+      this.selectedSort = this.$store.getters.memoSortArr;
       this.sortDialogVisible = false;
     }
   }
