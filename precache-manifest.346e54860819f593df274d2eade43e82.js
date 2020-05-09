@@ -132,14 +132,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/fa-solid-900.49279363.svg"
   },
   {
-    "revision": "d973ee0fe0b895e8aaa8b81149f6705f",
-    "url": "img/favicon-16x16.png"
-  },
-  {
-    "revision": "3f079c7629248c35f1afb98060c32076",
-    "url": "img/favicon-32x32.png"
-  },
-  {
     "revision": "665921072642ed354618b32af7425a22",
     "url": "img/ionicons.66592107.svg"
   },
