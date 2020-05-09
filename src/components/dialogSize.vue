@@ -9,9 +9,13 @@
       <v-ons-list>
         <v-ons-list-item v-for="(item, $index) in sizes" :key="item.name" tappable>
           <label class="left">
-            <v-ons-radio :input-id="'radio-' + $index" :value="item.size" v-model="selectedSize"></v-ons-radio>
+            <v-ons-radio
+              :input-id="'radio-' + $index+pageNum"
+              :value="item.size"
+              v-model="selectedSize"
+            ></v-ons-radio>
           </label>
-          <label :for="'radio-' + $index" class="center">{{ item.name }}</label>
+          <label :for="'radio-' + $index+pageNum" class="center">{{ item.name }}</label>
         </v-ons-list-item>
       </v-ons-list>
 
@@ -42,7 +46,8 @@ export default {
         { size: "1", name: "標準（1）" },
         { size: "0.8", name: "小（0.8）" }
       ],
-      selectedSize: "1"
+      selectedSize: "1",
+      pageNum: this.page.key
     };
   },
   mounted() {
@@ -60,6 +65,7 @@ export default {
       this.$store.dispatch("sizeCheck", this.selectedSize);
       this.sizeDialogVisible = false;
     }
-  }
+  },
+  props: ["page"]
 };
 </script>

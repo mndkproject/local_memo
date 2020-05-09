@@ -1,16 +1,21 @@
 <template>
   <v-ons-page>
-    <custom-toolbar :back-label="'戻る'" :label-btn="labelBtn" :info-btn="infoBtn"></custom-toolbar>
+    <custom-toolbar
+      :back-label="'戻る'"
+      :label-btn="labelBtn"
+      :info-btn="infoBtn"
+      :page-stack="pageStack"
+      :page="page"
+    ></custom-toolbar>
     <div class="content">
-      <p
-        class="update-note"
-        :style="{ borderColor: currentMemo.labelColor }"
-      >更新: {{ currentMemo.updated_at }}</p>
+      <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
+
       <textarea
+        :class="isPC"
         class="edit-area"
         v-model="editnow"
         placeholder="入力..."
-        :style="{ fontSize: fontSize + 'rem' }"
+        :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
       ></textarea>
     </div>
   </v-ons-page>
@@ -21,7 +26,6 @@
   font-size: 60%;
   color: #666;
   text-align: center;
-  border-bottom: 5px solid #fafafa;
   box-sizing: border-box;
   margin-bottom: 0;
   padding-bottom: 1em;
@@ -35,12 +39,18 @@
   box-sizing: border-box;
   resize: none;
   width: 100%;
+  max-width: 800px;
   height: 60%;
   min-height: 80%;
-  line-height: 1.2;
+  line-height: 1.6;
   background-color: #fafafa;
   border: none;
+  border-top: 5px solid #fafafa;
   font: inherit;
+}
+
+.edit-area--pc {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
 }
 </style>
 
@@ -53,7 +63,11 @@ export default {
     return {
       editnow: "",
       labelBtn: true,
-      infoBtn: true
+      infoBtn: true,
+      isPC:
+        this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()
+          ? ""
+          : "edit-area--pc"
     };
   },
   mounted() {
@@ -87,7 +101,7 @@ export default {
       }
     }
   },
-  props: ["pageStack"],
+  props: ["pageStack", "page"],
   components: { customToolbar },
   key: "key_page2"
 };

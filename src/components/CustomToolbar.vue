@@ -11,7 +11,7 @@
       <dialog-filter v-if="filterBtn"></dialog-filter>
       <dialog-sort v-if="sortBtn"></dialog-sort>
       <dialog-label v-if="labelBtn"></dialog-label>
-      <dialog-size></dialog-size>
+      <dialog-size :page="page"></dialog-size>
       <dialog-info v-if="infoBtn"></dialog-info>
     </div>
   </v-ons-toolbar>
@@ -33,7 +33,8 @@ export default {
     "searchBtn",
     "infoBtn",
     "backLabel",
-    "pageStack"
+    "pageStack",
+    "page"
   ],
   components: {
     dialogSize,

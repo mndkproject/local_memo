@@ -5,32 +5,35 @@
       :filter-btn="filterBtn"
       :search-btn="searchBtn"
       :page-stack="pageStack"
+      :page="page"
     ></custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
-        <v-ons-list id="memo-list">
-          <v-ons-list-item
-            modifier="memo longdivider"
-            tappable
-            v-for="(item, index) in memoList"
-            :key="index"
-            @click="pagePush(item.id)"
-            @hold="menuDialog(item.id)"
-            :style="{ fontSize: fontSize + 'rem', borderColor: item.labelColor }"
-          >
-            <span class="list-item__title">{{ item.content.slice(0,24) }}</span>
-            <span
-              v-if="memoSortKey === 'updated_at'"
-              class="list-item__subtitle"
-            >{{ item.updated_at }}更新</span>
-            <span
-              v-else-if="memoSortKey === 'create_at'"
-              class="list-item__subtitle"
-            >{{ item.create_at }}作成</span>
-            <span v-else class="list-item__subtitle">{{ item.updated_at }}更新</span>
-          </v-ons-list-item>
-        </v-ons-list>
-        <p v-if="emptyFlag" style="text-align: center;">該当するアイテムがありません。</p>
+        <div class="memo-wrap">
+          <v-ons-list id="memo-list">
+            <v-ons-list-item
+              modifier="memo longdivider"
+              tappable
+              v-for="(item, index) in memoList"
+              :key="index"
+              @click="pagePush(item.id)"
+              @hold="menuDialog(item.id)"
+              :style="{ fontSize: fontSize + 'rem', borderColor: item.labelColor }"
+            >
+              <span class="list-item__title">{{ item.content.slice(0,24) }}</span>
+              <span
+                v-if="memoSortKey === 'updated_at'"
+                class="list-item__subtitle"
+              >{{ item.updated_at }}更新</span>
+              <span
+                v-else-if="memoSortKey === 'create_at'"
+                class="list-item__subtitle"
+              >{{ item.create_at }}作成</span>
+              <span v-else class="list-item__subtitle">{{ item.updated_at }}更新</span>
+            </v-ons-list-item>
+          </v-ons-list>
+          <p v-if="emptyFlag" style="text-align: center;">該当するアイテムがありません。</p>
+        </div>
       </v-ons-gesture-detector>
 
       <v-ons-dialog cancelable :visible.sync="dialogVisible">
@@ -57,6 +60,18 @@
 </template>
 
 <style>
+.memo-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+#memo-list {
+  width: 100%;
+}
+
 #memo-list .list-item--memo {
   background-color: #fafafa;
   word-break: break-all;
@@ -150,7 +165,7 @@ export default {
       this.$store.dispatch("emptyCheck");
     }
   },
-  props: ["pageStack"],
+  props: ["pageStack", "page"],
   components: { customToolbar },
   key: "key_page1"
 };
