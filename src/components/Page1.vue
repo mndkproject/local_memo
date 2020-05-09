@@ -66,6 +66,7 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 #memo-list {
