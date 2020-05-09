@@ -34,6 +34,7 @@ export default {
     });
 
     var me = this;
+    //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       var exitFlag = false;
       history.pushState(null, null, null);
@@ -43,7 +44,7 @@ export default {
           history.pushState(null, null, null);
         } else {
           if (exitFlag) {
-            history.go(-1);
+            history.go(-2);
           } else {
             history.pushState(null, null, null);
             exitFlag = true;
