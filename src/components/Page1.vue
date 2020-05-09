@@ -5,7 +5,7 @@
       :filter-btn="filterBtn"
       :search-btn="searchBtn"
       :page-stack="pageStack"
-    >一覧</custom-toolbar>
+    ></custom-toolbar>
     <div class="content">
       <v-ons-gesture-detector>
         <v-ons-list id="memo-list">

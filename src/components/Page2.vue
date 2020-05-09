@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <custom-toolbar :back-label="'戻る'" :label-btn="labelBtn">編集</custom-toolbar>
+    <custom-toolbar :back-label="'戻る'" :label-btn="labelBtn" :info-btn="infoBtn"></custom-toolbar>
     <div class="content">
       <p
         class="update-note"
@@ -52,7 +52,8 @@ export default {
   data() {
     return {
       editnow: "",
-      labelBtn: true
+      labelBtn: true,
+      infoBtn: true
     };
   },
   mounted() {

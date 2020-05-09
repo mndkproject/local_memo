@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-ons-toolbar-button @click="sizeDialogVisible = true">
-      <i class="zmdi zmdi-more-vert"></i>
+      <i class="zmdi zmdi-format-size"></i>
     </v-ons-toolbar-button>
 
     <v-ons-alert-dialog modifier="rowfooter" :visible.sync="sizeDialogVisible" cancelable>

@@ -12,6 +12,7 @@
       <dialog-sort v-if="sortBtn"></dialog-sort>
       <dialog-label v-if="labelBtn"></dialog-label>
       <dialog-size></dialog-size>
+      <dialog-info v-if="infoBtn"></dialog-info>
     </div>
   </v-ons-toolbar>
 </template>
@@ -21,6 +22,7 @@ import dialogSize from "./dialogSize";
 import dialogLabel from "./dialogLabel";
 import dialogSort from "./dialogSort";
 import dialogFilter from "./dialogFilter";
+import dialogInfo from "./dialogInfo";
 import searchBox from "./searchBox";
 
 export default {
@@ -29,9 +31,17 @@ export default {
     "labelBtn",
     "filterBtn",
     "searchBtn",
+    "infoBtn",
     "backLabel",
     "pageStack"
   ],
-  components: { dialogSize, dialogSort, dialogLabel, dialogFilter, searchBox }
+  components: {
+    dialogSize,
+    dialogSort,
+    dialogLabel,
+    dialogFilter,
+    searchBox,
+    dialogInfo
+  }
 };
 </script>
