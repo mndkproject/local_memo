@@ -32,6 +32,54 @@ export default {
         }
       }
     });
+
+    var me = this;
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      var exitFlag = false;
+      history.pushState(null, null, null);
+      window.addEventListener("popstate", function() {
+        if (me.pageStack.length > 1) {
+          me.pageStack.pop();
+          history.pushState(null, null, null);
+        } else {
+          if (exitFlag) {
+            history.go(-1);
+          } else {
+            history.pushState(null, null, null);
+            exitFlag = true;
+            me.$ons.notification.toast("もう一度押すと終了します", {
+              timeout: 2000,
+              callback: function(e) {
+                if (e === -1) {
+                  exitFlag = false;
+                }
+              }
+            });
+          }
+        }
+      });
+    } else {
+      history.pushState(null, null, null);
+      window.addEventListener("popstate", function() {
+        if (me.pageStack.length > 1) {
+          me.pageStack.pop();
+          history.pushState(null, null, null);
+        } else {
+          history.go(-1);
+          /*
+          me.$ons.notification
+            .confirm("ページを離脱してよろしいですか？", { title: "" })
+            .then(response => {
+              if (response) {
+                history.go(-1);
+              } else {
+                history.pushState(null, null, null);
+              }
+            });
+          */
+        }
+      });
+    }
   }
 };
 </script>

@@ -21,11 +21,7 @@
       ></textarea>
 
       <div class="info-area">
-        <p class="text-count">{{ chars }} chars</p>
-        <div class="format-count">
-          <p>{{ lines }} lines</p>
-          <p>{{ sheets }} sheets</p>
-        </div>
+        <p class="text-count">{{ chars }} chars, {{ lines }} lines, {{ sheets }} sheets</p>
       </div>
     </div>
   </v-ons-page>
@@ -35,6 +31,10 @@
 .info-area {
   display: flex;
   justify-content: space-between;
+  margin: 0 auto;
+  padding: 0 1em;
+  width: 100%;
+  max-width: calc(800px + 2em);
   font-size: 60%;
   color: #666;
   text-align: center;
@@ -43,12 +43,7 @@
   padding-bottom: 1em;
 }
 
-.info-area p {
-  padding: 0 1em;
-}
-
-.format-count {
-  text-align: right;
+.text-count {
   line-height: 1.2;
 }
 
