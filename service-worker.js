@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.e9453ee71f68eba00ca5a189122b6702.js"
+  "precache-manifest.fbe53a1fac5bc96804234b88331048c4.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "local_memo"});
