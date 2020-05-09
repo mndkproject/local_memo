@@ -8,7 +8,9 @@
       :page="page"
     ></custom-toolbar>
     <div class="content">
-      <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
+      <div class="info-area">
+        <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
+      </div>
 
       <textarea
         :class="isPC"
@@ -17,18 +19,37 @@
         placeholder="入力..."
         :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
       ></textarea>
+
+      <div class="info-area">
+        <p class="text-count">{{ chars }} chars</p>
+        <div class="format-count">
+          <p>{{ lines }} lines</p>
+          <p>{{ sheets }} sheets</p>
+        </div>
+      </div>
     </div>
   </v-ons-page>
 </template>
 
 <style>
-.update-note {
+.info-area {
+  display: flex;
+  justify-content: space-between;
   font-size: 60%;
   color: #666;
   text-align: center;
   box-sizing: border-box;
   margin-bottom: 0;
   padding-bottom: 1em;
+}
+
+.info-area p {
+  padding: 0 1em;
+}
+
+.format-count {
+  text-align: right;
+  line-height: 1.2;
 }
 
 .edit-area {
@@ -81,6 +102,40 @@ export default {
     },
     fontSize() {
       return this.$store.state.memoData.fontSize;
+    },
+    chars() {
+      return String(this.currentMemo.content.length);
+    },
+    lines() {
+      return this.currentMemo.content.split("\n").length;
+    },
+    sheets() {
+      var text = String(this.currentMemo.content);
+      var lines = 0;
+
+      var textArray = text.split("\n");
+
+      textArray.forEach(t => {
+        if (t.length === 0) {
+          lines += 1;
+        } else {
+          t = t.slice(0, 1) === ("　" || "「") ? t : "　" + t;
+          t = t
+            .replace("。」", "」")
+            .replace(/(\d{2})/g, "0")
+            .replace(/[a-zA-Z]{2}/g, "a");
+
+          let start = 0;
+          let end = start + 21;
+          while (start < t.length) {
+            lines++;
+            start = t.slice(-1) === ("。" || "、" || "」") ? end : end - 1;
+            end = start + 21;
+          }
+        }
+      });
+
+      return ((lines / 20) | 0) + 1;
     }
   },
   watch: {
