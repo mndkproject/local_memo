@@ -13,6 +13,10 @@ if (ons.platform.isIPhoneX()) {
   document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
 }
 
+ons.ready(function () {
+  ons.disableDeviceBackButtonHandler();
+});
+
 Vue.use(VueOnsen);
 
 import './registerServiceWorker'
