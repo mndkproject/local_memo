@@ -2,6 +2,7 @@
   <v-ons-toolbar>
     <div class="left">
       <v-ons-back-button>{{ backLabel }}</v-ons-back-button>
+      <dialog-theme v-if="themeBtn"></dialog-theme>
     </div>
     <div class="center">
       <slot></slot>
@@ -23,6 +24,7 @@ import dialogLabel from "./dialogLabel";
 import dialogSort from "./dialogSort";
 import dialogFilter from "./dialogFilter";
 import dialogInfo from "./dialogInfo";
+import dialogTheme from "./dialogTheme";
 import searchBox from "./searchBox";
 
 export default {
@@ -32,6 +34,7 @@ export default {
     "filterBtn",
     "searchBtn",
     "infoBtn",
+    "themeBtn",
     "backLabel",
     "pageStack",
     "page"
@@ -41,6 +44,7 @@ export default {
     dialogSort,
     dialogLabel,
     dialogFilter,
+    dialogTheme,
     searchBox,
     dialogInfo
   }

@@ -4,6 +4,7 @@
       :sort-btn="sortBtn"
       :filter-btn="filterBtn"
       :search-btn="searchBtn"
+      :theme-btn="themeBtn"
       :page-stack="pageStack"
       :page="page"
     ></custom-toolbar>
@@ -76,7 +77,7 @@
 #memo-list .list-item--memo {
   background-color: #fafafa;
   word-break: break-all;
-  border-left: 10px solid #fafafa;
+  border-left: 10px solid transparent;
   box-sizing: border-box;
 }
 
@@ -116,6 +117,7 @@ export default {
       dialogVisible: false,
       sortBtn: true,
       filterBtn: true,
+      themeBtn: true,
       searchBtn: true
     };
   },

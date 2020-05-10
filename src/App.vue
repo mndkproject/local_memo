@@ -10,6 +10,71 @@
   </v-ons-navigator>
 </template>
 
+<style>
+.list,
+.darkmode .list-header,
+.darkmode .list-item__center {
+  background-color: transparent;
+  background-image: none;
+}
+
+.darkmode .list-item {
+  color: #aaa;
+}
+
+.darkmode .toolbar {
+  background-color: #333;
+  color: #aaa;
+}
+
+.darkmode .page__background {
+  background-color: #222;
+  color: #aaa;
+}
+
+.darkmode .alert-dialog {
+  background-color: #222;
+  color: #aaa;
+}
+
+.darkmode .dialog-container {
+  background-color: #222;
+  color: #aaa;
+}
+
+.darkmode .alert-dialog-title {
+  color: #888;
+}
+
+.darkmode .alert-dialog-button {
+  color: #888;
+}
+
+.darkmode .alert-dialog-content {
+  color: #aaa;
+}
+
+.darkmode .search-input {
+  background-color: #222;
+  color: #aaa;
+}
+
+.darkmode #memo-list .list-item--memo {
+  background-color: #3a3a3a;
+  color: #aaa;
+}
+
+.darkmode ons-fab.fab {
+  background-color: #2779c0;
+  color: #aaa;
+}
+
+.darkmode .edit-area {
+  background-color: #1a1a1a;
+  color: #aaa;
+}
+</style>
+
 <script>
 import page1 from "./components/Page1";
 
@@ -18,6 +83,11 @@ export default {
     return {
       pageStack: [page1]
     };
+  },
+  mounted() {
+    document.body.className = this.$store.state.memoData.themeColor
+      ? "darkmode"
+      : "";
   },
   created() {
     this.$store.dispatch("loadCheck");

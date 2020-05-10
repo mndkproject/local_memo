@@ -31,7 +31,6 @@
   line-height: 1em;
   box-sizing: border-box;
   z-index: 10010;
-  background-color: rgb(250, 250, 250);
 }
 
 .top-search-box__input {
