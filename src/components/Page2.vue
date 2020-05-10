@@ -61,7 +61,7 @@
   line-height: 1.6;
   background-color: #fafafa;
   border: none;
-  border-top: 5px solid #fafafa;
+  border-top: 5px solid transparent;
   font: inherit;
 }
 

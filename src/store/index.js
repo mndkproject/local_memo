@@ -10,10 +10,11 @@ export default new Vuex.Store({
       fontSize: "1",
       memoSort: { key: "create_at", order: "desc" },
       filterColor: "",
+      themeColor: false
     },
     currentId: "",
     labelColors: [
-      "#fafafa",
+      "transparent",
       "#e91e63",
       "#ff5722",
       "#ffeb3b",
@@ -62,7 +63,7 @@ export default new Vuex.Store({
         content: "",
         create_at: new Date().toLocaleString(),
         updated_at: new Date().toLocaleString(),
-        labelColor: state.memoData.filterColor !== "" ? state.memoData.filterColor : "#fafafa"
+        labelColor: state.memoData.filterColor !== "" ? state.memoData.filterColor : "transparent"
       });
       state.currentId = ID;
     },
@@ -90,6 +91,10 @@ export default new Vuex.Store({
     },
     changeWordFilter(state, word) {
       state.filterWord = word;
+    },
+    changeTheme(state, boo) {
+      state.memoData.themeColor = boo;
+      console.log("changeTheme:" + state.memoData.themeColor);
     }
   },
   actions: {
@@ -167,6 +172,9 @@ export default new Vuex.Store({
     },
     searchCheck({ commit }, word) {
       commit('changeWordFilter', word);
+    },
+    themeCheck({ commit }, boo) {
+      commit('changeTheme', boo);
     }
   },
   modules: {

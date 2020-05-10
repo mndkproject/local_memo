@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       labelDialogVisible: false,
-      selectedLabel: "#fafafa"
+      selectedLabel: "transparent"
     };
   },
   computed: {
