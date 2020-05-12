@@ -123,12 +123,14 @@ export default {
             console.log("maillink test success.");
           })
           .catch(error => {
+            console.log("error");
             this.$ons.notification.toast(
               "認証時にエラーがしました。error: " + error.message,
               {
                 timeout: 2000
               }
             );
+            error = null;
           });
       } else {
         this.$ons.notification.toast("認証時にエラーがしました。", {
