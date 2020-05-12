@@ -219,10 +219,7 @@ export default {
                 timeout: 2000
               }
             );
-            console.log("user login success.");
-
-            this.inputEmail = "";
-            this.inputPassword = "";
+            console.log("maillink test success.");
           })
           .catch(error => {
             this.$ons.notification.toast(
@@ -314,14 +311,20 @@ export default {
               .auth()
               .signInWithEmailAndPassword(this.inputEmail, this.inputPassword)
               .then(() => {
-                this.$store.dispatch("signinEmailCheck", "");
-                this.$ons.notification.toast(
-                  "メールアドレス認証でログインしました。",
-                  {
-                    timeout: 2000
-                  }
-                );
-                console.log("user login success.");
+                //メールリンク照合確認
+                if (firebase.auth().currentUser.emailVerified) {
+                  //照合完了
+                  this.$ons.notification.toast(
+                    "メールアドレス認証でログインしました。",
+                    {
+                      timeout: 2000
+                    }
+                  );
+                  console.log("user login success.");
+                } else {
+                  //未認証、認証フローへ
+                  this.mailLinkFlow();
+                }
               })
               .catch(error => {
                 var errorMessage =
@@ -344,14 +347,20 @@ export default {
                 this.inputPassword
               )
               .then(() => {
-                this.$store.dispatch("signinEmailCheck", "");
-                this.$ons.notification.toast(
-                  "メールアドレス認証でログインしました。",
-                  {
-                    timeout: 2000
-                  }
-                );
-                console.log("user login success.");
+                //メールリンク照合確認
+                if (firebase.auth().currentUser.emailVerified) {
+                  //照合完了
+                  this.$ons.notification.toast(
+                    "メールアドレス認証でログインしました。",
+                    {
+                      timeout: 2000
+                    }
+                  );
+                  console.log("user login success.");
+                } else {
+                  //未認証、認証フローへ
+                  this.mailLinkFlow();
+                }
               })
               .catch(error => {
                 var errorMessage =
@@ -375,6 +384,47 @@ export default {
           console.log(error.message);
         });
     },
+    mailLinkFlow() {
+      this.$ons.notification
+        .confirm(
+          "メール認証が完了していません。入力したメールアドレスに確認メールを送信しますか？",
+          { title: "確認", cancelable: true }
+        )
+        .then(response => {
+          if (response === 1) {
+            //確認メール送信
+            var actionCodeSettings = {
+              url: "https://mndkproject.github.io/local_memo/?type=signin",
+              handleCodeInApp: true
+            };
+            firebase
+              .auth()
+              .sendSignInLinkToEmail(this.inputEmail, actionCodeSettings)
+              .then(() => {
+                //一時保存メールアドレス
+                this.$store.dispatch("signinEmailCheck", this.inputEmail);
+                this.$ons.notification.toast(
+                  this.inputEmail +
+                    "に確認メールを送信しました。確認メールのリンクからアクセスして認証を完了してください。",
+                  { timeout: 2000 }
+                );
+              })
+              .catch(error => {
+                this.$ons.notification.toast(
+                  "認証時にエラーがしました。error: " + error.message,
+                  { timeout: 2000 }
+                );
+                console.log(error.message);
+              });
+          } else {
+            this.$store.dispatch("signinEmailCheck", "");
+            this.$ons.notification.toast(
+              "メールアドレス認証をキャンセルしました。",
+              { timeout: 2000 }
+            );
+          }
+        });
+    },
     mailLinkCheck() {
       //認証済みアカウントか確認
       firebase
@@ -390,47 +440,8 @@ export default {
             //認証済み、パスワード検証へ
             this.sendMailCheck();
           } else {
-            //未認証
-            this.$ons.notification
-              .confirm(
-                "メール認証が完了していません。入力したメールアドレスに確認メールを送信しますか？",
-                { title: "確認", cancelable: true }
-              )
-              .then(response => {
-                if (response === 1) {
-                  //確認メール送信
-                  var actionCodeSettings = {
-                    url:
-                      "https://mndkproject.github.io/local_memo/?type=signin",
-                    handleCodeInApp: true
-                  };
-                  firebase
-                    .auth()
-                    .sendSignInLinkToEmail(this.inputEmail, actionCodeSettings)
-                    .then(() => {
-                      //一時保存メールアドレス
-                      this.$store.dispatch("signinEmailCheck", this.inputEmail);
-                      this.$ons.notification.toast(
-                        this.inputEmail +
-                          "に確認メールを送信しました。確認メールのリンクからアクセスして認証を完了してください。",
-                        { timeout: 2000 }
-                      );
-                    })
-                    .catch(error => {
-                      this.$ons.notification.toast(
-                        "認証時にエラーがしました。error: " + error.message,
-                        { timeout: 2000 }
-                      );
-                      console.log(error.message);
-                    });
-                } else {
-                  this.$store.dispatch("signinEmailCheck", "");
-                  this.$ons.notification.toast(
-                    "メールアドレス認証をキャンセルしました。",
-                    { timeout: 2000 }
-                  );
-                }
-              });
+            //未認証、認証フローへ
+            this.mailLinkFlow();
           }
         })
         .catch(error => {
