@@ -94,18 +94,12 @@ export default {
     document.body.className = this.$store.state.memoData.themeColor
       ? "darkmode"
       : "";
-  },
-  destroyed() {
-    this.$store.dispatch("snapshotCheck", "stop");
-  },
-  created() {
-    this.$store.dispatch("isLoadCheck", true);
-    this.$store.dispatch("loadCheck");
 
     //メールリンクサインイン時
     if (location.search && location.search.indexOf("type=signin") !== -1) {
       if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
         var email = this.$store.state.memoData.signinEmail;
+        console.log(email);
         if (!email) {
           email = this.$ons.notification.prompt(
             "メールアドレスが確認できませんでした。確認メールが送信されたメールアドレスを入力してください。"
@@ -139,6 +133,13 @@ export default {
         });
       }
     }
+  },
+  destroyed() {
+    this.$store.dispatch("snapshotCheck", "stop");
+  },
+  created() {
+    this.$store.dispatch("isLoadCheck", true);
+    this.$store.dispatch("loadCheck");
 
     //起動時とアカウント変更したら毎回呼び出される
     firebase.auth().onAuthStateChanged(user => {
