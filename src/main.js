@@ -27,7 +27,7 @@ Vue.config.productionTip = false
 var firebaseConfig = {
   apiKey: "AIzaSyAYHxfofkeKOnMjr_8HsdzXboJEwHY1RxM",
   authDomain: "project-localmemo.firebaseapp.com",
-  databaseURL: "https://mndkproject.github.io/local_memo/",
+  databaseURL: "https://project-localmemo.firebaseio.com",
   projectId: "project-localmemo",
   storageBucket: "project-localmemo.appspot.com",
   messagingSenderId: "858066370234",
