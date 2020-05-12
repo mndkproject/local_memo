@@ -102,6 +102,48 @@ export default {
     this.$store.dispatch("isLoadCheck", true);
     this.$store.dispatch("loadCheck");
 
+    //メールリンクサインイン時
+    if (
+      !firebase.auth().currentUser.emailVerified &&
+      location.search &&
+      location.search.indexOf("type=signin") !== -1
+    ) {
+      if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+        var email = this.signinEmail;
+        if (!email) {
+          email = this.$ons.notification.prompt(
+            "メールアドレスが確認できませんでした。確認メールが送信されたメールアドレスを入力してください。"
+          );
+        }
+        firebase
+          .auth()
+          .signInWithEmailLink(email, window.location.href)
+          .then(result => {
+            this.$store.dispatch("signinEmailCheck", "");
+            this.$ons.notification.toast(
+              result.user.email + "で認証しました。",
+              {
+                timeout: 2000
+              }
+            );
+            console.log("maillink test success.");
+          })
+          .catch(error => {
+            console.log(error.message);
+            this.$ons.notification.toast(
+              "認証時にエラーがしました。error: " + error.message,
+              {
+                timeout: 2000
+              }
+            );
+          });
+      } else {
+        this.$ons.notification.toast("認証時にエラーがしました。", {
+          timeout: 2000
+        });
+      }
+    }
+
     //起動時とアカウント変更したら毎回呼び出される
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
