@@ -362,7 +362,7 @@ export default {
             };
             firebase
               .auth()
-              .sendSignInLinkToEmail(this.inputEmail, actionCodeSettings)
+              .sendEmailVerification(this.inputEmail, actionCodeSettings)
               .then(() => {
                 //一時保存メールアドレス
                 this.$store.dispatch("signinEmailCheck", this.inputEmail);
