@@ -22,8 +22,13 @@
   color: #aaa;
 }
 
-.darkmode .toolbar {
+.darkmode .toolbar,
+.darkmode .card {
   background-color: #333;
+  color: #aaa;
+}
+
+.darkmode .card__content {
   color: #aaa;
 }
 
@@ -64,9 +69,9 @@
   color: #aaa;
 }
 
-.darkmode ons-fab.fab {
+ons-fab.fab {
   background-color: #2779c0;
-  color: #aaa;
+  color: #fafafa;
 }
 
 .darkmode .edit-area {
@@ -77,6 +82,7 @@
 
 <script>
 import page1 from "./components/Page1";
+import firebase from "firebase";
 
 export default {
   data() {
@@ -89,28 +95,49 @@ export default {
       ? "darkmode"
       : "";
   },
+  destroyed() {
+    this.$store.dispatch("snapshotCheck", "stop");
+  },
   created() {
+    this.$store.dispatch("isLoadCheck", true);
     this.$store.dispatch("loadCheck");
 
-    this.$store.subscribe((mutation, state) => {
-      if (mutation.type !== "changeId") {
-        var newDB = JSON.stringify(state.memoData);
-        var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
+    //起動時とアカウント変更したら毎回呼び出される
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("ログインしてるよ");
+        this.$store.dispatch("authAccountCheck", {
+          signin: true,
+          mail: user.email,
+          provider: user.providerData[0].providerId,
+          uid: user.uid
+        });
 
-        if (newDB !== oldDB) {
-          localStorage.local_memo = newDB;
+        //クラウド同期処理
+        if (this.$store.state.memoData.shareCloud) {
+          this.$store.dispatch("snapshotCheck", "start");
+        } else {
+          this.$store.dispatch("isLoadCheck", false);
         }
+      } else {
+        console.log("ログインしてないよ");
+        this.$store.dispatch("authAccountCheck", {
+          signin: false,
+          mail: "",
+          provider: ""
+        });
+        this.$store.dispatch("shareCloudCheck", false);
       }
+      console.log(JSON.stringify(this.$store.state.memoData.authAccount));
     });
 
-    var me = this;
     //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       var exitFlag = false;
       history.pushState(null, null, null);
-      window.addEventListener("popstate", function() {
-        if (me.pageStack.length > 1) {
-          me.pageStack.pop();
+      window.addEventListener("popstate", () => {
+        if (this.pageStack.length > 1) {
+          this.pageStack.pop();
           history.pushState(null, null, null);
         } else {
           if (exitFlag) {
@@ -118,7 +145,7 @@ export default {
           } else {
             history.pushState(null, null, null);
             exitFlag = true;
-            me.$ons.notification.toast("もう一度押すと終了します", {
+            this.$ons.notification.toast("もう一度押すと終了します", {
               timeout: 2000,
               callback: function(e) {
                 if (e === -1) {
@@ -131,14 +158,14 @@ export default {
       });
     } else {
       history.pushState(null, null, null);
-      window.addEventListener("popstate", function() {
-        if (me.pageStack.length > 1) {
-          me.pageStack.pop();
+      window.addEventListener("popstate", () => {
+        if (this.pageStack.length > 1) {
+          this.pageStack.pop();
           history.pushState(null, null, null);
         } else {
           history.go(-1);
           /*
-          me.$ons.notification
+          this.$ons.notification
             .confirm("ページを離脱してよろしいですか？", { title: "" })
             .then(response => {
               if (response) {

@@ -12,11 +12,11 @@
         <v-ons-list-header>更新日時</v-ons-list-header>
         <v-ons-list-item>{{ currentMemo.updated_at }}</v-ons-list-item>
         <v-ons-list-header>文字数（Byte数）</v-ons-list-header>
-        <v-ons-list-item>{{ chars }} chars（{{ bytes }} bytes）</v-ons-list-item>
+        <v-ons-list-item>{{ chars }}文字（{{ bytes }} bytes）</v-ons-list-item>
         <v-ons-list-header>行数</v-ons-list-header>
-        <v-ons-list-item>{{ lines }} lines</v-ons-list-item>
-        <v-ons-list-header>原稿用紙換算枚数</v-ons-list-header>
-        <v-ons-list-item>{{ sheets }} sheets</v-ons-list-item>
+        <v-ons-list-item>{{ lines }}行</v-ons-list-item>
+        <v-ons-list-header>原稿用紙枚数</v-ons-list-header>
+        <v-ons-list-item>{{ sheets }}枚（20文字×20行換算）</v-ons-list-item>
       </v-ons-list>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="infoDialogVisible = false;">Cancel</v-ons-alert-dialog-button>

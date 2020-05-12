@@ -10,6 +10,7 @@
     <div class="content">
       <div class="info-area">
         <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
+        <p class="text-count">計{{ chars }}（{{ lines }}行 {{ sheets }}枚）</p>
       </div>
 
       <textarea
@@ -19,10 +20,6 @@
         placeholder="入力..."
         :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
       ></textarea>
-
-      <div class="info-area">
-        <p class="text-count">{{ chars }} chars, {{ lines }} lines, {{ sheets }} sheets</p>
-      </div>
     </div>
   </v-ons-page>
 </template>

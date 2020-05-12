@@ -14,6 +14,7 @@
       <dialog-label v-if="labelBtn"></dialog-label>
       <dialog-size :page="page"></dialog-size>
       <dialog-info v-if="infoBtn"></dialog-info>
+      <dialog-share></dialog-share>
     </div>
   </v-ons-toolbar>
 </template>
@@ -25,6 +26,7 @@ import dialogSort from "./dialogSort";
 import dialogFilter from "./dialogFilter";
 import dialogInfo from "./dialogInfo";
 import dialogTheme from "./dialogTheme";
+import dialogShare from "./dialogShare";
 import searchBox from "./searchBox";
 
 export default {
@@ -45,8 +47,9 @@ export default {
     dialogLabel,
     dialogFilter,
     dialogTheme,
-    searchBox,
-    dialogInfo
+    dialogInfo,
+    dialogShare,
+    searchBox
   }
 };
 </script>
