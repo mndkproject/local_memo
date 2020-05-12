@@ -103,11 +103,7 @@ export default {
     this.$store.dispatch("loadCheck");
 
     //メールリンクサインイン時
-    if (
-      !firebase.auth().currentUser.emailVerified &&
-      location.search &&
-      location.search.indexOf("type=signin") !== -1
-    ) {
+    if (location.search && location.search.indexOf("type=signin") !== -1) {
       if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
         var email = this.signinEmail;
         if (!email) {
