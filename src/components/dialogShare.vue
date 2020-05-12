@@ -198,44 +198,6 @@ export default {
   mounted() {
     //console.log(JSON.stringify(this.authAccount));
     this.cloudSwitch = this.shareCloud;
-
-    //メールリンクサインイン時
-    if (location.search && location.search.indexOf("type=signin") !== -1) {
-      if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
-        var email = this.signinEmail;
-        if (!email) {
-          email = this.$ons.notification.prompt(
-            "メールアドレスが確認できませんでした。確認メールが送信されたメールアドレスを入力してください。"
-          );
-        }
-        firebase
-          .auth()
-          .signInWithEmailLink(email, window.location.href)
-          .then(result => {
-            this.$store.dispatch("signinEmailCheck", "");
-            this.$ons.notification.toast(
-              result.user.email + "で認証しました。",
-              {
-                timeout: 2000
-              }
-            );
-            console.log("maillink test success.");
-          })
-          .catch(error => {
-            console.log(error.message);
-            this.$ons.notification.toast(
-              "認証時にエラーがしました。error: " + error.message,
-              {
-                timeout: 2000
-              }
-            );
-          });
-      } else {
-        this.$ons.notification.toast("認証時にエラーがしました。", {
-          timeout: 2000
-        });
-      }
-    }
   },
   methods: {
     selectAuth(target) {
