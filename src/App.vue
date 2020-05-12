@@ -99,7 +99,7 @@ export default {
     if (
       location.search &&
       location.search.indexOf("type=signin") !== -1 &&
-      this.$store.state.memoData.signinEmail
+      this.$store.state.memoData.signinEmail !== ""
     ) {
       if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
         var email = this.$store.state.memoData.signinEmail;
