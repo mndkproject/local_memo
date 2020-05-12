@@ -56,7 +56,7 @@ export default new Vuex.Store({
   },
   mutations: {
     save(state) {
-      state.isSave = true;
+      state.isLoad = true;
 
       var newDB = JSON.stringify(state.memoData);
       var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
@@ -85,7 +85,7 @@ export default new Vuex.Store({
         console.log("local change is none.");
       }
 
-      state.isSave = false;
+      state.isLoad = false;
     },
     load(state, db) {
       if (db) {
@@ -153,7 +153,7 @@ export default new Vuex.Store({
     },
     shareCloudChange(state, isShare) {
       state.memoData.shareCloud = isShare;
-      console.log("isShare");
+      console.log("isShare:" + isShare);
     },
     contentSync(state, newData) {
       state.memoData.memoList = newData;
@@ -281,54 +281,52 @@ export default new Vuex.Store({
     contentSyncCheck({ commit, state }, data) {
       console.log("クラウドからロードするよ");
       //クラウドロード処理
-      var cloudData = data.data;
       //クラウド同期処理
-      if (cloudData !== "") {
-        var update_flag = false;
-        console.log("cloud get is dane.");
-        let localData = JSON.parse(JSON.stringify(state.memoData.memoList));
-        Array.prototype.forEach.call(cloudData, cloudItem => {
-          var tarId = cloudItem.id;
-          var tarItem = localData.find(
+      var cloudData = data && data !== "" ? data.data : [];
+      var update_flag = false;
+      console.log("cloud get is dane.");
+      let localData = JSON.parse(JSON.stringify(state.memoData.memoList));
+      Array.prototype.forEach.call(cloudData, cloudItem => {
+        var tarId = cloudItem.id;
+        var tarItem = localData.find(
+          localItem => localItem.id === tarId
+        );
+        if (tarItem) {
+          var localIndex = localData.findIndex(
             localItem => localItem.id === tarId
           );
-          if (tarItem) {
-            var localIndex = localData.findIndex(
-              localItem => localItem.id === tarId
-            );
-            var localUpdate = new Date(tarItem.updated_at).getTime();
-            var cloudUpdate = new Date(cloudItem.updated_at).getTime();
-            if (localUpdate > cloudUpdate) {
-              update_flag = true;
-            } else if (localUpdate < cloudUpdate) {
-              localData[localIndex].content = cloudItem.content;
-              localData[localIndex].labelColor = cloudItem.labelColor;
-              localData[localIndex].updated_at = cloudItem.updated_at;
-              update_flag = true;
-            }
-          } else {
-            localData.push(cloudItem);
+          var localUpdate = new Date(tarItem.updated_at).getTime();
+          var cloudUpdate = new Date(cloudItem.updated_at).getTime();
+          if (localUpdate > cloudUpdate) {
+            update_flag = true;
+          } else if (localUpdate < cloudUpdate) {
+            localData[localIndex].content = cloudItem.content;
+            localData[localIndex].labelColor = cloudItem.labelColor;
+            localData[localIndex].updated_at = cloudItem.updated_at;
             update_flag = true;
           }
-        });
-        Array.prototype.forEach.call(localData, resultLocalItem => {
-          var resultTarId = resultLocalItem.id;
-          var resultTarItem = cloudData.find(
-            cloudItem => cloudItem.id === resultTarId
-          );
-          if (!resultTarItem) {
-            update_flag = true;
-          }
-        });
-        //ローカル最新化＆クラウド最新化
-        if (update_flag) {
-          commit("contentSync", localData);
-          commit('save');
-          update_flag = false;
         } else {
-          console.log("cloud change is none.");
-          commit('isLoad', false);
+          localData.push(cloudItem);
+          update_flag = true;
         }
+      });
+      Array.prototype.forEach.call(localData, resultLocalItem => {
+        var resultTarId = resultLocalItem.id;
+        var resultTarItem = cloudData.find(
+          cloudItem => cloudItem.id === resultTarId
+        );
+        if (!resultTarItem) {
+          update_flag = true;
+        }
+      });
+      //ローカル最新化＆クラウド最新化
+      if (update_flag) {
+        commit("contentSync", localData);
+        commit('save');
+        update_flag = false;
+      } else {
+        console.log("cloud change is none.");
+        commit('isLoad', false);
       }
     },
     snapshotCheck({ dispatch, commit, state }, flag) {
