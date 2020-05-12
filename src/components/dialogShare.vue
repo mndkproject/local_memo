@@ -273,6 +273,7 @@ export default {
               .auth()
               .signInWithEmailAndPassword(this.inputEmail, this.inputPassword)
               .then(() => {
+                console.log(firebase.auth().currentUser);
                 //メールリンク照合確認
                 if (firebase.auth().currentUser.emailVerified) {
                   //照合完了
