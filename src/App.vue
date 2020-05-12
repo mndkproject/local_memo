@@ -99,9 +99,9 @@ export default {
     if (
       location.search &&
       location.search.indexOf("type=signin") !== -1 &&
-      this.$store.state.memoData.signinEmail !== ""
+      firebase.auth().currentUser
     ) {
-      if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+      /*if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
         var email = this.$store.state.memoData.signinEmail;
         console.log(email);
         if (!email) {
@@ -135,7 +135,7 @@ export default {
         this.$ons.notification.toast("認証時にエラーがしました。", {
           timeout: 2000
         });
-      }
+      }*/
     }
   },
   destroyed() {
@@ -153,6 +153,7 @@ export default {
           !user.emailVerified
         ) {
           console.log("仮認証中だよ");
+          console.log("カレントユーザー:" + JSON.stringify(user));
           this.$store.dispatch("authAccountCheck", {
             signin: false,
             mail: user.email,
