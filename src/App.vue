@@ -105,7 +105,7 @@ export default {
     //メールリンクサインイン時
     if (location.search && location.search.indexOf("type=signin") !== -1) {
       if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
-        var email = this.$store.state.memoData.signinEmailsigninEmail;
+        var email = this.$store.state.memoData.signinEmail;
         if (!email) {
           email = this.$ons.notification.prompt(
             "メールアドレスが確認できませんでした。確認メールが送信されたメールアドレスを入力してください。"
