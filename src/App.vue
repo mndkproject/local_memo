@@ -123,7 +123,6 @@ export default {
             console.log("maillink test success.");
           })
           .catch(error => {
-            console.log(error.message);
             this.$ons.notification.toast(
               "認証時にエラーがしました。error: " + error.message,
               {
