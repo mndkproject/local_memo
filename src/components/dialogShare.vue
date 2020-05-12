@@ -467,7 +467,7 @@ export default {
             if (response === 1) {
               this.$store.dispatch("shareCloudCheck", true);
               //クラウド同期処理
-              this.$state.dispatch("isLoad", true);
+              this.$store.dispatch("isLoad", true);
               this.$store.dispatch("snapshotCheck", "start");
               this.$ons.notification.alert("同期を開始しました。", {
                 title: "確認",
