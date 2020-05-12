@@ -105,19 +105,32 @@ export default {
     //起動時とアカウント変更したら毎回呼び出される
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log("ログインしてるよ");
-        this.$store.dispatch("authAccountCheck", {
-          signin: true,
-          mail: user.email,
-          provider: user.providerData[0].providerId,
-          uid: user.uid
-        });
-
-        //クラウド同期処理
-        if (this.$store.state.memoData.shareCloud) {
-          this.$store.dispatch("snapshotCheck", "start");
+        if (
+          user.providerData[0].providerId === "password" &&
+          !user.emailVerified
+        ) {
+          console.log("仮認証中だよ");
+          this.$store.dispatch("authAccountCheck", {
+            signin: false,
+            mail: user.email,
+            provider: user.providerData[0].providerId,
+            uid: user.uid
+          });
         } else {
-          this.$store.dispatch("isLoadCheck", false);
+          console.log("ログインしてるよ");
+          this.$store.dispatch("authAccountCheck", {
+            signin: true,
+            mail: user.email,
+            provider: user.providerData[0].providerId,
+            uid: user.uid
+          });
+
+          //クラウド同期処理
+          if (this.$store.state.memoData.shareCloud) {
+            this.$store.dispatch("snapshotCheck", "start");
+          } else {
+            this.$store.dispatch("isLoadCheck", false);
+          }
         }
       } else {
         console.log("ログインしてないよ");
