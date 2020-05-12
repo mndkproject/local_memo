@@ -113,6 +113,7 @@ export default {
           .auth()
           .signInWithEmailLink(email, window.location.href)
           .then(result => {
+            this.$store.dispatch("signinEmailCheck", "");
             this.$ons.notification.toast(
               result.user.email + "で認証しました。",
               {
@@ -122,17 +123,13 @@ export default {
             console.log("maillink test success.");
           })
           .catch(error => {
-            console.log("error");
+            console.log(error.message);
             this.$ons.notification.toast(
               "認証時にエラーがしました。error: " + error.message,
               {
                 timeout: 2000
               }
             );
-            error = null;
-          })
-          .then(() => {
-            this.$store.dispatch("signinEmailCheck", "");
           });
       } else {
         this.$ons.notification.toast("認証時にエラーがしました。", {

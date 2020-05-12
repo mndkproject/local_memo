@@ -209,7 +209,7 @@ export default {
           return;
         }
 
-        this.mailLinkCheck();
+        this.sendMailCheck();
       } else if (target === "google") {
         const provider = new firebase.auth.GoogleAuthProvider();
         firebase
@@ -350,7 +350,7 @@ export default {
     mailLinkFlow() {
       this.$ons.notification
         .confirm(
-          "メール認証が完了していません。入力したメールアドレスに確認メールを送信しますか？",
+          "まだメール認証は完了していません。認証を完了するために、入力したメールアドレスに確認メールを送信しますか？",
           { title: "確認", cancelable: true }
         )
         .then(response => {
