@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isLoad">
+    <div v-if="isLoading">
       <v-ons-progress-circular indeterminate></v-ons-progress-circular>
     </div>
     <div v-else>
@@ -21,15 +21,27 @@
             </div>
           </ons-list-item>
         </ons-list>
-        <p>
-          {{ authAccount.mail }}でログイン中
-          <br />
-          （{{ authAccount.provider }}で認証）
+        <p style="padding: 1em;">
+          {{ fbAuth.email }}
+          <br />でログイン中
         </p>
-        <v-ons-button modifier="quiet" @click="signOutAuth">ログアウト</v-ons-button>
-        <v-ons-button modifier="quiet" @click="removeAuth">認証情報をすべて削除</v-ons-button>
+        <v-ons-button modifier="large" style="margin-bottom:2em;" @click="signOutAuth">ログアウト</v-ons-button>
+        <v-ons-button modifier="quiet large" @click="removeAuth">認証情報をすべて削除</v-ons-button>
       </template>
-      <template v-else-if="viewMode === 'email'">
+      <template v-if="viewMode === 'emailVerify'">
+        <p>{{ fbAuth.email }} で仮認証中</p>
+        <v-ons-list modifier="auth-select" key="send-email">
+          <v-ons-list-item modifier="nodivider">
+            <v-ons-card modifier="auth-item" @click="mailLinkFlow(fbAuth.email)">
+              <div class="content">
+                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>確認メールを再度送信
+              </div>
+            </v-ons-card>
+          </v-ons-list-item>
+        </v-ons-list>
+        <v-ons-button modifier="quiet">認証手続きをやめる</v-ons-button>
+      </template>
+      <template v-if="viewMode === 'email'">
         <p class="auth-decription">認証するメールアドレスと任意のパスワード（8文字以上）を入力してください。</p>
         <v-ons-list modifier="auth-select" key="auth-email">
           <v-ons-list-item modifier="nodivider">
@@ -66,9 +78,8 @@
         <p
           class="auth-decription"
         >初めて利用する場合は仮認証となり、メールアドレスの確認が必要になります。仮認証後に届く確認メールのリンクを開くことで認証が完了します。</p>
-        <p v-if="signinEmail">{{ signinEmail }} で仮認証中</p>
       </template>
-      <template v-else>
+      <template v-if="viewMode === 'init'">
         <p class="auth-decription">他のデバイスでも使用できるように、データをクラウド上に保存することができます。認証方法を選んでください。</p>
         <v-ons-list modifier="auth-select" key="auth-select">
           <v-ons-list-item modifier="nodivider">
@@ -144,11 +155,11 @@
   line-height: 1.4;
 }
 
-.cloud-signin {
+.auth-signin {
   color: #1e88e5;
 }
 
-.cloud-signout {
+.auth-signout {
   color: #ccc;
 }
 </style>
@@ -164,40 +175,35 @@ export default {
       inputPassword: "",
       mailErrorMsg: "",
       isSelectEmailAuth: false,
-      cloudSwitch: false
+      cloudSwitch: false,
+      isLoading: ""
     };
   },
   computed: {
-    signinEmail() {
-      return this.$store.state.memoData.signinEmail;
-    },
-    authAccount() {
-      return this.$store.state.memoData.authAccount;
+    fbAuth() {
+      return this.$store.state.fbAuth;
     },
     shareCloud() {
       return this.$store.state.memoData.shareCloud;
     },
-    isLoad() {
-      return this.$store.state.isLoad;
-    },
     signinColor() {
-      return this.$store.state.memoData.authAccount.signin
-        ? "cloud-signin"
-        : "cloud-signout";
+      return this.fbAuth.uid ? "auth-signin" : "auth-signout";
     },
     viewMode() {
-      if (this.isSelectEmailAuth) {
+      if (this.fbAuth.emailVerified === true) {
+        return "success";
+      } else if (this.fbAuth.email !== "") {
+        return "emailVerify";
+      } else if (this.isSelectEmailAuth === true) {
         return "email";
       } else {
-        return this.$store.state.memoData.authAccount.signin
-          ? "success"
-          : "init";
+        return "init";
       }
     }
   },
   mounted() {
-    //console.log(JSON.stringify(this.authAccount));
     this.cloudSwitch = this.shareCloud;
+    console.log(this.$store.state.fbAuth);
   },
   methods: {
     selectAuth(target) {
@@ -231,8 +237,6 @@ export default {
     emailAuthCancel() {
       if (this.isSelectEmailAuth) {
         this.isSelectEmailAuth = false;
-        this.inputPassword = "";
-        this.inputEmail = "";
         this.mailErrorMsg = "";
       } else {
         this.shareDialogVisible = false;
@@ -272,10 +276,9 @@ export default {
             firebase
               .auth()
               .signInWithEmailAndPassword(this.inputEmail, this.inputPassword)
-              .then(() => {
-                console.log(firebase.auth().currentUser);
+              .then(result => {
                 //メールリンク照合確認
-                if (firebase.auth().currentUser.emailVerified) {
+                if (result.user.emailVerified) {
                   //照合完了
                   this.$ons.notification.toast(
                     "メールアドレス認証でログインしました。",
@@ -286,7 +289,7 @@ export default {
                   console.log("user login success.");
                 } else {
                   //未認証、認証フローへ
-                  this.mailLinkFlow();
+                  this.mailLinkFlow(this.inputEmail);
                 }
               })
               .catch(error => {
@@ -300,7 +303,8 @@ export default {
                   { timeout: 2000 }
                 );
                 console.log(error.message);
-              });
+              })
+              .then(() => {});
           } else {
             //アカウント未作成、アカウント作成
             firebase
@@ -310,20 +314,8 @@ export default {
                 this.inputPassword
               )
               .then(() => {
-                //メールリンク照合確認
-                if (firebase.auth().currentUser.emailVerified) {
-                  //照合完了
-                  this.$ons.notification.toast(
-                    "メールアドレス認証でログインしました。",
-                    {
-                      timeout: 2000
-                    }
-                  );
-                  console.log("user login success.");
-                } else {
-                  //未認証、認証フローへ
-                  this.mailLinkFlow();
-                }
+                //未認証、認証フローへ
+                this.mailLinkFlow(this.inputEmail);
               })
               .catch(error => {
                 var errorMessage =
@@ -347,30 +339,25 @@ export default {
           console.log(error.message);
         });
     },
-    mailLinkFlow() {
+    mailLinkFlow(mail) {
       this.$ons.notification
         .confirm(
-          "まだメール認証は完了していません。認証を完了するために、入力したメールアドレスに確認メールを送信しますか？",
+          "まだメール認証は完了していません。認証を完了するために確認メールを送信しますか？",
           { title: "確認", cancelable: true }
         )
         .then(response => {
           if (response === 1) {
             //確認メール送信
             var actionCodeSettings = {
-              url: "https://mndkproject.github.io/local_memo/?type=signin",
+              url: "http://localhost:8080",
               handleCodeInApp: true
             };
             firebase
               .auth()
-              .currentUser.sendEmailVerification(
-                this.inputEmail,
-                actionCodeSettings
-              )
+              .currentUser.sendEmailVerification(actionCodeSettings)
               .then(() => {
-                //一時保存メールアドレス
-                this.$store.dispatch("signinEmailCheck", this.inputEmail);
                 this.$ons.notification.toast(
-                  this.inputEmail +
+                  mail +
                     "に確認メールを送信しました。確認メールのリンクからアクセスして認証を完了してください。",
                   { timeout: 2000 }
                 );
@@ -383,39 +370,11 @@ export default {
                 console.log(error.message);
               });
           } else {
-            this.$store.dispatch("signinEmailCheck", "");
             this.$ons.notification.toast(
               "メールアドレス認証をキャンセルしました。",
               { timeout: 2000 }
             );
           }
-        });
-    },
-    mailLinkCheck() {
-      //認証済みアカウントか確認
-      firebase
-        .auth()
-        .fetchSignInMethodsForEmail(this.inputEmail)
-        .then(providers => {
-          if (
-            providers.findIndex(
-              p =>
-                p === firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-            ) !== -1
-          ) {
-            //認証済み、パスワード検証へ
-            this.sendMailCheck();
-          } else {
-            //未認証、認証フローへ
-            this.mailLinkFlow();
-          }
-        })
-        .catch(error => {
-          this.$ons.notification.toast(
-            "認証時にエラーがしました。error: " + error.message,
-            { timeout: 2000 }
-          );
-          console.log(error.message);
         });
     },
     signOutAuth() {
@@ -464,53 +423,13 @@ export default {
         )
         .then(response => {
           if (response === 1) {
-            var user = firebase.auth().currentUser;
-            if (user != null) {
-              //クラウドデータ削除処理
-              firebase
-                .firestore()
-                .collection("/memos")
-                .doc(user.uid)
-                .get()
-                .then(doc => {
-                  if (doc.exists) {
-                    this.$store.dispatch("snapshotCheck", "stop");
-                    firebase
-                      .firestore()
-                      .collection("/memos")
-                      .doc(user.uid)
-                      .delete()
-                      .then(() => {
-                        console.log("Document successfully deleted!");
-                      })
-                      .catch(error => {
-                        console.error("Error removing document: ", error);
-                      });
-                  } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
-                  }
-                })
-                .catch(error => {
-                  console.log("Error getting document:", error);
-                });
-              //認証情報削除処理
-              user
-                .delete()
-                .then(() => {
-                  console.log("User successfully deleted!");
-                })
-                .catch(error => {
-                  console.log("An error happened:", error);
-                });
+            this.$store.dispatch("removeAuthCheck").then(() => {
               this.$ons.notification.alert("認証情報をすべて削除しました。", {
                 title: "確認",
                 cancelable: true
               });
               this.shareDialogVisible = false;
-            } else {
-              console.log("No such user!");
-            }
+            });
           }
         });
     },
@@ -528,7 +447,6 @@ export default {
             if (response === 1) {
               this.$store.dispatch("shareCloudCheck", true);
               //クラウド同期処理
-              this.$store.dispatch("isLoadCheck", true);
               this.$store.dispatch("snapshotCheck", "start");
               this.$ons.notification.alert("同期を開始しました。", {
                 title: "確認",

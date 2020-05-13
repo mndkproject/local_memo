@@ -14,9 +14,7 @@ export default new Vuex.Store({
       memoSort: { key: "create_at", order: "desc" },
       filterColor: "",
       themeColor: false,
-      authAccount: { signin: false, mail: "", provider: "", uid: "" },
-      shareCloud: false,
-      signinEmail: ""
+      shareCloud: false
     },
     currentId: "",
     labelColors: [
@@ -29,7 +27,12 @@ export default new Vuex.Store({
       "#673ab7"
     ],
     filterWord: "",
-    isLoad: false
+    fbAuth: {
+      uid: "",
+      email: "",
+      emailVerified: "",
+      providerId: ""
+    }
   },
   getters: {
     filteredList: (state) => {
@@ -56,26 +59,18 @@ export default new Vuex.Store({
   },
   mutations: {
     save(state) {
-      state.isLoad = true;
-
       var newDB = JSON.stringify(state.memoData);
       var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
       var newList = JSON.stringify(state.memoData.memoList);
       var oldList = localStorage.local_memo ? JSON.stringify(JSON.parse(localStorage.local_memo).memoList) : "";
       if (newList !== oldList) {
-        firebase
-          .firestore()
-          .collection("/memos")
-          .doc(state.memoData.authAccount.uid)
+        firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
           .set({ data: state.memoData.memoList })
           .then(() => {
             console.log("cloud save is dane.");
           })
           .catch(error => {
             console.log("Error : ", error);
-          })
-          .then(() => {
-            state.isLoad = false;
           })
       }
       if (newDB !== oldDB) {
@@ -84,16 +79,11 @@ export default new Vuex.Store({
       } else {
         console.log("local change is none.");
       }
-
-      state.isLoad = false;
     },
     load(state, db) {
       if (db) {
         state.memoData = db;
       }
-    },
-    isLoad(state, boo) {
-      state.isLoad = boo;
     },
     deleteData(state, payload) {
       //ゴミ箱作るならここ変える
@@ -142,25 +132,13 @@ export default new Vuex.Store({
       state.memoData.themeColor = boo;
       console.log("changeTheme:" + state.memoData.themeColor);
     },
-    changeSigninEmail(state, mail) {
-      state.memoData.signinEmail = mail;
-    },
-    authAccountChange(state, account) {
-      state.memoData.authAccount.signin = account.signin;
-      state.memoData.authAccount.mail = account.mail;
-      state.memoData.authAccount.provider = account.provider;
-      state.memoData.authAccount.uid = account.uid;
-    },
     shareCloudChange(state, isShare) {
       state.memoData.shareCloud = isShare;
       console.log("isShare:" + isShare);
     },
     contentSync(state, newData) {
       state.memoData.memoList = newData;
-      firebase
-        .firestore()
-        .collection("/memos")
-        .doc(state.memoData.authAccount.uid)
+      firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
         .set({ data: newData })
         .then(() => {
           console.log("cloud save is dane.");
@@ -168,10 +146,21 @@ export default new Vuex.Store({
         .catch(error => {
           console.log("Error : ", error);
         })
-        .then(() => {
-          state.isLoad = false;
-        })
     },
+    fbAuthChange(state, user) {
+      if (user !== "") {
+        state.fbAuth.uid = user.uid;
+        state.fbAuth.email = user.email;
+        state.fbAuth.emailVerified = user.emailVerified;
+        state.fbAuth.providerId = user.providerData[0].providerId;
+      } else {
+        state.fbAuth.uid = "";
+        state.fbAuth.email = "";
+        state.fbAuth.emailVerified = "";
+        state.fbAuth.providerId = "";
+      }
+      console.log("user:" + JSON.stringify(state.fbAuth));
+    }
   },
   actions: {
     loadCheck({ commit }) {
@@ -179,13 +168,6 @@ export default new Vuex.Store({
       if (localStorage.local_memo) {
         if (JSON.parse(localStorage.local_memo.replace(',"["', ''))) {
           db = JSON.parse(localStorage.local_memo.replace(',"["', ''));
-          //公開時には消す！
-          if (!db.authAccount) {
-            db.authAccount = { signin: false, mail: "", provider: "" };
-            db.shareCloud = false;
-            db.signinEmail = "";
-            db.uid = "";
-          }
         }
       }
 
@@ -266,14 +248,6 @@ export default new Vuex.Store({
       commit('changeTheme', boo);
       commit('save');
     },
-    signinEmailCheck({ commit }, mail) {
-      commit('changeSigninEmail', mail);
-      commit('save');
-    },
-    authAccountCheck({ commit }, account) {
-      commit('authAccountChange', account);
-      commit('save');
-    },
     shareCloudCheck({ commit }, isShare) {
       commit('shareCloudChange', isShare);
       commit('save');
@@ -326,10 +300,9 @@ export default new Vuex.Store({
         update_flag = false;
       } else {
         console.log("cloud change is none.");
-        commit('isLoad', false);
       }
     },
-    snapshotCheck({ dispatch, commit, state }, flag) {
+    snapshotCheck({ dispatch, state }, flag) {
       if (flag === "start") {
         if (this.snapshotState) {
           console.warn('なんかもう監視されてたよ', this.snapshotState)
@@ -338,9 +311,7 @@ export default new Vuex.Store({
         }
         console.log("クラウド監視開始");
         this.snapshotState = firebase
-          .firestore()
-          .collection("/memos")
-          .doc(state.memoData.authAccount.uid)
+        firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
           .onSnapshot(data => {
             var source = data.metadata.hasPendingWrites ? "Local" : "Server";
             if (source === "Server") {
@@ -353,12 +324,50 @@ export default new Vuex.Store({
           this.snapshotState()
           this.snapshotState = null
         }
-        commit('isLoad', false);
         console.log("クラウド監視終了");
       }
     },
-    isLoadCheck({ commit }, boo) {
-      commit('isLoad', boo);
+    fbAuthCheck({ commit }, user) {
+      commit('fbAuthChange', user);
+    },
+    removeAuthCheck({ dispatch, commit, state }) {
+      return new Promise(resolve => {
+        if (state.fbAuth != null) {
+          //クラウドデータ削除処理
+          firebase.firestore().collection("/memos").doc(state.fbAuth.uid).get()
+            .then(doc => {
+              if (doc.exists) {
+                dispatch("snapshotCheck", "stop");
+                firebase.firestore().collection("/memos").doc(state.fbAuth.uid).delete()
+                  .then(() => {
+                    console.log("Document successfully deleted!");
+                  })
+                  .catch(error => {
+                    console.error("Error removing document: ", error);
+                  });
+              } else {
+                console.log("No such document!");
+              }
+            })
+            .catch(error => {
+              console.log("Error getting document:", error);
+            })
+            .then(() => {
+              //認証情報削除処理
+              firebase.auth().currentUser.delete()
+                .then(() => {
+                  console.log("User successfully deleted!");
+                  commit('fbAuthChange', "");
+                  resolve();
+                })
+                .catch(error => {
+                  console.log("An error happened:", error);
+                });
+            });
+        } else {
+          console.log("No such user!");
+        }
+      });
     }
   },
   modules: {

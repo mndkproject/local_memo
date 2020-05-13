@@ -94,98 +94,41 @@ export default {
     document.body.className = this.$store.state.memoData.themeColor
       ? "darkmode"
       : "";
-
-    //メールリンクサインイン時
-    if (
-      location.search &&
-      location.search.indexOf("type=signin") !== -1 &&
-      firebase.auth().currentUser
-    ) {
-      /*if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
-        var email = this.$store.state.memoData.signinEmail;
-        console.log(email);
-        if (!email) {
-          email = this.$ons.notification.prompt(
-            "メールアドレスが確認できませんでした。確認メールが送信されたメールアドレスを入力してください。"
-          );
-        }
-        firebase
-          .auth()
-          .signInWithEmailLink(email, window.location.href)
-          .then(result => {
-            this.$store.dispatch("signinEmailCheck", "");
-            this.$ons.notification.toast(
-              result.user.email + "で認証しました。",
-              {
-                timeout: 2000
-              }
-            );
-            console.log("maillink test success.");
-          })
-          .catch(error => {
-            console.log(error.message);
-            this.$ons.notification.toast(
-              "認証時にエラーがしました。error: " + error.message,
-              {
-                timeout: 2000
-              }
-            );
-          });
-      } else {
-        this.$ons.notification.toast("認証時にエラーがしました。", {
-          timeout: 2000
-        });
-      }*/
+  },
+  computed: {
+    fbAuth() {
+      return this.$store.state.fbAuth;
     }
   },
   destroyed() {
     this.$store.dispatch("snapshotCheck", "stop");
   },
   created() {
-    this.$store.dispatch("isLoadCheck", true);
     this.$store.dispatch("loadCheck");
 
     //起動時とアカウント変更したら毎回呼び出される
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        this.$store.dispatch("fbAuthCheck", user);
         if (
-          user.providerData[0].providerId === "password" &&
-          !user.emailVerified
+          this.fbAuth &&
+          this.fbAuth.providerId === "password" &&
+          !this.fbAuth.emailVerified
         ) {
           console.log("仮認証中だよ");
-          console.log("カレントユーザー:" + JSON.stringify(user));
-          this.$store.dispatch("authAccountCheck", {
-            signin: false,
-            mail: user.email,
-            provider: user.providerData[0].providerId,
-            uid: user.uid
-          });
         } else {
           console.log("ログインしてるよ");
-          this.$store.dispatch("authAccountCheck", {
-            signin: true,
-            mail: user.email,
-            provider: user.providerData[0].providerId,
-            uid: user.uid
-          });
 
           //クラウド同期処理
           if (this.$store.state.memoData.shareCloud) {
             this.$store.dispatch("snapshotCheck", "start");
-          } else {
-            this.$store.dispatch("isLoadCheck", false);
           }
         }
       } else {
+        this.$store.dispatch("fbAuthCheck", "");
         console.log("ログインしてないよ");
-        this.$store.dispatch("authAccountCheck", {
-          signin: false,
-          mail: "",
-          provider: ""
-        });
         this.$store.dispatch("shareCloudCheck", false);
       }
-      console.log(JSON.stringify(this.$store.state.memoData.authAccount));
     });
 
     //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
