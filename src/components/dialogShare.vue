@@ -203,7 +203,6 @@ export default {
   },
   mounted() {
     this.cloudSwitch = this.shareCloud;
-    console.log(this.$store.state.fbAuth);
   },
   methods: {
     selectAuth(target) {
@@ -349,7 +348,10 @@ export default {
           if (response === 1) {
             //確認メール送信
             var actionCodeSettings = {
-              url: "http://localhost:8080",
+              url:
+                process.env.NODE_ENV === "development"
+                  ? "http://localhost:8080"
+                  : "https://mndkproject.github.io/local_memo/",
               handleCodeInApp: true
             };
             firebase

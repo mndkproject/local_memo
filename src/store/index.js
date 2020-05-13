@@ -61,17 +61,19 @@ export default new Vuex.Store({
     save(state) {
       var newDB = JSON.stringify(state.memoData);
       var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
-      var newList = JSON.stringify(state.memoData.memoList);
-      var oldList = localStorage.local_memo ? JSON.stringify(JSON.parse(localStorage.local_memo).memoList) : "";
-      if (newList !== oldList) {
-        firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
-          .set({ data: state.memoData.memoList })
-          .then(() => {
-            console.log("cloud save is dane.");
-          })
-          .catch(error => {
-            console.log("Error : ", error);
-          })
+      if (state.memoData.shareCloud) {
+        var newList = JSON.stringify(state.memoData.memoList);
+        var oldList = localStorage.local_memo ? JSON.stringify(JSON.parse(localStorage.local_memo).memoList) : "";
+        if (newList !== oldList) {
+          firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
+            .set({ data: state.memoData.memoList })
+            .then(() => {
+              console.log("cloud save is dane.");
+            })
+            .catch(error => {
+              console.log("Error : ", error);
+            })
+        }
       }
       if (newDB !== oldDB) {
         localStorage.local_memo = newDB;
@@ -311,7 +313,7 @@ export default new Vuex.Store({
         }
         console.log("クラウド監視開始");
         this.snapshotState = firebase
-        firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
+          .firestore().collection("/memos").doc(state.fbAuth.uid)
           .onSnapshot(data => {
             var source = data.metadata.hasPendingWrites ? "Local" : "Server";
             if (source === "Server") {
