@@ -12,20 +12,45 @@
 
     <v-ons-alert-dialog :visible.sync="shareDialogVisible" cancelable>
       <span slot="title">Cloud</span>
+      <template v-if="viewMode === 'emailChange'">
+        <p class="auth-decription">認証するメールアドレスを変更するにはメールの受信確認が必要になります。変更申請後に届くメールのリンクを開くことで変更が完了します。</p>
+        <v-ons-list>
+          <v-ons-list-item modifier="nodivider">
+            <div class="center">
+              <v-ons-input
+                placeholder="email"
+                type="email"
+                float
+                v-model="inputChangeEmail"
+                @blur="checkEmail"
+              ></v-ons-input>
+              <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="nodivider">
+            <v-ons-card modifier="auth-item" @click="sendMailChangeCheck()">
+              <div class="content">
+                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>メールアドレスで認証
+              </div>
+            </v-ons-card>
+          </v-ons-list-item>
+        </v-ons-list>
+      </template>
       <template v-if="viewMode === 'success'">
-        <ons-list>
-          <ons-list-item>
+        <v-ons-list>
+          <v-ons-list-item>
             <label class="center" for="switch1">同期{{ cloudSwitch ? '中' : '解除中' }}</label>
             <div class="right">
               <v-ons-switch input-id="switch1" v-model="cloudSwitch" @click="checkShare"></v-ons-switch>
             </div>
-          </ons-list-item>
-        </ons-list>
+          </v-ons-list-item>
+        </v-ons-list>
         <p style="padding: 1em;">
           {{ fbAuth.email }}
           <br />でログイン中
         </p>
         <v-ons-button modifier="large" style="margin-bottom:2em;" @click="signOutAuth">ログアウト</v-ons-button>
+        <v-ons-button modifier="quiet large" @click="changeAuthMail">メールアドレスの変更</v-ons-button>
         <v-ons-button modifier="quiet large" @click="removeAuth">認証情報をすべて削除</v-ons-button>
       </template>
       <template v-if="viewMode === 'emailVerify'">
@@ -176,7 +201,9 @@ export default {
       mailErrorMsg: "",
       isSelectEmailAuth: false,
       cloudSwitch: false,
-      isLoading: ""
+      isLoading: "",
+      inputChangeEmail: "",
+      isChangeAuthMail: ""
     };
   },
   computed: {
@@ -190,11 +217,13 @@ export default {
       return this.fbAuth.uid ? "auth-signin" : "auth-signout";
     },
     viewMode() {
-      if (this.fbAuth.emailVerified === true) {
+      if (this.isChangeAuthMail) {
+        return "emailChange";
+      } else if (this.fbAuth.emailVerified) {
         return "success";
       } else if (this.fbAuth.email !== "") {
         return "emailVerify";
-      } else if (this.isSelectEmailAuth === true) {
+      } else if (this.isSelectEmailAuth) {
         return "email";
       } else {
         return "init";
@@ -233,8 +262,14 @@ export default {
     emailAuth() {
       this.isSelectEmailAuth = true;
     },
+    changeAuthMail() {
+      this.isChangeAuthMail = true;
+    },
     emailAuthCancel() {
-      if (this.isSelectEmailAuth) {
+      if (this.isChangeAuthMail) {
+        this.isChangeAuthMail = false;
+        this.mailErrorMsg = "";
+      } else if (this.isSelectEmailAuth) {
         this.isSelectEmailAuth = false;
         this.mailErrorMsg = "";
       } else {
@@ -257,6 +292,9 @@ export default {
       } else {
         this.mailErrorMsg = "";
       }
+    },
+    sendMailChangeCheck() {
+      console.log("変えるよ！");
     },
     sendMailCheck() {
       //アカウント作成済みか確認
@@ -425,6 +463,7 @@ export default {
         )
         .then(response => {
           if (response === 1) {
+            //ここに再認証入れる
             this.$store.dispatch("removeAuthCheck").then(() => {
               this.$ons.notification.alert("認証情報をすべて削除しました。", {
                 title: "確認",
