@@ -56,7 +56,7 @@
 }
 
 ons-fab.fab {
-  background-color: #2779c0;
+  background-color: #0076ff;
   color: #fff;
   cursor: pointer;
 }

@@ -5,7 +5,7 @@
     </v-ons-toolbar-button>
 
     <v-ons-alert-dialog :visible.sync="infoDialogVisible" cancelable>
-      <span slot="title">Info</span>
+      <span slot="title">{{ lang.info }}</span>
       <v-ons-list>
         <v-ons-list-item>
           <div class="center">
@@ -87,7 +87,7 @@
 }
 
 .info-mark i {
-  margin-right: 4px;
+  margin: 0 4px;
   color: #37b576;
 }
 

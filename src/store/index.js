@@ -38,31 +38,35 @@ export default new Vuex.Store({
     otherPagePush: ""
   },
   getters: {
-    filteredList: (state) => {
-      var resultList = state.memoData.memoList.filter(item => !item.delete).filter(item => !item.favorite);
+    computedList: (state) => {
+      var result = state.memoData.memoList;
+
+      //Color filter
       if (state.memoData.filterColor !== "" && state.memoData.filterColor !== undefined) {
-        resultList = resultList.filter(item => item.labelColor === state.memoData.filterColor)
+        result = result.filter(item => item.labelColor === state.memoData.filterColor)
       }
+
+      //Word filter
       if (state.filterWord !== "") {
         var testWords = new RegExp(state.filterWord.split(/\s+/).join("|"), "m");
-        resultList = resultList.filter(item => testWords.test(item.content))
+        result = result.filter(item => testWords.test(item.content))
       }
-      return resultList;
+
+      //sort
+      result = _.orderBy(result, state.memoData.memoSort.key, state.memoData.memoSort.order);
+
+      //Favorite
+      var favList = result.filter(item => item.favorite);
+      var notFavList = result.filter(item => !item.favorite);
+      return favList.concat(notFavList);
     },
     sortedList: (state, getters) => {
-      var favList = _.orderBy(state.memoData.memoList.filter(item => !item.delete).filter(item => item.favorite), "updated_at", "desc");
-      return favList.concat(_.orderBy(getters.filteredList, state.memoData.memoSort.key, state.memoData.memoSort.order));
+      //Exclusion delete
+      return getters.computedList.filter(item => !item.delete);
     },
-    deletedList: (state) => {
-      var delResultList = state.memoData.memoList.filter(item => item.delete && item.content !== "");
-      if (state.memoData.filterColor !== "" && state.memoData.filterColor !== undefined) {
-        delResultList = delResultList.filter(item => item.labelColor === state.memoData.filterColor)
-      }
-      if (state.filterWord !== "") {
-        var testWords = new RegExp(state.filterWord.split(/\s+/).join("|"), "m");
-        delResultList = delResultList.filter(item => testWords.test(item.content))
-      }
-      return _.orderBy(delResultList, state.memoData.memoSort.key, state.memoData.memoSort.order);
+    deletedList: (state, getters) => {
+      //Exclusion not delete
+      return getters.computedList.filter(item => item.delete && item.content !== "");
     },
     memoSortArr: (state) => {
       return Object.values(state.memoData.memoSort).join(',')
