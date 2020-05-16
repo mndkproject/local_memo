@@ -1,27 +1,26 @@
 <template>
-  <v-ons-page>
-    <custom-toolbar
-      :back-label="'戻る'"
-      :label-btn="labelBtn"
-      :info-btn="infoBtn"
-      :page-stack="pageStack"
-      :page="page"
-    ></custom-toolbar>
-    <div class="content">
-      <div class="info-area">
-        <p class="update-note">更新: {{ currentMemo.updated_at }}</p>
-        <p class="text-count">計{{ chars }}（{{ lines }}行 {{ sheets }}枚）</p>
-      </div>
-
-      <textarea
-        :class="isPC"
-        class="edit-area"
-        v-model="editnow"
-        placeholder="入力..."
-        :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
-      ></textarea>
+  <div class="edit-box">
+    <div class="info-area">
+      <p
+        class="update-note"
+      >{{ lang.update }}: {{ (new Date(currentMemo.updated_at)).toLocaleString() }}</p>
+      <p class="text-count">
+        <i class="zmdi zmdi-check-circle mark-icon" v-if="isMark"></i>
+        {{ lang.total }}
+        <span :class="markClass">{{ chars }}</span>
+        {{ markNum ? "/"+markNum : "" }} ({{ lines }}{{ lang.line }} {{ sheets }}{{ lang.sheet }})
+        <tool-info v-if="isPC"></tool-info>
+      </p>
     </div>
-  </v-ons-page>
+
+    <textarea
+      :class="isPC"
+      class="edit-area"
+      v-model="editnow"
+      placeholder="edit..."
+      :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
+    ></textarea>
+  </div>
 </template>
 
 <style>
@@ -41,7 +40,14 @@
 }
 
 .text-count {
+  display: flex;
+  align-items: center;
   line-height: 1.2;
+}
+
+.text-count .toolbar-button {
+  padding-right: 0;
+  font-size: 22px;
 }
 
 .edit-area {
@@ -53,8 +59,7 @@
   resize: none;
   width: 100%;
   max-width: 800px;
-  height: 60%;
-  min-height: 80%;
+  height: 75vh;
   line-height: 1.6;
   background-color: #fafafa;
   border: none;
@@ -65,28 +70,45 @@
 .edit-area--pc {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
 }
+
+.mark-icon,
+.is-mark {
+  color: #37b576;
+}
+
+.zmdi.mark-icon {
+  margin-right: 4px;
+  cursor: default;
+}
+
+/* desktop */
+@media screen and (min-width: 640px) {
+  .info-area {
+    font-size: 80%;
+  }
+}
 </style>
 
 <script>
-import customToolbar from "./CustomToolbar";
+import toolInfo from "./toolInfo";
 import _ from "lodash";
 
 export default {
   data() {
     return {
-      editnow: "",
-      labelBtn: true,
-      infoBtn: true,
-      isPC:
-        this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()
-          ? ""
-          : "edit-area--pc"
+      editnow: ""
     };
   },
   mounted() {
     this.editnow = this.currentMemo.content;
   },
   computed: {
+    lang() {
+      return this.$store.getters["lang/currentLang"];
+    },
+    currentIndex() {
+      return this.$store.getters.currentIndex;
+    },
     currentMemo() {
       return this.$store.state.memoData.memoList[
         this.$store.getters.currentIndex
@@ -128,28 +150,46 @@ export default {
       });
 
       return ((lines / 20) | 0) + 1;
+    },
+    isPC() {
+      return !this.$ons.platform.isIPhone() &&
+        !this.$ons.platform.isAndroid() &&
+        window.innerWidth >= 640
+        ? true
+        : false;
+    },
+    markNum() {
+      return this.currentMemo.mark ? this.currentMemo.mark : "";
+    },
+    isMark() {
+      return (
+        this.markNum && this.markNum !== "" && this.chars > Number(this.markNum)
+      );
+    },
+    markClass() {
+      return this.isMark ? "is-mark" : "";
     }
   },
   watch: {
     editnow() {
       this.debouncedGetContent();
+    },
+    currentIndex() {
+      this.editnow = this.currentMemo.content;
     }
   },
   created() {
     this.debouncedGetContent = _.debounce(this.getContent, 500);
   },
   methods: {
-    pop() {
-      this.pageStack.pop();
-    },
     getContent() {
       if (this.editnow !== this.currentMemo.content) {
         this.$store.dispatch("contentCheck", this.editnow);
       }
     }
   },
-  props: ["pageStack", "page"],
-  components: { customToolbar },
-  key: "key_page2"
+  components: {
+    toolInfo
+  }
 };
 </script>

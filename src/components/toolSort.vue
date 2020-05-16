@@ -5,9 +5,14 @@
     </v-ons-toolbar-button>
 
     <v-ons-alert-dialog modifier="rowfooter" :visible.sync="sortDialogVisible" cancelable>
-      <span slot="title">並べ替え</span>
+      <span slot="title">{{ lang.sortTtl }}</span>
       <v-ons-list>
-        <v-ons-list-item v-for="(item, $index) in sorts" :key="item.sort" tappable>
+        <v-ons-list-item
+          v-for="(item, $index) in sorts"
+          :key="item.sort"
+          tappable
+          modifier="sort-list"
+        >
           <label class="left">
             <v-ons-radio :input-id="'sort-' + $index" :value="item.sort" v-model="selectedSort"></v-ons-radio>
           </label>
@@ -15,28 +20,42 @@
         </v-ons-list-item>
       </v-ons-list>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="sortDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
-        <v-ons-alert-dialog-button @click="selectSort">Ok</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="sortDialogVisible = false;">{{ lang.cancel }}</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="selectSort">{{ lang.ok }}</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
 </template>
+
+<style>
+.list-item--sort-list__center,
+.list-item--sort-list__left {
+  cursor: pointer;
+}
+</style>
 
 <script>
 export default {
   data() {
     return {
       sortDialogVisible: false,
-      sorts: [
-        { sort: "create_at,desc", name: "作成日時新しい順" },
-        { sort: "create_at,asc", name: "作成日時古い順" },
-        { sort: "updated_at,desc", name: "更新日時新しい順" },
-        { sort: "updated_at,asc", name: "更新日時古い順" },
-        { sort: "content,asc", name: "五十音昇順" },
-        { sort: "content,desc", name: "五十音降順" }
-      ],
       selectedSort: "create_at,desc"
     };
+  },
+  computed: {
+    lang() {
+      return this.$store.getters["lang/currentLang"];
+    },
+    sorts() {
+      return [
+        { sort: "updated_at,desc", name: this.lang.sortUpdateDesc },
+        { sort: "updated_at,asc", name: this.lang.sortUpdateAsc },
+        { sort: "create_at,desc", name: this.lang.sortCreateDesc },
+        { sort: "create_at,asc", name: this.lang.sortCreateAsc },
+        { sort: "content,asc", name: this.lang.sortNameDesc },
+        { sort: "content,desc", name: this.lang.sortNameAsc }
+      ];
+    }
   },
   mounted() {
     this.selectedSort = this.$store.getters.memoSortArr;

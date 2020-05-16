@@ -5,7 +5,7 @@
     </v-ons-toolbar-button>
 
     <v-ons-alert-dialog :visible.sync="labelDialogVisible" cancelable>
-      <span slot="title">Label Color</span>
+      <span slot="title">{{ lang.label }}</span>
       <ul class="color-list">
         <li class="color-list__item" v-for="item in labelColors" :key="item">
           <v-ons-button
@@ -16,7 +16,7 @@
         </li>
       </ul>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="labelDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="labelDialogVisible = false;">{{ lang.close }}</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
@@ -31,6 +31,9 @@ export default {
     };
   },
   computed: {
+    lang() {
+      return this.$store.getters["lang/currentLang"];
+    },
     labelColors() {
       return this.$store.state.labelColors;
     }

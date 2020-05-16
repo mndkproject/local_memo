@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <v-ons-toolbar-button @click="themeDialogVisible = true">
+  <div class="side-item">
+    <div class="side-item__btn" @click="themeDialogVisible = true">
       <i class="zmdi zmdi-brightness-6"></i>
-    </v-ons-toolbar-button>
+      {{ lang.theme }}
+    </div>
 
     <v-ons-alert-dialog :visible.sync="themeDialogVisible" cancelable>
       <span slot="title">Dark Mode</span>
       <v-ons-switch v-model="selectedTheme" @click="selectTheme"></v-ons-switch>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="themeDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="themeDialogVisible = false;">{{ lang.close }}</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
@@ -21,6 +22,11 @@ export default {
       themeDialogVisible: false,
       selectedTheme: false
     };
+  },
+  computed: {
+    lang() {
+      return this.$store.getters["lang/currentLang"];
+    }
   },
   mounted() {
     this.selectedTheme = this.$store.state.memoData.themeColor;

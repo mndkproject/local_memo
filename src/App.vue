@@ -1,104 +1,96 @@
 <template>
-  <v-ons-navigator :page-stack="pageStack">
-    <component
-      :is="page"
-      v-for="page in pageStack"
-      :key="page.key"
+  <v-ons-splitter>
+    <v-ons-splitter-side
       :page-stack="pageStack"
-      :page="page"
-    ></component>
-  </v-ons-navigator>
+      width="240px"
+      collapse
+      side="left"
+      :open.sync="openSide"
+    >
+      <side :toggleSide="toggleSide" @close-side="toggleSide"></side>
+    </v-ons-splitter-side>
+
+    <v-ons-splitter-content>
+      <v-ons-navigator :page-stack="pageStack">
+        <component
+          :is="page"
+          v-for="page in pageStack"
+          :key="page.key"
+          :page-stack="pageStack"
+          :page="page"
+          :toggleSide="toggleSide"
+        ></component>
+      </v-ons-navigator>
+    </v-ons-splitter-content>
+  </v-ons-splitter>
 </template>
 
 <style>
-.list,
-.darkmode .list-header,
-.darkmode .list-item__center {
+@import "./style/theme.css";
+
+.zmdi,
+.alert-dialog-button,
+.switch__toggle,
+.button,
+.radio-button,
+.radio-button__input {
+  cursor: pointer;
+}
+
+.list {
   background-color: transparent;
   background-image: none;
 }
 
-.darkmode .list-item {
-  color: #aaa;
+.alert-dialog-content {
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
-.darkmode .toolbar,
-.darkmode .card {
-  background-color: #333;
-  color: #aaa;
+.alert-dialog-content .list .list-item {
+  margin: 0;
 }
 
-.darkmode .card__content {
-  color: #aaa;
-}
-
-.darkmode .page__background {
-  background-color: #222;
-  color: #aaa;
-}
-
-.darkmode .alert-dialog {
-  background-color: #222;
-  color: #aaa;
-}
-
-.darkmode .dialog-container {
-  background-color: #222;
-  color: #aaa;
-}
-
-.darkmode .alert-dialog-title {
-  color: #888;
-}
-
-.darkmode .alert-dialog-button {
-  color: #888;
-}
-
-.darkmode .alert-dialog-content {
-  color: #aaa;
-}
-
-.darkmode .search-input {
-  background-color: #222;
-  color: #aaa;
-}
-
-.darkmode #memo-list .list-item--memo {
-  background-color: #3a3a3a;
-  color: #aaa;
+.alert-dialog-content .list .list-item:last-child .list-item__center {
+  background-image: none;
 }
 
 ons-fab.fab {
   background-color: #2779c0;
-  color: #fafafa;
+  color: #fff;
+  cursor: pointer;
 }
 
-.darkmode .edit-area {
-  background-color: #1a1a1a;
-  color: #aaa;
+.search-input {
+  background-color: #fafafa;
 }
 </style>
 
 <script>
-import page1 from "./components/Page1";
+import index from "./view/Index";
+import Side from "./components/Side";
 import firebase from "firebase";
 
 export default {
   data() {
     return {
-      pageStack: [page1]
+      pageStack: [index],
+      openSide: false
     };
-  },
-  mounted() {
-    document.body.className = this.$store.state.memoData.themeColor
-      ? "darkmode"
-      : "";
   },
   computed: {
     fbAuth() {
       return this.$store.state.fbAuth;
+    },
+    lang() {
+      return this.$store.getters["lang/currentLang"];
     }
+  },
+  mounted() {
+    //theme color setting
+    document.body.className = this.$store.state.memoData.themeColor
+      ? "darkmode"
+      : "";
   },
   destroyed() {
     this.$store.dispatch("snapshotCheck", "stop");
@@ -106,7 +98,7 @@ export default {
   created() {
     this.$store.dispatch("loadCheck");
 
-    //起動時とアカウント変更したら毎回呼び出される
+    //Called every time at startup and after changing account
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.$store.dispatch("fbAuthCheck", user);
@@ -115,37 +107,38 @@ export default {
           this.fbAuth.providerId === "password" &&
           !this.fbAuth.emailVerified
         ) {
-          console.log("仮認証中だよ");
+          console.log("Temporary certification in progress");
         } else {
-          console.log("ログインしてるよ");
+          console.log("Logging in");
 
-          //クラウド同期処理
+          //Cloud synchronization processing
           if (this.$store.state.memoData.shareCloud) {
             this.$store.dispatch("snapshotCheck", "start");
           }
         }
       } else {
         this.$store.dispatch("fbAuthCheck", "");
-        console.log("ログインしてないよ");
+        console.log("Not logged in");
         this.$store.dispatch("shareCloudCheck", false);
       }
     });
 
+    //poptate setting
     //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       var exitFlag = false;
       history.pushState(null, null, null);
       window.addEventListener("popstate", () => {
         if (this.pageStack.length > 1) {
-          this.pageStack.pop();
           history.pushState(null, null, null);
+          this.pageStack.pop();
         } else {
           if (exitFlag) {
-            history.go(-2);
+            history.go(-3);
           } else {
             history.pushState(null, null, null);
             exitFlag = true;
-            this.$ons.notification.toast("もう一度押すと終了します", {
+            this.$ons.notification.toast(this.lang.noticeClose, {
               timeout: 2000,
               callback: function(e) {
                 if (e === -1) {
@@ -157,27 +150,18 @@ export default {
         }
       });
     } else {
-      history.pushState(null, null, null);
       window.addEventListener("popstate", () => {
         if (this.pageStack.length > 1) {
           this.pageStack.pop();
-          history.pushState(null, null, null);
-        } else {
-          history.go(-1);
-          /*
-          this.$ons.notification
-            .confirm("ページを離脱してよろしいですか？", { title: "" })
-            .then(response => {
-              if (response) {
-                history.go(-1);
-              } else {
-                history.pushState(null, null, null);
-              }
-            });
-          */
         }
       });
     }
-  }
+  },
+  methods: {
+    toggleSide() {
+      this.openSide = !this.openSide;
+    }
+  },
+  components: { Side }
 };
 </script>

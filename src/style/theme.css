@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+.darkmode .list-header,
+.darkmode .list-item__center {
+  background-color: transparent;
+  background-image: none;
+}
+
+.darkmode .list-item,
+.darkmode .card__content {
+  color: #aaa;
+}
+
+.darkmode .toolbar,
+.darkmode .card {
+  background-color: #333;
+  color: #aaa;
+}
+
+.darkmode .page__background,
+.darkmode .alert-dialog,
+.darkmode .dialog-container,
+.darkmode .search-input {
+  background-color: #222;
+  color: #aaa;
+}
+
+.darkmode .alert-dialog-title,
+.darkmode .alert-dialog-button,
+.darkmode .alert-dialog-content {
+  color: #888;
+}
+
+.darkmode #memo-list .list-item--memo {
+  background-color: #3a3a3a;
+  color: #aaa;
+}
+
+.darkmode .edit-area {
+  background-color: #1a1a1a;
+  color: #aaa;
+}

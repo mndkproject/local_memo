@@ -5,7 +5,7 @@
     </v-ons-toolbar-button>
 
     <v-ons-alert-dialog :visible.sync="filterDialogVisible" cancelable>
-      <span slot="title">Filter Color</span>
+      <span slot="title">{{ lang.filterTtl }}</span>
       <ul class="color-list">
         <li class="color-list__item" v-for="item in labelColors" :key="item">
           <v-ons-button
@@ -14,14 +14,24 @@
             @click="selectFilter(item)"
           ></v-ons-button>
         </li>
-        <v-ons-button modifier="large" style="margin: 1em 0 0" @click="removeFilter">Filter Remove</v-ons-button>
+        <v-ons-button
+          modifier="large"
+          style="margin: 1em 0 0"
+          @click="removeFilter"
+        >{{ lang.filterRemove }}</v-ons-button>
       </ul>
       <template slot="footer">
-        <v-ons-alert-dialog-button @click="filterDialogVisible = false;">Cancel</v-ons-alert-dialog-button>
+        <v-ons-alert-dialog-button @click="filterDialogVisible = false;">{{ lang.close }}</v-ons-alert-dialog-button>
       </template>
     </v-ons-alert-dialog>
   </div>
 </template>
+
+<style>
+.color-list__btn {
+  cursor: pointer;
+}
+</style>
 
 <script>
 export default {
@@ -32,6 +42,9 @@ export default {
     };
   },
   computed: {
+    lang() {
+      return this.$store.getters["lang/currentLang"];
+    },
     labelColors() {
       return this.$store.state.labelColors;
     },

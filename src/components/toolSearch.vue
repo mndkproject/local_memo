@@ -5,20 +5,22 @@
     </v-ons-toolbar-button>
 
     <div v-if="searchBoxVisible" class="top-search-box">
-      <v-ons-search-input
-        class="top-search-box__input"
-        placeholder="検索..."
-        v-model="searchWord"
-        @blur="blurFocus"
-      ></v-ons-search-input>
-      <div class="top-search-box__close" @click="searchCancel">
-        <i class="zmdi zmdi-close"></i>
+      <div class="top-search-box__inner">
+        <v-ons-search-input
+          class="top-search-box__input"
+          placeholder="search..."
+          v-model="searchWord"
+          @blur="blurFocus"
+        ></v-ons-search-input>
+        <div class="top-search-box__close" @click="searchCancel">
+          <i class="zmdi zmdi-close"></i>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style>
 .top-search-box {
   position: fixed;
   top: 0;
@@ -30,7 +32,13 @@
   margin: 5px;
   line-height: 1em;
   box-sizing: border-box;
-  z-index: 10010;
+  z-index: 20000;
+}
+
+.top-search-box__inner {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
 }
 
 .top-search-box__input {
@@ -41,6 +49,10 @@
 .top-search-box__close {
   position: absolute;
   right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  font-size: 18px;
 }
 </style>
 
