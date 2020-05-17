@@ -135,7 +135,7 @@ export default {
           this.pageStack.pop();
         } else {
           if (exitFlag) {
-            history.go(-3);
+            history.go(-1);
           } else {
             history.pushState(null, null, null);
             exitFlag = true;
