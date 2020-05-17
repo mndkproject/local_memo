@@ -128,7 +128,6 @@ export default {
     //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       var exitFlag = false;
-      history.pushState(null, null, null);
       window.addEventListener("popstate", () => {
         if (this.pageStack.length > 1) {
           history.pushState(null, null, null);

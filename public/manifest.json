@@ -50,7 +50,7 @@
   ],
   "splash_pages": null,
   "share_target": {
-    "action": "/index.html",
+    "action": "./",
     "params": {
       "title": "name",
       "text": "description",
