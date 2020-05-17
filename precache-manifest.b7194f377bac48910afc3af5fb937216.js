@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "71939b1ee9b74ad28dbd",
+    "revision": "61c993237f626c0a6052",
     "url": "css/app.bcc94d4c.css"
   },
   {
@@ -136,12 +136,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/ionicons.66592107.svg"
   },
   {
-    "revision": "c20ce36454fa6b420a230974997aae0f",
+    "revision": "a31dc1f9ec1124a40e2f5996f19f9955",
     "url": "index.html"
   },
   {
-    "revision": "71939b1ee9b74ad28dbd",
-    "url": "js/app.b8232fbf.js"
+    "revision": "61c993237f626c0a6052",
+    "url": "js/app.47712e55.js"
   },
   {
     "revision": "c68733cf9783fa119cb2",
