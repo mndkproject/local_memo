@@ -304,16 +304,18 @@ export default {
   },
   mounted() {
     if (window.location.search.length) {
+      var title = new URL(document.location).searchParams.get("title");
       var text = new URL(document.location).searchParams.get("text");
-      if (text) {
+      var url = new URL(document.location).searchParams.get("url");
+      if (title || text || url) {
+        history.replaceState(null, null, "/");
         if (!this.isPC) {
           history.pushState(null, null, null);
           this.pageStack.push(editor);
         }
         this.$store.dispatch("idCheck", -2);
         this.$store.dispatch("addCheck");
-        this.$store.dispatch("contentCheck", text);
-        history.replaceState(null, null, "/");
+        this.$store.dispatch("contentCheck", title + "\n" + text + "\n" + url);
       }
     }
   },
