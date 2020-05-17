@@ -30,7 +30,7 @@
         <tool-lang></tool-lang>
       </v-ons-list-item>
       <v-ons-list-item>
-        <div class="center">{{ lang.other }}</div>
+        <tool-other></tool-other>
       </v-ons-list-item>
       <v-ons-list-item>
         <div class="center">{{ lang.help }}</div>
@@ -82,6 +82,7 @@ import toolTheme from "./toolTheme";
 import toolAccount from "./toolAccount";
 import toolShare from "./toolShare";
 import toolLang from "./toolLang";
+import toolOther from "./toolOther";
 
 export default {
   props: ["toggleSide"],
@@ -100,7 +101,8 @@ export default {
     toolTheme,
     toolAccount,
     toolShare,
-    toolLang
+    toolLang,
+    toolOther
   }
 };
 </script>

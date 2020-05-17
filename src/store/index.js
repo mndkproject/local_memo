@@ -214,11 +214,47 @@ export default new Vuex.Store({
     },
     setMark(state, payload) {
       Vue.set(state.memoData.memoList[payload.currentIndex], "mark", payload.num);
-      console.log("num save done. num:" + state.memoData.memoList[payload.currentIndex].mark);
     },
     otherPagePushChange(state, page) {
       state.otherPagePush = page;
-    }
+    },
+    labelRemove(state) {
+      state.memoData.memoList.forEach(item => {
+        if (item.labelColor && item.labelColor !== "" && item.labelColor !== "transparent") {
+          item.updated_at = new Date().getTime();
+          item.labelColor = "";
+        }
+      });
+    },
+    favRemove(state) {
+      state.memoData.memoList.forEach(item => {
+        if (item.favorite && item.favorite === true) {
+          item.updated_at = new Date().getTime();
+          item.favorite = false;
+        }
+      });
+    },
+    markRemove(state) {
+      state.memoData.memoList.forEach(item => {
+        if (item.mark && item.mark !== "") {
+          item.updated_at = new Date().getTime();
+          item.mark = "";
+        }
+      });
+    },
+    localRemove(state) {
+      state.memoData.memoList.forEach(item => {
+        if (item.content !== "") {
+          item.updated_at = new Date().getTime();
+          if (item.favorite && item.favorite === true) {
+            item.favorite = false;
+          }
+          Vue.set(item, "delete", true);
+          item.content = "";
+        }
+      });
+      state.currentId = "";
+    },
   },
   actions: {
     loadCheck({ commit }) {
@@ -294,7 +330,6 @@ export default new Vuex.Store({
     },
     addCheck({ commit, state, getters }) {
       if (!state.memoData.memoList[getters.currentIndex]) {
-        console.log("currentIndex:" + getters.currentIndex);
         commit('addData');
         commit('save');
       }
@@ -313,10 +348,8 @@ export default new Vuex.Store({
         commit('save');
       }
     },
-    idCheck({ commit, state }, id) {
-      if (state.memoData.memoList.findIndex(el => el.id == id) >= 0) {
-        commit('changeId', id);
-      }
+    idCheck({ commit }, id) {
+      commit('changeId', id);
     },
     sortCheck({ commit }, sort) {
       if (sort.key && sort.order) {
@@ -488,7 +521,23 @@ export default new Vuex.Store({
         commit('changeLang', lang);
         commit('save');
       }
-    }
+    },
+    labelRemoveCheck({ commit }) {
+      commit('labelRemove');
+      commit('save');
+    },
+    favRemoveCheck({ commit }) {
+      commit('favRemove');
+      commit('save');
+    },
+    markRemoveCheck({ commit }) {
+      commit('markRemove');
+      commit('save');
+    },
+    localRemoveCheck({ commit }) {
+      commit('localRemove');
+      commit('save');
+    },
   },
   modules: {
     lang,

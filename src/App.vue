@@ -45,6 +45,7 @@
 .alert-dialog-content {
   max-height: 50vh;
   overflow-y: auto;
+  text-align: left;
 }
 
 .alert-dialog-content .list .list-item {
