@@ -40,10 +40,6 @@
 </template>
 
 <style>
-.page--side-menu__background {
-  background-color: #fafafa;
-}
-
 .side-menu__close {
   cursor: pointer;
 }

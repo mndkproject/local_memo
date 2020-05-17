@@ -61,7 +61,6 @@
   max-width: 800px;
   height: 75vh;
   line-height: 1.6;
-  background-color: #fafafa;
   border: none;
   border-top: 5px solid transparent;
   font: inherit;
@@ -69,11 +68,6 @@
 
 .edit-area--pc {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
-}
-
-.mark-icon,
-.is-mark {
-  color: #37b576;
 }
 
 .zmdi.mark-icon {

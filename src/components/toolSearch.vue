@@ -33,12 +33,14 @@
   line-height: 1em;
   box-sizing: border-box;
   z-index: 20000;
+  pointer-events: none;
 }
 
 .top-search-box__inner {
   position: relative;
   width: 100%;
   max-width: 800px;
+  pointer-events: auto;
 }
 
 .top-search-box__input {

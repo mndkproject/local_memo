@@ -1,11 +1,5 @@
 @charset "utf-8";
 
-.darkmode .list-header,
-.darkmode .list-item__center {
-  background-color: transparent;
-  background-image: none;
-}
-
 .darkmode .list-item,
 .darkmode .card__content {
   color: #aaa;

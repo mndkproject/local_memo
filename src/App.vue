@@ -37,9 +37,33 @@
   cursor: pointer;
 }
 
-.list {
+.list,
+.list-header,
+.list-item__left,
+.list-item__right,
+.list-item__center {
   background-color: transparent;
   background-image: none;
+}
+
+/* success color */
+.mark-icon,
+.is-mark {
+  color: #37b576;
+}
+
+/* background color */
+.page__background {
+  background-color: #efeff4;
+}
+
+/* base color */
+.page--side-menu__background {
+  background-color: #fafafa;
+}
+
+.edit-area {
+  background-color: #fafafa;
 }
 
 .alert-dialog-content {
@@ -50,10 +74,6 @@
 
 .alert-dialog-content .list .list-item {
   margin: 0;
-}
-
-.alert-dialog-content .list .list-item:last-child .list-item__center {
-  background-image: none;
 }
 
 ons-fab.fab {

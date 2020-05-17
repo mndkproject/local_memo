@@ -49,7 +49,7 @@
             </div>
           </v-ons-gesture-detector>
         </div>
-        <div class="index-split__content">
+        <div class="index-split__content" v-if="isPC">
           <div class="index-split__inner">
             <edit-area v-if="currentEdit !== -1"></edit-area>
           </div>
@@ -300,6 +300,21 @@ export default {
     },
     otherPagePush() {
       return this.$store.state.otherPagePush;
+    }
+  },
+  mounted() {
+    if (window.location.search.length) {
+      var text = new URL(document.location).searchParams.get("text");
+      if (text) {
+        if (!this.isPC) {
+          history.pushState(null, null, null);
+          this.pageStack.push(editor);
+        }
+        this.$store.dispatch("idCheck", -2);
+        this.$store.dispatch("addCheck");
+        this.$store.dispatch("contentCheck", text);
+        history.replaceState(null, null, "/");
+      }
     }
   },
   watch: {
