@@ -304,9 +304,9 @@ export default {
   },
   mounted() {
     if (window.location.search.length) {
-      var title = new URL(document.location).searchParams.get("title");
-      var text = new URL(document.location).searchParams.get("text");
-      var url = new URL(document.location).searchParams.get("url");
+      var title = new URL(document.location).searchParams.get("name");
+      var text = new URL(document.location).searchParams.get("description");
+      var url = new URL(document.location).searchParams.get("link");
       if (title || text || url) {
         history.replaceState(null, null, "/");
         if (!this.isPC) {
