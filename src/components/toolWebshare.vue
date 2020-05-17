@@ -24,9 +24,7 @@ export default {
             console.log("Successful share");
           })
           .catch(error => {
-            this.$ons.notification.toast("Error sharing", error, {
-              timeout: 2000
-            });
+            console.log("Error sharing:" + error);
           });
       } else {
         this.$ons.notification.toast("データが選択されていません。", {
