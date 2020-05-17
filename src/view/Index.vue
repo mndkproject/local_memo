@@ -304,9 +304,15 @@ export default {
   },
   mounted() {
     if (window.location.search.length) {
-      var title = new URL(document.location).searchParams.get("name");
-      var text = new URL(document.location).searchParams.get("description");
-      var url = new URL(document.location).searchParams.get("link");
+      var title = new URL(document.location).searchParams.get("name")
+        ? new URL(document.location).searchParams.get("name")
+        : "";
+      var text = new URL(document.location).searchParams.get("description")
+        ? new URL(document.location).searchParams.get("description")
+        : "";
+      var url = new URL(document.location).searchParams.get("link")
+        ? new URL(document.location).searchParams.get("link")
+        : "";
       if (title || text || url) {
         history.replaceState(null, null, "/");
         if (!this.isPC) {
