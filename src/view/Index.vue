@@ -102,7 +102,6 @@
 
 #memo-list .list-item--memo {
   position: relative;
-  background-color: #fafafa;
   word-break: break-all;
   border-left: 10px solid transparent;
   box-sizing: border-box;
@@ -114,13 +113,8 @@
   position: relative;
 }
 
-.list-item__title .zmdi {
-  color: #2779c0;
-}
-
 .list-item__subtitle {
   text-align: right;
-  color: #8a949b;
 }
 
 .alert-dialog-title--index {
@@ -129,10 +123,6 @@
 
 .alert-dialog-content--index {
   margin-top: 0;
-}
-
-.alert-dialog--index .zmdi {
-  font-size: 22px;
 }
 
 .func-text {
@@ -144,13 +134,7 @@
 }
 
 .alert-dialog--index .func-text .zmdi {
-  cursor: pointer;
   margin: 0 1em;
-  font-size: 32px;
-}
-
-.fav {
-  color: #2779c0;
 }
 
 .color-list {
@@ -171,14 +155,6 @@
   width: 100%;
   height: 32px;
   line-height: 32px;
-}
-
-.list-item__title .zmdi.mark-icon {
-  color: #ccc;
-}
-
-.list-item__title .zmdi.mark-icon.done {
-  color: #37b576;
 }
 
 .list-decription {
@@ -207,11 +183,7 @@
   }
 
   #memo-list .list-item--memo:hover {
-    filter: brightness(0.9);
-  }
-
-  .current-item {
-    color: #2779c0;
+    filter: brightness(0.95);
   }
 
   .list-item__title {
@@ -231,11 +203,12 @@
     line-height: 22px;
     text-align: center;
     font-size: 22px;
-    color: #aaa;
+    opacity: 0.5;
+    transition: opacity 0.2s linear;
   }
 
   .item-func:hover {
-    color: #333;
+    opacity: 1;
   }
 }
 </style>

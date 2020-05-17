@@ -46,7 +46,6 @@
 
 .side-menu__close .zmdi-close-circle {
   margin-right: 0.5em;
-  color: #aaa;
 }
 
 .side-item {
@@ -67,8 +66,6 @@
 .side-item__btn .zmdi {
   margin-right: 0.5em;
   width: 22px;
-  font-size: 22px;
-  color: #1e88e5;
   text-align: center;
 }
 </style>

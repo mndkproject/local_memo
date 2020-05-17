@@ -72,7 +72,6 @@
 .info-title {
   width: 100%;
   font-size: 0.8em;
-  color: #757575;
 }
 
 .info-content {
@@ -83,12 +82,10 @@
   display: flex;
   align-items: center;
   font-size: 0.8em;
-  color: #757575;
 }
 
 .info-mark i {
   margin: 0 4px;
-  color: #37b576;
 }
 
 .mark-btn {

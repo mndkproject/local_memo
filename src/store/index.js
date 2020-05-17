@@ -14,7 +14,7 @@ export default new Vuex.Store({
       fontSize: "1",
       memoSort: { key: "updated_at", order: "desc" },
       filterColor: "",
-      themeColor: false,
+      themeColor: "",
       shareCloud: false,
       selectLang: ""
     },
@@ -180,8 +180,8 @@ export default new Vuex.Store({
     changeWordFilter(state, word) {
       state.filterWord = word;
     },
-    changeTheme(state, boo) {
-      state.memoData.themeColor = boo;
+    changeTheme(state, theme) {
+      state.memoData.themeColor = theme;
     },
     shareCloudChange(state, isShare) {
       state.memoData.shareCloud = isShare;
@@ -383,8 +383,8 @@ export default new Vuex.Store({
     searchCheck({ commit }, word) {
       commit('changeWordFilter', word);
     },
-    themeCheck({ commit }, boo) {
-      commit('changeTheme', boo);
+    themeCheck({ commit }, theme) {
+      commit('changeTheme', theme);
       commit('save');
     },
     shareCloudCheck({ commit }, isShare) {

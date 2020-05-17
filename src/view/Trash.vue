@@ -84,7 +84,6 @@
 
 #memo-list .list-item--memo {
   position: relative;
-  background-color: #fafafa;
   word-break: break-all;
   border-left: 10px solid transparent;
   box-sizing: border-box;
@@ -96,34 +95,16 @@
   position: relative;
 }
 
-.list-item__title .zmdi {
-  color: #2779c0;
-}
-
 .list-item__subtitle {
   text-align: right;
-  color: #8a949b;
 }
 
 .alert-dialog-title--index {
   display: none;
 }
 
-.alert-dialog--index .zmdi {
-  font-size: 22px;
-}
-
-.alert-dialog--index .list-item,
-.alert-dialog--index .list-item .zmdi {
+.alert-dialog--index .list-item {
   cursor: pointer;
-}
-
-.list-item__title .zmdi.mark-icon {
-  color: #ccc;
-}
-
-.list-item__title .zmdi.mark-icon.done {
-  color: #37b576;
 }
 
 .list-decription {
@@ -135,8 +116,6 @@
 .list--trash-dialog .zmdi {
   margin-right: 0.5em;
   width: 22px;
-  font-size: 22px;
-  color: #1e88e5;
   text-align: center;
 }
 

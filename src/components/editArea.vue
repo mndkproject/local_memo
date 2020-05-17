@@ -32,7 +32,6 @@
   width: 100%;
   max-width: calc(800px + 2em);
   font-size: 60%;
-  color: #666;
   text-align: center;
   box-sizing: border-box;
   margin-bottom: 0;
@@ -73,6 +72,7 @@
 .zmdi.mark-icon {
   margin-right: 4px;
   cursor: default;
+  font-size: inherit;
 }
 
 /* desktop */

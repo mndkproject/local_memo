@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-ons-toolbar-button @click="filterDialogVisible = true" :style="{color:iconColor}">
+    <v-ons-toolbar-button @click="filterDialogVisible = true" :class="filterActive">
       <i class="zmdi zmdi-filter-list"></i>
     </v-ons-toolbar-button>
 
@@ -48,10 +48,10 @@ export default {
     labelColors() {
       return this.$store.state.labelColors;
     },
-    iconColor() {
+    filterActive() {
       return this.$store.state.memoData.filterColor !== ""
-        ? "#e91e63"
-        : "#0076ff";
+        ? "filter-active"
+        : "";
     }
   },
   mounted() {

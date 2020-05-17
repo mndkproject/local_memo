@@ -22,13 +22,11 @@
               <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
             </div>
           </v-ons-list-item>
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="sendMailChangeCheck()">
-              <div class="content">
-                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>
-                {{ lang.authEmail }}
-              </div>
-            </v-ons-card>
+          <v-ons-list-item modifier="nodivider auth-item" @click="sendMailChangeCheck()">
+            <div class="content">
+              <i class="zmdi zmdi-email"></i>
+              {{ lang.authEmail }}
+            </div>
           </v-ons-list-item>
         </v-ons-list>
       </template>
@@ -53,13 +51,11 @@
           {{ fbAuth.email }}
         </p>
         <v-ons-list modifier="auth-select" key="send-email">
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="mailLinkFlow(fbAuth.email)">
-              <div class="content">
-                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>
-                {{ lang.sendEmailAgain }}
-              </div>
-            </v-ons-card>
+          <v-ons-list-item modifier="nodivider auth-item" @click="mailLinkFlow(fbAuth.email)">
+            <div class="content">
+              <i class="zmdi zmdi-email"></i>
+              {{ lang.sendEmailAgain }}
+            </div>
           </v-ons-list-item>
         </v-ons-list>
         <v-ons-button modifier="quiet">{{ lang.stopProgress }}</v-ons-button>
@@ -90,13 +86,11 @@
               <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
             </div>
           </v-ons-list-item>
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="selectAuth('email')">
-              <div class="content">
-                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>
-                {{ lang.authEmail }}
-              </div>
-            </v-ons-card>
+          <v-ons-list-item modifier="nodivider auth-item" @click="selectAuth('email')">
+            <div class="content">
+              <i class="zmdi zmdi-email"></i>
+              {{ lang.authEmail }}
+            </div>
           </v-ons-list-item>
         </v-ons-list>
         <p class="auth-decription">{{ lang.decriptionNoticeMail }}</p>
@@ -104,37 +98,56 @@
       <template v-if="viewMode === 'init'">
         <p class="auth-decription">{{ lang.decriptionAuthInit }}</p>
         <v-ons-list modifier="auth-select" key="auth-select">
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="selectAuth('google')">
-              <div class="content">
-                <i class="zmdi zmdi-google" style="color:#dc5246;"></i>
-                {{ lang.authWithGoogle }}
+          <v-ons-list-item modifier="nodivider auth-item" @click="selectAuth('google')">
+            <div class="content">
+              <div class="google-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 48 48"
+                  style=" fill:#000000;"
+                >
+                  <path
+                    fill="#FFC107"
+                    d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+                  />
+                  <path
+                    fill="#FF3D00"
+                    d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+                  />
+                  <path
+                    fill="#4CAF50"
+                    d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
+                  />
+                  <path
+                    fill="#1976D2"
+                    d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+                  />
+                </svg>
               </div>
-            </v-ons-card>
+              {{ lang.authWithGoogle }}
+            </div>
           </v-ons-list-item>
           <!--
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="selectAuth('facebook')">
+          <v-ons-list-item modifier="nodivider auth-item" @click="selectAuth('facebook')">
               <div class="content">
                 <i class="zmdi zmdi-facebook" style="color:#1774eb;"></i>{{ lang.authWithFacebook }}
               </div>
-            </v-ons-card>
           </v-ons-list-item>
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="selectAuth('twitter')">
+          <v-ons-list-item modifier="nodivider auth-item" @click="selectAuth('twitter')">
               <div class="content">
                 <i class="zmdi zmdi-twitter" style="color:#1d9dec;"></i>{{ lang.authWithTwitter }}
               </div>
-            </v-ons-card>
           </v-ons-list-item>
           -->
-          <v-ons-list-item modifier="nodivider">
-            <v-ons-card modifier="auth-item" @click="emailAuth">
-              <div class="content">
-                <i class="zmdi zmdi-email" style="color:#1e88e5;"></i>
-                {{ lang.authWithEmail }}
-              </div>
-            </v-ons-card>
+          <v-ons-list-item modifier="nodivider auth-item" @click="emailAuth">
+            <div class="content">
+              <i class="zmdi zmdi-email"></i>
+              {{ lang.authWithEmail }}
+            </div>
           </v-ons-list-item>
         </v-ons-list>
       </template>
@@ -163,29 +176,26 @@
   padding: 0;
 }
 
-.card--auth-item {
+.auth-item {
   width: 100%;
   margin: 2px 5px;
   padding: 0.5em 1em;
   cursor: pointer;
 }
 
-.list--auth-select .list-item i {
-  width: 2em;
+.list-item--auth-item__center .content {
+  display: flex;
+  align-items: center;
+}
+
+.list--auth-select .list-item i,
+.list--auth-select .list-item .google-icon {
+  width: 44px;
 }
 
 .validation {
-  color: #ff5722;
   font-size: 70%;
   line-height: 1.4;
-}
-
-.side-item__btn .zmdi.auth-signin {
-  color: #1e88e5;
-}
-
-.side-item__btn .zmdi.auth-signout {
-  color: #ccc;
 }
 </style>
 

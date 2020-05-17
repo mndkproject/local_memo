@@ -41,8 +41,7 @@
 </template>
 
 <style>
-.alert-dialog--other .list-item,
-.alert-dialog--other .list-item .zmdi {
+.alert-dialog--other .list-item {
   cursor: pointer;
 }
 </style>

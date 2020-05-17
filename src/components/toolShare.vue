@@ -32,17 +32,6 @@
   </div>
 </template>
 
-<style>
-.side-item__btn .zmdi.auth-signin {
-  color: #1e88e5;
-}
-
-.side-item__btn .zmdi.auth-signout,
-span.auth-signout {
-  color: #ccc;
-}
-</style>
-
 <script>
 export default {
   data() {

@@ -15,9 +15,9 @@
           modifier="lang-list"
         >
           <label class="left">
-            <v-ons-radio :input-id="'radio-' + $index" :value="item.code" v-model="selectedLang"></v-ons-radio>
+            <v-ons-radio :input-id="'lang-' + $index" :value="item.code" v-model="selectedLang"></v-ons-radio>
           </label>
-          <label :for="'radio-' + $index" class="center">{{ item.name }}</label>
+          <label :for="'lang-' + $index" class="center">{{ item.name }}</label>
         </v-ons-list-item>
       </v-ons-list>
       <template slot="footer">

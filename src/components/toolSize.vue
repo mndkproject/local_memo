@@ -15,12 +15,12 @@
         >
           <label class="left">
             <v-ons-radio
-              :input-id="'radio-' + $index+pageNum"
+              :input-id="'size-' + $index+pageNum"
               :value="item.size"
               v-model="selectedSize"
             ></v-ons-radio>
           </label>
-          <label :for="'radio-' + $index+pageNum" class="center">{{ item.name }}</label>
+          <label :for="'size-' + $index+pageNum" class="center">{{ item.name }}</label>
         </v-ons-list-item>
       </v-ons-list>
 

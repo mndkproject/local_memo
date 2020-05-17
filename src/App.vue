@@ -33,37 +33,19 @@
 .switch__toggle,
 .button,
 .radio-button,
-.radio-button__input {
+.radio-button__input,
+ons-fab.fab {
   cursor: pointer;
 }
 
 .list,
 .list-header,
+.list-item,
 .list-item__left,
 .list-item__right,
 .list-item__center {
   background-color: transparent;
   background-image: none;
-}
-
-/* success color */
-.mark-icon,
-.is-mark {
-  color: #37b576;
-}
-
-/* background color */
-.page__background {
-  background-color: #efeff4;
-}
-
-/* base color */
-.page--side-menu__background {
-  background-color: #fafafa;
-}
-
-.edit-area {
-  background-color: #fafafa;
 }
 
 .alert-dialog-content {
@@ -76,14 +58,16 @@
   margin: 0;
 }
 
-ons-fab.fab {
-  background-color: #0076ff;
-  color: #fff;
-  cursor: pointer;
+.zmdi {
+  font-size: 22px;
 }
 
-.search-input {
-  background-color: #fafafa;
+ons-fab.fab .zmdi {
+  font-size: 25px;
+}
+
+#memo-list .list-item--memo .zmdi {
+  font-size: inherit;
 }
 </style>
 
@@ -110,7 +94,7 @@ export default {
   mounted() {
     //theme color setting
     document.body.className = this.$store.state.memoData.themeColor
-      ? "darkmode"
+      ? this.$store.state.memoData.themeColor
       : "";
   },
   destroyed() {
