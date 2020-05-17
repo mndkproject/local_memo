@@ -17,6 +17,7 @@
       <tool-size :page="page"></tool-size>
       <tool-label v-if="pageKey === 'key_editor'"></tool-label>
       <tool-info v-if="pageKey === 'key_editor'"></tool-info>
+      <tool-webshare v-if="pageKey === 'key_editor' && isSP"></tool-webshare>
     </div>
   </v-ons-toolbar>
 </template>
@@ -44,6 +45,7 @@ import toolSort from "./toolSort";
 import toolFilter from "./toolFilter";
 import toolInfo from "./toolInfo";
 import toolSearch from "./toolSearch";
+import toolWebshare from "./toolWebshare";
 
 export default {
   computed: {
@@ -52,6 +54,11 @@ export default {
     },
     openSide() {
       return this.$store.state.openSide;
+    },
+    isSP() {
+      return this.$ons.platform.isIOS() || this.$ons.platform.isAndroid()
+        ? true
+        : false;
     }
   },
   props: ["backLabel", "pageStack", "page", "toggleSide"],
@@ -61,7 +68,8 @@ export default {
     toolSort,
     toolFilter,
     toolInfo,
-    toolSearch
+    toolSearch,
+    toolWebshare
   }
 };
 </script>
