@@ -14,16 +14,14 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.f1e56f05281a438773026825fcfc55de.js"
+  "precache-manifest.4ac090a970c875f9c46a09ea56c917a2.js"
 );
 
-workbox.core.setCacheNameDetails({prefix: "local_memo"});
+workbox.core.setCacheNameDetails({prefix: "local-memo-v0.1.2"});
 
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+workbox.core.skipWaiting();
+
+workbox.core.clientsClaim();
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to

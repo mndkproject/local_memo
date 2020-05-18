@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "8d8f8edb2afab5f44657",
+    "revision": "5f554ca5b8ddbbedb5e8",
     "url": "css/app.6f3b13cb.css"
   },
   {
@@ -132,16 +132,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/fa-solid-900.49279363.svg"
   },
   {
+    "revision": "d973ee0fe0b895e8aaa8b81149f6705f",
+    "url": "img/icons/favicon-16x16.png"
+  },
+  {
+    "revision": "3f079c7629248c35f1afb98060c32076",
+    "url": "img/icons/favicon-32x32.png"
+  },
+  {
     "revision": "665921072642ed354618b32af7425a22",
     "url": "img/ionicons.66592107.svg"
   },
   {
-    "revision": "fdb64199081f2139580565f3bee61f83",
+    "revision": "602d41a4b08c67cd6bbe578dcc07d445",
     "url": "index.html"
   },
   {
-    "revision": "8d8f8edb2afab5f44657",
-    "url": "js/app.98775e42.js"
+    "revision": "5f554ca5b8ddbbedb5e8",
+    "url": "js/app.9d4417b9.js"
   },
   {
     "revision": "09cf6d7b2e68e42a5301",
@@ -152,7 +160,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "manifest.json"
   },
   {
+    "url": "precache-manifest.8754379ae1684b84dee77d295ba08c0e.js"
+  },
+  {
     "revision": "735ab4f94fbcd57074377afca324c813",
     "url": "robots.txt"
+  },
+  {
+    "revision": "5b19425a8ecc848fabad8cfc5b39af90",
+    "url": "service-worker.js"
   }
 ]);
