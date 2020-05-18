@@ -1,6 +1,7 @@
 {
-  "name": "LocalMemo",
-  "short_name": "LocalMemo",
+  "name": "Local Memo",
+  "short_name": "Local Memo",
+  "version": "0.2.0",
   "theme_color": "#fafafa",
   "background_color": "#fafafa",
   "display": "standalone",
