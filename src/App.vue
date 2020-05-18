@@ -6,6 +6,8 @@
       collapse
       side="left"
       :open.sync="openSide"
+      swipeable
+      id="menu"
     >
       <side :toggleSide="toggleSide" @close-side="toggleSide"></side>
     </v-ons-splitter-side>
@@ -89,6 +91,9 @@ export default {
     },
     lang() {
       return this.$store.getters["lang/currentLang"];
+    },
+    isHome() {
+      return this.pageStack.length === 1 ? "" : "invisible";
     }
   },
   mounted() {
@@ -130,7 +135,7 @@ export default {
 
     //poptate setting
     //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    /*if (window.matchMedia("(display-mode: standalone)").matches) {
       var exitFlag = false;
       window.addEventListener("popstate", () => {
         if (this.pageStack.length > 1) {
@@ -153,17 +158,31 @@ export default {
           }
         }
       });
-    } else {
-      window.addEventListener("popstate", () => {
-        if (this.pageStack.length > 1) {
-          this.pageStack.pop();
-        }
-      });
-    }
+    } else {*/
+    window.addEventListener("popstate", () => {
+      if (this.openSide) {
+        this.toggleSide();
+        return;
+      }
+      if (this.pageStack.length > 1) {
+        this.pageStack.pop();
+      }
+    });
+    //}
   },
   methods: {
     toggleSide() {
       this.openSide = !this.openSide;
+    }
+  },
+  watch: {
+    pageStack() {
+      var elem = document.getElementById("menu");
+      if (this.pageStack.length > 1) {
+        elem.removeAttribute("swipeable");
+      } else {
+        elem.setAttribute("swipeable", "");
+      }
     }
   },
   components: { Side }

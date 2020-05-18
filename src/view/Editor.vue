@@ -1,7 +1,12 @@
 <template>
   <v-ons-page>
-    <custom-toolbar :back-label="backLabelTxt" :page-stack="pageStack" :page="page">{{ lang.edit }}</custom-toolbar>
-    <div class="content">
+    <custom-toolbar
+      :back-label="backLabelTxt"
+      :page-stack="pageStack"
+      :page="page"
+      id="edit-toolbar"
+    >{{ lang.edit }}</custom-toolbar>
+    <div class="content edit-content">
       <edit-area></edit-area>
     </div>
   </v-ons-page>
@@ -12,11 +17,6 @@ import customToolbar from "../components/CustomToolbar";
 import editArea from "../components/editArea";
 
 export default {
-  methods: {
-    pop() {
-      this.pageStack.pop();
-    }
-  },
   computed: {
     lang() {
       return this.$store.getters["lang/currentLang"];

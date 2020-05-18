@@ -1,6 +1,6 @@
 <template>
   <div class="edit-box">
-    <div class="info-area">
+    <div class="info-area" id="js-note" :style="{ borderColor: currentMemo.labelColor }">
       <p
         class="update-note"
       >{{ lang.update }}: {{ (new Date(currentMemo.updated_at)).toLocaleString() }}</p>
@@ -9,7 +9,7 @@
         {{ lang.total }}
         <span :class="markClass">{{ chars }}</span>
         {{ markNum ? "/"+markNum : "" }} ({{ lines }}{{ lang.line }} {{ sheets }}{{ lang.sheet }})
-        <tool-info v-if="isPC"></tool-info>
+        <tool-info></tool-info>
       </p>
     </div>
 
@@ -24,9 +24,20 @@
 </template>
 
 <style>
+#js-note {
+  position: fixed;
+  top: 44px;
+  border-bottom: 5px solid transparent;
+}
+
+.page--material__content #js-note {
+  top: 56px;
+}
+
 .info-area {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 0 auto;
   padding: 0 1em;
   width: 100%;
@@ -35,7 +46,6 @@
   text-align: center;
   box-sizing: border-box;
   margin-bottom: 0;
-  padding-bottom: 1em;
 }
 
 .text-count {
@@ -54,15 +64,20 @@
   justify-content: center;
   margin: 0 auto;
   padding: 5px;
+  padding-top: 44px;
   box-sizing: border-box;
   resize: none;
   width: 100%;
   max-width: 800px;
-  height: 75vh;
+  height: 65vh;
   line-height: 1.6;
   border: none;
   border-top: 5px solid transparent;
   font: inherit;
+}
+
+.page--material__content .edit-area {
+  padding-top: 56px;
 }
 
 .edit-area--pc {
@@ -77,8 +92,19 @@
 
 /* desktop */
 @media screen and (min-width: 640px) {
+  #js-note {
+    position: static;
+    border-bottom: none;
+  }
+
   .info-area {
     font-size: 80%;
+  }
+
+  .edit-area,
+  .page--material__content .edit-area {
+    height: 75vh;
+    padding-top: 5px;
   }
 }
 </style>
@@ -92,9 +118,6 @@ export default {
     return {
       editnow: ""
     };
-  },
-  mounted() {
-    this.editnow = this.currentMemo.content;
   },
   computed: {
     lang() {
@@ -164,6 +187,12 @@ export default {
       return this.isMark ? "is-mark" : "";
     }
   },
+  created() {
+    this.debouncedGetContent = _.debounce(this.getContent, 500);
+  },
+  mounted() {
+    this.editnow = this.currentMemo.content;
+  },
   watch: {
     editnow() {
       this.debouncedGetContent();
@@ -171,9 +200,6 @@ export default {
     currentIndex() {
       this.editnow = this.currentMemo.content;
     }
-  },
-  created() {
-    this.debouncedGetContent = _.debounce(this.getContent, 500);
   },
   methods: {
     getContent() {

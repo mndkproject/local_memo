@@ -23,6 +23,7 @@
 
 /* background color */
 .page__background,
+.info-area,
 .default > .pallete-background {
   background-color: #efeff4;
 }
@@ -124,6 +125,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme1 .page__background,
+.theme1 .info-area,
 .theme1 > .pallete-background {
   background-color: #f6efef;
 }
@@ -225,6 +227,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme2 .page__background,
+.theme2 .info-area,
 .theme2 > .pallete-background {
   background-color: #f2f4f6;
 }
@@ -326,6 +329,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme3 .page__background,
+.theme3 .info-area,
 .theme3 > .pallete-background {
   background-color: #d8eefe;
 }
@@ -427,6 +431,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme4 .page__background,
+.theme4 .info-area,
 .theme4 > .pallete-background {
   background-color: #242629;
 }
@@ -528,6 +533,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme5 .page__background,
+.theme5 .info-area,
 .theme5 > .pallete-background {
   background-color: #00473e;
 }
@@ -629,6 +635,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme6 .page__background,
+.theme6 .info-area,
 .theme6 > .pallete-background {
   background-color: #fffffe;
 }
@@ -730,6 +737,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme7 .page__background,
+.theme7 .info-area,
 .theme7 > .pallete-background {
   background-color: #fffffe;
 }
@@ -831,6 +839,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme8 .page__background,
+.theme8 .info-area,
 .theme8 > .pallete-background {
   background-color: #fffffe;
 }
@@ -932,6 +941,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme9 .page__background,
+.theme9 .info-area,
 .theme9 > .pallete-background {
   background-color: #fffffe;
 }
@@ -1033,6 +1043,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme10 .page__background,
+.theme10 .info-area,
 .theme10 > .pallete-background {
   background-color: #abd1c6;
 }
@@ -1134,6 +1145,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme11 .page__background,
+.theme11 .info-area,
 .theme11 > .pallete-background {
   background-color: #fffffe;
 }
@@ -1235,6 +1247,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme12 .page__background,
+.theme12 .info-area,
 .theme12 > .pallete-background {
   background-color: #d4d8f0;
 }
@@ -1336,6 +1349,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme13 .page__background,
+.theme13 .info-area,
 .theme13 > .pallete-background {
   background-color: #fffffe;
 }
@@ -1437,6 +1451,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme14 .page__background,
+.theme14 .info-area,
 .theme14 > .pallete-background {
   background-color: #e3f6f5;
 }
@@ -1538,6 +1553,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme15 .page__background,
+.theme15 .info-area,
 .theme15 > .pallete-background {
   background-color: #fffffe;
 }
@@ -1639,6 +1655,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme16 .page__background,
+.theme16 .info-area,
 .theme16 > .pallete-background {
   background-color: #271c19;
 }
@@ -1740,6 +1757,7 @@ ons-fab.fab .zmdi,
 
 /* background color */
 .theme17 .page__background,
+.theme17 .info-area,
 .theme17 > .pallete-background {
   background-color: #f3d2c1;
 }

@@ -45,7 +45,10 @@ export default {
   },
   methods: {
     selectLabel(color) {
-      this.$store.dispatch("labelCheck", color);
+      this.$store.dispatch("labelCheck", {
+        id: this.$store.state.currentId,
+        color: color
+      });
       this.labelDialogVisible = false;
     }
   }

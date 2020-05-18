@@ -171,9 +171,6 @@ export default {
     }
   },
   methods: {
-    pop() {
-      this.pageStack.pop();
-    },
     menuDialog(id) {
       this.targetId = id;
       this.dialogVisible = true;

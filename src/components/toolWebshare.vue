@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isWebShare">
     <v-ons-toolbar-button @click="webShare">
       <i class="zmdi zmdi-share"></i>
     </v-ons-toolbar-button>
@@ -11,6 +11,9 @@ export default {
   computed: {
     tarIndex() {
       return this.$store.getters.currentIndex;
+    },
+    isWebShare() {
+      return navigator.share ? true : false;
     }
   },
   methods: {

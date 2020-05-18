@@ -381,6 +381,7 @@ export default {
       }
     },
     show() {
+      this.$store.dispatch("idCheck", "");
       this.$store.dispatch("emptyCheck");
     }
   },
