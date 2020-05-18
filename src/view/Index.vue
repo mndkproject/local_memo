@@ -292,7 +292,6 @@ export default {
       if (title || text || url) {
         history.replaceState(null, null, "/");
         if (!this.isPC) {
-          history.pushState(null, null, null);
           this.pageStack.push(editor);
         }
         this.$store.dispatch("idCheck", -2);
@@ -306,7 +305,6 @@ export default {
       if (this.otherPageMoved) {
         switch (this.otherPageMoved) {
           case "trash":
-            history.pushState(null, null, null);
             this.pageStack.push(trash);
             break;
           default:

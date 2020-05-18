@@ -134,31 +134,6 @@ export default {
     });
 
     //poptate setting
-    //if (this.$ons.platform.isIPhone() || this.$ons.platform.isAndroid()) {
-    /*if (window.matchMedia("(display-mode: standalone)").matches) {
-      var exitFlag = false;
-      window.addEventListener("popstate", () => {
-        if (this.pageStack.length > 1) {
-          history.pushState(null, null, null);
-          this.pageStack.pop();
-        } else {
-          if (exitFlag) {
-            history.go(-1);
-          } else {
-            history.pushState(null, null, null);
-            exitFlag = true;
-            this.$ons.notification.toast(this.lang.noticeClose, {
-              timeout: 2000,
-              callback: function(e) {
-                if (e === -1) {
-                  exitFlag = false;
-                }
-              }
-            });
-          }
-        }
-      });
-    } else {*/
     window.addEventListener("popstate", () => {
       if (this.openSide) {
         this.toggleSide();
@@ -168,7 +143,6 @@ export default {
         this.pageStack.pop();
       }
     });
-    //}
   },
   methods: {
     toggleSide() {
