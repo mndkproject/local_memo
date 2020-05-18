@@ -35,7 +35,8 @@ export default new Vuex.Store({
       emailVerified: "",
       providerId: ""
     },
-    otherPagePush: ""
+    otherPageMoved: "",
+    deletePop: ""
   },
   getters: {
     computedList: (state) => {
@@ -215,8 +216,11 @@ export default new Vuex.Store({
     setMark(state, payload) {
       Vue.set(state.memoData.memoList[payload.currentIndex], "mark", payload.num);
     },
-    otherPagePushChange(state, page) {
-      state.otherPagePush = page;
+    otherPagePush(state, page) {
+      state.otherPageMoved = page;
+    },
+    deletePop(state, targetId) {
+      state.deletePop = targetId;
     },
     labelRemove(state) {
       state.memoData.memoList.forEach(item => {
@@ -512,9 +516,12 @@ export default new Vuex.Store({
       commit('setMark', { currentIndex: getters.currentIndex, num: num });
       commit('save');
     },
-    otherPagePushCheck({ commit }, page) {
+    otherPageMoveCheck({ commit }, page) {
       commit('changeId', "");
-      commit('otherPagePushChange', page);
+      commit('otherPagePush', page);
+    },
+    deletePopCheck({ commit }, targetId) {
+      commit('deletePop', targetId);
     },
     langCheck({ commit }, lang) {
       if (lang) {

@@ -87,7 +87,7 @@ export default {
   methods: {
     pagePushTrash() {
       this.$emit("close-side");
-      this.$store.dispatch("otherPagePushCheck", "trash");
+      this.$store.dispatch("otherPageMoveCheck", "trash");
     }
   },
   components: {

@@ -16,6 +16,7 @@
       <tool-sort v-if="pageKey === 'key_index' || pageKey === 'key_trash'"></tool-sort>
       <tool-size :page="page"></tool-size>
       <tool-label v-if="pageKey === 'key_editor'"></tool-label>
+      <tool-trash v-if="pageKey === 'key_editor'"></tool-trash>
       <tool-webshare v-if="pageKey === 'key_editor' && isSP"></tool-webshare>
     </div>
   </v-ons-toolbar>
@@ -42,6 +43,7 @@ import toolSize from "./toolSize";
 import toolLabel from "./toolLabel";
 import toolSort from "./toolSort";
 import toolFilter from "./toolFilter";
+import toolTrash from "./toolTrash";
 import toolSearch from "./toolSearch";
 import toolWebshare from "./toolWebshare";
 
@@ -65,6 +67,7 @@ export default {
     toolLabel,
     toolSort,
     toolFilter,
+    toolTrash,
     toolSearch,
     toolWebshare
   }

@@ -69,7 +69,7 @@
   resize: none;
   width: 100%;
   max-width: 800px;
-  height: 65vh;
+  height: 75vh;
   line-height: 1.6;
   border: none;
   border-top: 5px solid transparent;
@@ -103,7 +103,6 @@
 
   .edit-area,
   .page--material__content .edit-area {
-    height: 75vh;
     padding-top: 5px;
   }
 }

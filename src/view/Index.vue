@@ -271,8 +271,11 @@ export default {
         item => item.id === this.targetId
       );
     },
-    otherPagePush() {
-      return this.$store.state.otherPagePush;
+    otherPageMoved() {
+      return this.$store.state.otherPageMoved;
+    },
+    deletePop() {
+      return this.$store.state.deletePop;
     }
   },
   mounted() {
@@ -299,9 +302,9 @@ export default {
     }
   },
   watch: {
-    otherPagePush() {
-      if (this.otherPagePush) {
-        switch (this.otherPagePush) {
+    otherPageMoved() {
+      if (this.otherPageMoved) {
+        switch (this.otherPageMoved) {
           case "trash":
             history.pushState(null, null, null);
             this.pageStack.push(trash);
@@ -309,6 +312,13 @@ export default {
           default:
             break;
         }
+      }
+    },
+    deletePop() {
+      if (this.deletePop !== "") {
+        this.pageStack.pop();
+        this.$store.dispatch("deleteCheck", this.deletePop);
+        this.$store.dispatch("deletePopCheck", "");
       }
     }
   },
