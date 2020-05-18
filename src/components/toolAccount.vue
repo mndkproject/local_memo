@@ -41,8 +41,8 @@
           style="margin-bottom:2em;"
           @click="signOutAuth"
         >{{ lang.logout }}</v-ons-button>
-        <v-ons-button modifier="quiet large" @click="changeAuthMail">{{ lang.changeEmail }}</v-ons-button>
-        <v-ons-button modifier="quiet large" @click="removeAuth">{{ lang.removeAuth }}</v-ons-button>
+        <v-ons-button modifier="outline large" @click="changeAuthMail">{{ lang.changeEmail }}</v-ons-button>
+        <v-ons-button modifier="outline large" @click="removeAuth">{{ lang.removeAuth }}</v-ons-button>
       </template>
       <template v-if="viewMode === 'emailVerify'">
         <p>

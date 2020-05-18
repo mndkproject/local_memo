@@ -8,7 +8,7 @@ module.exports = {
     configureWebpack: config => {
         config.plugins.push(
             new GenerateSW({
-                cacheId: 'local-memo-v0.1.2',
+                cacheId: 'local-memo',
                 skipWaiting: true,
                 clientsClaim: true
             })
