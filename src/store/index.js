@@ -552,6 +552,35 @@ export default new Vuex.Store({
         });
       });
     },
+    changePasswordCheck({ commit }, pw) {
+      return new Promise(resolve => {
+        firebase.auth().currentUser.updatePassword(pw).then(() => {
+          commit('isProgressChange', false);
+          resolve();
+        }).catch(error => {
+          commit('isProgressChange', false);
+          resolve(error);
+        });
+      });
+    },
+    resetPasswordCheck({ commit }, mail) {
+      return new Promise(resolve => {
+        var actionCodeSettings = {
+          url:
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:8080"
+              : "https://mndkproject.github.io/local_memo/",
+          handleCodeInApp: true
+        };
+        firebase.auth().sendPasswordResetEmail(mail, actionCodeSettings).then(() => {
+          commit('isProgressChange', false);
+          resolve();
+        }).catch(error => {
+          commit('isProgressChange', false);
+          resolve(error);
+        });
+      });
+    },
     setMarkCheck({ commit, getters }, num) {
       commit('setMark', { currentIndex: getters.currentIndex, num: num });
       commit('save');

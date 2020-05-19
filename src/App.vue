@@ -99,25 +99,6 @@ export default {
     document.body.className = this.$store.state.memoData.themeColor
       ? this.$store.state.memoData.themeColor
       : "";
-
-    //firebase redirect
-    firebase
-      .auth()
-      .getRedirectResult()
-      .then(res => {
-        if (res.user && res.user.uid) {
-          this.$ons.notification.alert(this.lang.loggedInGoogle, {
-            title: this.lang.confirm,
-            cancelable: true
-          });
-        }
-      })
-      .catch(error => {
-        this.$ons.notification.alert(error.message, {
-          title: this.lang.confirm,
-          cancelable: true
-        });
-      });
   },
   destroyed() {
     this.$store.dispatch("snapshotCheck", "stop");

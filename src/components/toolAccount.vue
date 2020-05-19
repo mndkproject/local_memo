@@ -30,6 +30,39 @@
           </v-ons-list-item>
         </v-ons-list>
       </template>
+      <template v-if="viewMode === 'passwordChange'">
+        <v-ons-list>
+          <v-ons-list-item modifier="nodivider" style="padding: 0;">
+            <div class="center">
+              <v-ons-input
+                placeholder="old password"
+                type="password"
+                float
+                v-model="inputPassword"
+                @blur="checkPassword"
+              ></v-ons-input>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="nodivider" style="padding: 0;">
+            <div class="center">
+              <v-ons-input
+                placeholder="new password"
+                type="password"
+                float
+                v-model="inputNewPassword"
+                @blur="checkPassword"
+              ></v-ons-input>
+              <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
+            </div>
+          </v-ons-list-item>
+          <v-ons-list-item modifier="nodivider auth-item" @click="sendPwChangeCheck()">
+            <div class="content">
+              <i class="zmdi zmdi-email"></i>
+              {{ lang.changePassword }}
+            </div>
+          </v-ons-list-item>
+        </v-ons-list>
+      </template>
       <template v-if="viewMode === 'success'">
         <p style="padding: 0 0 1em;">
           {{ lang.loggingIn }}:
@@ -47,10 +80,10 @@
             v-if="fbAuth.providerId === 'password'"
             @click="changeAuthMail"
           >{{ lang.changeEmail }}</v-ons-button>
-          <!--<v-ons-button modifier="large authbtn" @click="changeAuthPassword">{{ lang.changePassword }}</v-ons-button>-->
           <v-ons-button
             modifier="large authbtn"
             v-if="fbAuth.providerId === 'password'"
+            @click="changeAuthPassword"
           >{{ lang.changePassword }}</v-ons-button>
           <v-ons-button modifier="large authbtn" @click="removeAuth">{{ lang.removeAuth }}</v-ons-button>
         </div>
@@ -107,6 +140,12 @@
             </div>
           </v-ons-list-item>
         </v-ons-list>
+        <div id="reset">
+          <v-ons-button
+            modifier="large reset-btn"
+            @click="resetAuthPassword"
+          >{{ lang.resetPassword }}</v-ons-button>
+        </div>
         <p class="auth-decription">{{ lang.decriptionNoticeMail }}</p>
       </template>
       <template v-if="viewMode === 'init'">
@@ -219,7 +258,8 @@
 }
 
 #authbtn-list .button--authbtn,
-#progress-list .button--authbtn {
+#progress-list .button--authbtn,
+#reset .button--reset-btn {
   background: none;
   box-shadow: none;
 }
@@ -235,9 +275,11 @@ export default {
       accountDialogVisible: false,
       inputEmail: "",
       inputPassword: "",
+      inputNewPassword: "",
       mailErrorMsg: "",
       isSelectEmailAuth: false,
-      isChangeAuthMail: ""
+      isChangeAuthMail: false,
+      ischangeAuthPassword: false
     };
   },
   computed: {
@@ -253,6 +295,8 @@ export default {
     viewMode() {
       if (this.isChangeAuthMail) {
         return "emailChange";
+      } else if (this.ischangeAuthPassword) {
+        return "passwordChange";
       } else if (this.fbAuth.emailVerified) {
         return "success";
       } else if (this.fbAuth.email !== "") {
@@ -276,7 +320,18 @@ export default {
         this.sendMailCheck();
       } else if (target === "google") {
         const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithRedirect(provider);
+        firebase
+          .auth()
+          .signInWithPopup(provider)
+          .then(() => {
+            this.$ons.notification.alert(this.lang.loggedInGoogle, {
+              title: this.lang.confirm,
+              cancelable: true
+            });
+          })
+          .catch(error => {
+            console.log(error.message);
+          });
       }
     },
     emailAuth() {
@@ -285,9 +340,15 @@ export default {
     changeAuthMail() {
       this.isChangeAuthMail = true;
     },
+    changeAuthPassword() {
+      this.ischangeAuthPassword = true;
+    },
     emailAuthCancel() {
       if (this.isChangeAuthMail) {
         this.isChangeAuthMail = false;
+        this.mailErrorMsg = "";
+      } else if (this.ischangeAuthPassword) {
+        this.ischangeAuthPassword = false;
         this.mailErrorMsg = "";
       } else if (this.isSelectEmailAuth) {
         this.isSelectEmailAuth = false;
@@ -306,11 +367,122 @@ export default {
     },
     checkPassword() {
       var pattern = /^[a-zA-Z0-9!-/:-@¥[-`{-~]{8,100}$/;
-      if (this.inputPassword !== "" && !pattern.test(this.inputPassword)) {
+      if (
+        (this.inputPassword !== "" && !pattern.test(this.inputPassword)) ||
+        (this.inputNewPassword !== "" && !pattern.test(this.inputNewPassword))
+      ) {
         this.mailErrorMsg = this.lang.inputCheckPassword;
       } else {
         this.mailErrorMsg = "";
       }
+    },
+    resetAuthPassword() {
+      this.$ons.notification
+        .prompt(this.lang.resetPasswordInput, {
+          title: this.lang.confirm,
+          inputType: "text",
+          buttonLabels: ["Cancel", "OK"],
+          cancelable: true
+        })
+        .then(mail => {
+          if (mail && mail !== "") {
+            this.$store.dispatch("isProgressCheck", true);
+            this.$store.dispatch("resetPasswordCheck", mail).then(res => {
+              if (!res) {
+                this.$ons.notification.alert(this.lang.resetPasswordNotice, {
+                  title: this.lang.confirm,
+                  cancelable: true
+                });
+              } else {
+                var errorMsg;
+                switch (res.code) {
+                  case "auth/invalid-email":
+                    errorMsg = this.lang.resetPasswordErrInvalid;
+                    break;
+                  case "auth/user-not-found":
+                    errorMsg = this.lang.resetPasswordErrNotfound;
+                    break;
+                  default:
+                    errorMsg = this.lang.resetPasswordErrOther;
+                    break;
+                }
+                this.$ons.notification.alert(errorMsg, {
+                  title: this.lang.confirm,
+                  cancelable: true
+                });
+              }
+            });
+          }
+        });
+    },
+    sendPwChangeCheck() {
+      if (this.inputPassword === "" || this.inputNewPassword === "") {
+        this.mailErrorMsg = this.lang.inputCheckEmpty;
+      }
+      if (this.inputPassword === this.inputNewPassword) {
+        this.mailErrorMsg = this.lang.inputCheckSame;
+      }
+      if (this.mailErrorMsg !== "") {
+        return;
+      }
+
+      this.$ons.notification
+        .confirm(this.lang.passwordChangeConfirm, {
+          title: this.lang.confirm,
+          inputType: "password",
+          buttonLabels: ["Cancel", "OK"],
+          cancelable: true
+        })
+        .then(response => {
+          if (response === 1) {
+            this.$store
+              .dispatch("reauthenticateCheck", this.inputPassword)
+              .then(res => {
+                if (!res) {
+                  this.$store
+                    .dispatch("changePasswordCheck", this.inputNewPassword)
+                    .then(() => {
+                      this.$ons.notification.alert(
+                        this.lang.changePasswordNotice,
+                        {
+                          title: this.lang.confirm,
+                          cancelable: true
+                        }
+                      );
+                      this.ischangeAuthPassword = false;
+                      this.accountDialogVisible = false;
+                    })
+                    .catch(error => {
+                      console.log(error.message);
+                      this.$ons.notification.alert(
+                        this.lang.changePasswordErr,
+                        {
+                          title: this.lang.confirm,
+                          cancelable: true
+                        }
+                      );
+                    });
+                } else {
+                  var errorMsg;
+                  switch (res.code) {
+                    case "auth/wrong-password":
+                      errorMsg = this.lang.emailErrPw;
+                      break;
+                    case "auth/too-many-requests":
+                      errorMsg = this.lang.emailErrMany;
+                      break;
+                    default:
+                      errorMsg = this.lang.emailErrOther;
+                      break;
+                  }
+                  this.$ons.notification.alert(errorMsg, {
+                    title: this.lang.confirm,
+                    cancelable: true
+                  });
+                }
+              });
+          }
+        });
     },
     sendMailChangeCheck() {
       if (this.inputEmail === "") {
