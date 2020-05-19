@@ -166,7 +166,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.otherPageMove) {
+    if (this.$store.state.otherPageMoved) {
       this.$store.dispatch("otherPageMoveCheck", "");
     }
   },

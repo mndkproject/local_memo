@@ -41,6 +41,10 @@
   background-color: #fafafa;
 }
 
+.alert-dialog--auth-item .zmdi {
+  color: #fafafa;
+}
+
 /* weak color */
 .zmdi.auth-signout,
 span.auth-signout,
@@ -141,6 +145,10 @@ ons-fab.fab .zmdi,
 .theme1 .toolbar,
 .theme1 > .pallete-base {
   background-color: #f0e2e1;
+}
+
+.theme1 .alert-dialog--auth-item .zmdi {
+  color: #f0e2e1;
 }
 
 /* weak color */
@@ -245,6 +253,10 @@ ons-fab.fab .zmdi,
   background-color: #fffffe;
 }
 
+.theme2 .alert-dialog--auth-item .zmdi {
+  color: #fffffe;
+}
+
 /* weak color */
 .theme2 .zmdi.auth-signout,
 .theme2 span.auth-signout,
@@ -345,6 +357,10 @@ ons-fab.fab .zmdi,
 .theme3 .toolbar,
 .theme3 > .pallete-base {
   background-color: #fffffe;
+}
+
+.theme3 .alert-dialog--auth-item .zmdi {
+  color: #fffffe;
 }
 
 /* weak color */
@@ -449,6 +465,10 @@ ons-fab.fab .zmdi,
   background-color: #16161a;
 }
 
+.theme4 .alert-dialog--auth-item .zmdi {
+  color: #16161a;
+}
+
 /* weak color */
 .theme4 .zmdi.auth-signout,
 .theme4 span.auth-signout,
@@ -549,6 +569,10 @@ ons-fab.fab .zmdi,
 .theme5 .toolbar,
 .theme5 > .pallete-base {
   background-color: #f2f7f5;
+}
+
+.theme5 .alert-dialog--auth-item .zmdi {
+  color: #f2f7f5;
 }
 
 /* weak color */
@@ -653,6 +677,10 @@ ons-fab.fab .zmdi,
   background-color: #fffffe;
 }
 
+.theme6 .alert-dialog--auth-item .zmdi {
+  color: #fffffe;
+}
+
 /* weak color */
 .theme6 .zmdi.auth-signout,
 .theme6 span.auth-signout,
@@ -753,6 +781,10 @@ ons-fab.fab .zmdi,
 .theme7 .toolbar,
 .theme7 > .pallete-base {
   background-color: #fec7d7;
+}
+
+.theme7 .alert-dialog--auth-item .zmdi {
+  color: #fec7d7;
 }
 
 /* weak color */
@@ -857,6 +889,10 @@ ons-fab.fab .zmdi,
   background-color: #f8f5f2;
 }
 
+.theme8 .alert-dialog--auth-item .zmdi {
+  color: #f8f5f2;
+}
+
 /* weak color */
 .theme8 .zmdi.auth-signout,
 .theme8 span.auth-signout,
@@ -957,6 +993,10 @@ ons-fab.fab .zmdi,
 .theme9 .toolbar,
 .theme9 > .pallete-base {
   background-color: #eff0f3;
+}
+
+.theme9 .alert-dialog--auth-item .zmdi {
+  color: #eff0f3;
 }
 
 /* weak color */
@@ -1061,6 +1101,10 @@ ons-fab.fab .zmdi,
   background-color: #004643;
 }
 
+.theme10 .alert-dialog--auth-item .zmdi {
+  color: #004643;
+}
+
 /* weak color */
 .theme10 .zmdi.auth-signout,
 .theme10 span.auth-signout,
@@ -1161,6 +1205,10 @@ ons-fab.fab .zmdi,
 .theme11 .toolbar,
 .theme11 > .pallete-base {
   background-color: #f9f4ef;
+}
+
+.theme11 .alert-dialog--auth-item .zmdi {
+  color: #f9f4ef;
 }
 
 /* weak color */
@@ -1265,6 +1313,10 @@ ons-fab.fab .zmdi,
   background-color: #232946;
 }
 
+.theme12 .alert-dialog--auth-item .zmdi {
+  color: #232946;
+}
+
 /* weak color */
 .theme12 .zmdi.auth-signout,
 .theme12 span.auth-signout,
@@ -1365,6 +1417,10 @@ ons-fab.fab .zmdi,
 .theme13 .toolbar,
 .theme13 > .pallete-base {
   background-color: #0f0e17;
+}
+
+.theme13 .alert-dialog--auth-item .zmdi {
+  color: #0f0e17;
 }
 
 /* weak color */
@@ -1469,6 +1525,10 @@ ons-fab.fab .zmdi,
   background-color: #fffffe;
 }
 
+.theme14 .alert-dialog--auth-item .zmdi {
+  color: #fffffe;
+}
+
 /* weak color */
 .theme14 .zmdi.auth-signout,
 .theme14 span.auth-signout,
@@ -1569,6 +1629,10 @@ ons-fab.fab .zmdi,
 .theme15 .toolbar,
 .theme15 > .pallete-base {
   background-color: #faeee7;
+}
+
+.theme15 .alert-dialog--auth-item .zmdi {
+  color: #faeee7;
 }
 
 /* weak color */
@@ -1673,6 +1737,10 @@ ons-fab.fab .zmdi,
   background-color: #55423d;
 }
 
+.theme16 .alert-dialog--auth-item .zmdi {
+  color: #55423d;
+}
+
 /* weak color */
 .theme16 .zmdi.auth-signout,
 .theme16 span.auth-signout,
@@ -1773,6 +1841,10 @@ ons-fab.fab .zmdi,
 .theme17 .toolbar,
 .theme17 > .pallete-base {
   background-color: #fef6e4;
+}
+
+.theme17 .alert-dialog--auth-item .zmdi {
+  color: #fef6e4;
 }
 
 /* weak color */

@@ -302,7 +302,7 @@ export default {
   },
   watch: {
     otherPageMoved() {
-      if (this.otherPageMoved) {
+      if (this.otherPageMoved !== "") {
         switch (this.otherPageMoved) {
           case "trash":
             this.pageStack.push(trash);

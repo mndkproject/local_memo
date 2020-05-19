@@ -71,6 +71,11 @@ ons-fab.fab .zmdi {
 #memo-list .list-item--memo .zmdi {
   font-size: inherit;
 }
+
+ons-input .text-input {
+  color: inherit;
+  background: none;
+}
 </style>
 
 <script>
