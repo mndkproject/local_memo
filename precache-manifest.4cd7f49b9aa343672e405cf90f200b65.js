@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/chunk-vendors.cadda6db.css"
   },
   {
-    "revision": "b1149df5f464147599ef6c7b324e88a0",
+    "revision": "db73a91f09971c7df6fb8ff1dccfbe9c",
     "url": "favicon.png"
   },
   {
@@ -88,35 +88,35 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "fonts/ionicons.cfdc1522.ttf"
   },
   {
-    "revision": "99d9fcd6fb0f4fef2a6ed13f07537d6d",
+    "revision": "62140811220bffc755303ac4ad625412",
     "url": "images/icons/icon-128x128.png"
   },
   {
-    "revision": "83fbe2049da608bec35ba3972b819d08",
+    "revision": "cc2199120fa0ee5c8904f4784cc401a3",
     "url": "images/icons/icon-144x144.png"
   },
   {
-    "revision": "df721d20250cd17edab71a793e4fc17e",
+    "revision": "9e97e55b397a0c973b78c7653e271217",
     "url": "images/icons/icon-152x152.png"
   },
   {
-    "revision": "0f8807dddb5a6c53698367c06d6d0d43",
+    "revision": "a185192edbe564a510d9ed9b09bc56f9",
     "url": "images/icons/icon-192x192.png"
   },
   {
-    "revision": "221f19504cac53d92519e661acc93e08",
+    "revision": "c24a6c8422c56b957942de47b18574ac",
     "url": "images/icons/icon-384x384.png"
   },
   {
-    "revision": "9bd0a1752ab48d1c9b2ea644e8352a3f",
+    "revision": "7594899d96054055887c0ba9193ad3ec",
     "url": "images/icons/icon-512x512.png"
   },
   {
-    "revision": "b1149df5f464147599ef6c7b324e88a0",
+    "revision": "db73a91f09971c7df6fb8ff1dccfbe9c",
     "url": "images/icons/icon-72x72.png"
   },
   {
-    "revision": "b4030fd7649d388cc59d2054dfca8f46",
+    "revision": "78582ad0dfd632c17bc9d8fd69ec80fa",
     "url": "images/icons/icon-96x96.png"
   },
   {
@@ -130,14 +130,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "49279363201ed19a840796e05a74a91b",
     "url": "img/fa-solid-900.49279363.svg"
-  },
-  {
-    "revision": "d973ee0fe0b895e8aaa8b81149f6705f",
-    "url": "img/icons/favicon-16x16.png"
-  },
-  {
-    "revision": "3f079c7629248c35f1afb98060c32076",
-    "url": "img/icons/favicon-32x32.png"
   },
   {
     "revision": "665921072642ed354618b32af7425a22",
@@ -160,14 +152,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "manifest.json"
   },
   {
-    "url": "precache-manifest.2d0e37cf33878b0fc09c7f0178835ea3.js"
-  },
-  {
     "revision": "735ab4f94fbcd57074377afca324c813",
     "url": "robots.txt"
-  },
-  {
-    "revision": "0ac7278abd24bf3208e6cbd7a3e1d1e5",
-    "url": "service-worker.js"
   }
 ]);
