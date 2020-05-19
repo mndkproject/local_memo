@@ -4,7 +4,7 @@ import 'onsenui/css/onsen-css-components.css';
 import Vue from 'vue';
 import ons from 'onsenui';
 import VueOnsen from 'vue-onsenui';
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 var firebaseConfig = {
   apiKey: "AIzaSyAYHxfofkeKOnMjr_8HsdzXboJEwHY1RxM",

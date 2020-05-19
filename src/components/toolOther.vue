@@ -43,6 +43,11 @@
 <style>
 .alert-dialog--other .list-item {
   cursor: pointer;
+  padding: 0;
+}
+
+.alert-dialog--other .list-item--material__left {
+  min-width: 44px;
 }
 </style>
 

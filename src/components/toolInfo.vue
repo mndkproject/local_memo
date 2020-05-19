@@ -49,7 +49,7 @@
         <v-ons-list-item>
           <div class="center">
             <span class="info-title">{{ lang.lineNum }}</span>
-            <span class="info-content">{{ lines }}{{ lang.lines }}</span>
+            <span class="info-content">{{ lines }}{{ lang.line }}</span>
           </div>
         </v-ons-list-item>
         <v-ons-list-item>

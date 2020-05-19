@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import _ from "lodash"
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 import { lang } from './modules/lang';
 
 Vue.use(Vuex)
@@ -33,10 +35,12 @@ export default new Vuex.Store({
       uid: "",
       email: "",
       emailVerified: "",
-      providerId: ""
+      providerId: "",
+      reauthenticate: false
     },
     otherPageMoved: "",
-    deletePop: ""
+    deletePop: "",
+    isProgress: false
   },
   getters: {
     computedList: (state) => {
@@ -213,6 +217,9 @@ export default new Vuex.Store({
       }
       console.log("user:" + JSON.stringify(state.fbAuth));
     },
+    reauthenticateGet(state) {
+      state.fbAuth.reauthenticate = true;
+    },
     setMark(state, payload) {
       Vue.set(state.memoData.memoList[payload.currentIndex], "mark", payload.num);
     },
@@ -259,6 +266,9 @@ export default new Vuex.Store({
       });
       state.currentId = "";
     },
+    isProgressChange(state, boo) {
+      state.isProgress = boo;
+    }
   },
   actions: {
     loadCheck({ commit }) {
@@ -473,9 +483,21 @@ export default new Vuex.Store({
     fbAuthCheck({ commit }, user) {
       commit('fbAuthChange', user);
     },
+    reauthenticateCheck({ commit }, pw) {
+      return new Promise(resolve => {
+        var user = firebase.auth().currentUser;
+        var credential = firebase.auth.EmailAuthProvider.credential(user.email, pw);
+        user.reauthenticateWithCredential(credential).then(() => {
+          commit('reauthenticateGet');
+          resolve();
+        }).catch(error => {
+          resolve(error);
+        });
+      });
+    },
     removeAuthCheck({ dispatch, commit, state }) {
       return new Promise(resolve => {
-        if (state.fbAuth != null) {
+        if (state.fbAuth.reauthenticate) {
           //Cloud data deletion process
           firebase.firestore().collection("/memos").doc(state.fbAuth.uid).get()
             .then(doc => {
@@ -508,8 +530,26 @@ export default new Vuex.Store({
                 });
             });
         } else {
-          console.log("No such user!");
+          console.log("re-authenticate false");
         }
+      });
+    },
+    changeEmailCheck({ commit }, mail) {
+      return new Promise(resolve => {
+        var actionCodeSettings = {
+          url:
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:8080"
+              : "https://mndkproject.github.io/local_memo/",
+          handleCodeInApp: true
+        };
+        firebase.auth().currentUser.verifyBeforeUpdateEmail(mail, actionCodeSettings).then(() => {
+          commit('isProgressChange', false);
+          resolve();
+        }).catch(error => {
+          commit('isProgressChange', false);
+          resolve(error);
+        });
       });
     },
     setMarkCheck({ commit, getters }, num) {
@@ -545,6 +585,9 @@ export default new Vuex.Store({
       commit('localRemove');
       commit('save');
     },
+    isProgressCheck({ commit }, boo) {
+      commit('isProgressChange', boo);
+    }
   },
   modules: {
     lang,

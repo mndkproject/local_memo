@@ -6,17 +6,17 @@
     </div>
 
     <v-ons-alert-dialog :visible.sync="accountDialogVisible" cancelable>
-      <span slot="title">Account</span>
+      <span slot="title">{{ lang.account }}</span>
       <template v-if="viewMode === 'emailChange'">
         <p class="auth-decription">{{ lang.decriptionChangeMail }}</p>
         <v-ons-list>
-          <v-ons-list-item modifier="nodivider">
+          <v-ons-list-item modifier="nodivider" style="padding: 0;">
             <div class="center">
               <v-ons-input
                 placeholder="email"
                 type="email"
                 float
-                v-model="inputChangeEmail"
+                v-model="inputEmail"
                 @blur="checkEmail"
               ></v-ons-input>
               <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
@@ -25,24 +25,35 @@
           <v-ons-list-item modifier="nodivider auth-item" @click="sendMailChangeCheck()">
             <div class="content">
               <i class="zmdi zmdi-email"></i>
-              {{ lang.authEmail }}
+              {{ lang.changeEmail }}
             </div>
           </v-ons-list-item>
         </v-ons-list>
       </template>
       <template v-if="viewMode === 'success'">
-        <p style="padding: 1em;">
+        <p style="padding: 0 0 1em;">
           {{ lang.loggingIn }}:
           <br />
           {{ fbAuth.email }}
         </p>
-        <v-ons-button
-          modifier="large"
-          style="margin-bottom:2em;"
-          @click="signOutAuth"
-        >{{ lang.logout }}</v-ons-button>
-        <v-ons-button modifier="outline large" @click="changeAuthMail">{{ lang.changeEmail }}</v-ons-button>
-        <v-ons-button modifier="outline large" @click="removeAuth">{{ lang.removeAuth }}</v-ons-button>
+        <div id="authbtn-list">
+          <v-ons-button
+            modifier="large"
+            style="margin-bottom:1em;"
+            @click="signOutAuth"
+          >{{ lang.logout }}</v-ons-button>
+          <v-ons-button
+            modifier="large authbtn"
+            v-if="fbAuth.providerId === 'password'"
+            @click="changeAuthMail"
+          >{{ lang.changeEmail }}</v-ons-button>
+          <!--<v-ons-button modifier="large authbtn" @click="changeAuthPassword">{{ lang.changePassword }}</v-ons-button>-->
+          <v-ons-button
+            modifier="large authbtn"
+            v-if="fbAuth.providerId === 'password'"
+          >{{ lang.changePassword }}</v-ons-button>
+          <v-ons-button modifier="large authbtn" @click="removeAuth">{{ lang.removeAuth }}</v-ons-button>
+        </div>
       </template>
       <template v-if="viewMode === 'emailVerify'">
         <p>
@@ -58,7 +69,10 @@
             </div>
           </v-ons-list-item>
         </v-ons-list>
-        <v-ons-button modifier="quiet">{{ lang.stopProgress }}</v-ons-button>
+        <div id="progress-list">
+          <v-ons-button modifier="large authbtn">{{ lang.stopProgress }}</v-ons-button>
+        </div>
+        <p class="auth-decription">{{ lang.decriptionChangeMailProgress }}</p>
       </template>
       <template v-if="viewMode === 'email'">
         <p class="auth-decription">{{ lang.decriptionRegisterMail }}</p>
@@ -183,13 +197,19 @@
   cursor: pointer;
 }
 
+.list-item--auth-item {
+  padding: 0;
+  cursor: pointer;
+}
+
 .list-item--auth-item__center .content {
   display: flex;
   align-items: center;
 }
 
 .list--auth-select .list-item i,
-.list--auth-select .list-item .google-icon {
+.list--auth-select .list-item .google-icon,
+.list-item--auth-item__center .content .zmdi {
   width: 44px;
 }
 
@@ -197,10 +217,17 @@
   font-size: 70%;
   line-height: 1.4;
 }
+
+#authbtn-list .button--authbtn,
+#progress-list .button--authbtn {
+  background: none;
+  box-shadow: none;
+}
 </style>
 
 <script>
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   data() {
@@ -210,7 +237,6 @@ export default {
       inputPassword: "",
       mailErrorMsg: "",
       isSelectEmailAuth: false,
-      inputChangeEmail: "",
       isChangeAuthMail: ""
     };
   },
@@ -247,21 +273,10 @@ export default {
         if (this.mailErrorMsg !== "") {
           return;
         }
-
         this.sendMailCheck();
       } else if (target === "google") {
         const provider = new firebase.auth.GoogleAuthProvider();
-        firebase
-          .auth()
-          .signInWithPopup(provider)
-          .then(() => {
-            this.$ons.notification.toast(this.lang.loggedInGoogle, {
-              timeout: 2000
-            });
-          })
-          .catch(error => {
-            alert(error.message);
-          });
+        firebase.auth().signInWithRedirect(provider);
       }
     },
     emailAuth() {
@@ -283,7 +298,7 @@ export default {
     },
     checkEmail() {
       var pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,100}))$/;
-      if (this.inputPassword !== "" && !pattern.test(this.inputEmail)) {
+      if (this.inputEmail !== "" && !pattern.test(this.inputEmail)) {
         this.mailErrorMsg = this.lang.inputCheckEmail;
       } else {
         this.mailErrorMsg = "";
@@ -298,7 +313,56 @@ export default {
       }
     },
     sendMailChangeCheck() {
-      console.log("変えるよ！");
+      if (this.inputEmail === "") {
+        this.mailErrorMsg = this.lang.inputCheckEmpty;
+      }
+      if (this.mailErrorMsg !== "") {
+        return;
+      }
+
+      this.$ons.notification
+        .prompt(this.lang.emailChangePwInput, {
+          title: this.lang.confirm,
+          inputType: "password",
+          buttonLabels: ["Cancel", "OK"],
+          cancelable: true
+        })
+        .then(pw => {
+          if (pw && pw !== "") {
+            this.$store.dispatch("isProgressCheck", true);
+            this.$store.dispatch("reauthenticateCheck", pw).then(res => {
+              if (!res) {
+                this.$store
+                  .dispatch("changeEmailCheck", this.inputEmail)
+                  .then(() => {
+                    this.$ons.notification.alert(this.lang.changeEmailNotice, {
+                      title: this.lang.confirm,
+                      cancelable: true
+                    });
+                    this.isChangeAuthMail = false;
+                    this.accountDialogVisible = false;
+                  });
+              } else {
+                var errorMsg;
+                switch (res.code) {
+                  case "auth/wrong-password":
+                    errorMsg = this.lang.emailErrPw;
+                    break;
+                  case "auth/too-many-requests":
+                    errorMsg = this.lang.emailErrMany;
+                    break;
+                  default:
+                    errorMsg = this.lang.emailErrOther;
+                    break;
+                }
+                this.$ons.notification.alert(errorMsg, {
+                  title: this.lang.confirm,
+                  cancelable: true
+                });
+              }
+            });
+          }
+        });
     },
     sendMailCheck() {
       //Check if an account has been created
@@ -334,8 +398,7 @@ export default {
                 var errorMessage = " error: " + error.message;
                 this.$ons.notification.toast(errorMessage, { timeout: 2000 });
                 console.log(error.message);
-              })
-              .then(() => {});
+              });
           } else {
             //Account not created, account created
             firebase
@@ -436,14 +499,48 @@ export default {
         })
         .then(response => {
           if (response === 1) {
-            //ここに再認証入れる
-            this.$store.dispatch("removeAuthCheck").then(() => {
-              this.$ons.notification.alert(this.lang.removeAuthNotice, {
+            this.$ons.notification
+              .prompt(this.lang.emailPwInput, {
                 title: this.lang.confirm,
+                inputType: "password",
+                buttonLabels: ["Cancel", "OK"],
                 cancelable: true
+              })
+              .then(pw => {
+                if (pw && pw !== "") {
+                  this.$store.dispatch("reauthenticateCheck", pw).then(res => {
+                    if (!res) {
+                      this.$store.dispatch("removeAuthCheck").then(() => {
+                        this.$ons.notification.alert(
+                          this.lang.removeAuthNotice,
+                          {
+                            title: this.lang.confirm,
+                            cancelable: true
+                          }
+                        );
+                        this.accountDialogVisible = false;
+                      });
+                    } else {
+                      var errorMsg;
+                      switch (res.code) {
+                        case "auth/wrong-password":
+                          errorMsg = this.lang.emailErrPw;
+                          break;
+                        case "auth/too-many-requests":
+                          errorMsg = this.lang.emailErrMany;
+                          break;
+                        default:
+                          errorMsg = this.lang.emailErrOther;
+                          break;
+                      }
+                      this.$ons.notification.alert(errorMsg, {
+                        title: this.lang.confirm,
+                        cancelable: true
+                      });
+                    }
+                  });
+                }
               });
-              this.accountDialogVisible = false;
-            });
           }
         });
     }

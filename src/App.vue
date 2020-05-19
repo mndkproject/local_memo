@@ -76,7 +76,8 @@ ons-fab.fab .zmdi {
 <script>
 import index from "./view/Index";
 import Side from "./components/Side";
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   data() {
@@ -91,9 +92,6 @@ export default {
     },
     lang() {
       return this.$store.getters["lang/currentLang"];
-    },
-    isHome() {
-      return this.pageStack.length === 1 ? "" : "invisible";
     }
   },
   mounted() {
@@ -101,6 +99,25 @@ export default {
     document.body.className = this.$store.state.memoData.themeColor
       ? this.$store.state.memoData.themeColor
       : "";
+
+    //firebase redirect
+    firebase
+      .auth()
+      .getRedirectResult()
+      .then(res => {
+        if (res.user && res.user.uid) {
+          this.$ons.notification.alert(this.lang.loggedInGoogle, {
+            title: this.lang.confirm,
+            cancelable: true
+          });
+        }
+      })
+      .catch(error => {
+        this.$ons.notification.alert(error.message, {
+          title: this.lang.confirm,
+          cancelable: true
+        });
+      });
   },
   destroyed() {
     this.$store.dispatch("snapshotCheck", "stop");
