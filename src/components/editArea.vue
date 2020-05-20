@@ -188,7 +188,7 @@ export default {
       return this.isMark ? "is-mark" : "";
     },
     editAreaUpdate() {
-      return this.$store.state.editAreaUpdate;
+      return this.$store.state.editAreaUpdateFlag;
     }
   },
   created() {
@@ -208,6 +208,7 @@ export default {
       this.editnow = this.editAreaUpdate
         ? this.currentMemo.content
         : this.editnow;
+      this.$store.dispatch("editAreaUpdateResetCheck");
     }
   },
   methods: {

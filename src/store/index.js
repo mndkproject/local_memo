@@ -41,7 +41,7 @@ export default new Vuex.Store({
     otherPageMoved: "",
     deletePop: "",
     isProgress: false,
-    editAreaUpdate: false
+    editAreaUpdateFlag: false
   },
   getters: {
     computedList: (state) => {
@@ -194,6 +194,7 @@ export default new Vuex.Store({
     },
     contentSync(state, newData) {
       state.memoData.memoList = newData;
+      state.editAreaUpdateFlag = true;
       firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
         .set({ data: newData })
         .then(() => {
@@ -267,6 +268,9 @@ export default new Vuex.Store({
     },
     isProgressChange(state, boo) {
       state.isProgress = boo;
+    },
+    editAreaUpdateReset(state) {
+      state.editAreaUpdateFlag = false;
     }
   },
   actions: {
@@ -407,7 +411,6 @@ export default new Vuex.Store({
     contentSyncCheck({ commit, state }, data) {
       var cloudData = data && data !== "" ? data.data : [];
       var update_flag = false;
-      var editorUpdateFlag = false;
       let localData = JSON.parse(JSON.stringify(state.memoData.memoList));
       Array.prototype.forEach.call(cloudData, cloudItem => {
         var tarId = cloudItem.id;
@@ -430,13 +433,14 @@ export default new Vuex.Store({
           } else if (localUpdate < cloudUpdate) {
             localData[localIndex].content = cloudItem.content;
             localData[localIndex].labelColor = cloudItem.labelColor;
-            localData[localIndex].mark = cloudItem.mark;
             localData[localIndex].updated_at = cloudItem.updated_at;
+            if (cloudItem.mark) {
+              localData[localIndex]["mark"] = cloudItem.mark;
+            }
             if (cloudItem.delete) {
-              localData[localIndex].delete = cloudItem.delete;
+              localData[localIndex]["delete"] = cloudItem.delete;
             }
             update_flag = true;
-            editorUpdateFlag = true;
           }
         } else {
           localData.push(cloudItem);
@@ -455,8 +459,6 @@ export default new Vuex.Store({
       if (update_flag) {
         commit("contentSync", localData);
         commit('save');
-        state.editAreaUpdate = editorUpdateFlag;
-        editorUpdateFlag = false;
         update_flag = false;
       }
     },
@@ -617,6 +619,9 @@ export default new Vuex.Store({
     },
     isProgressCheck({ commit }, boo) {
       commit('isProgressChange', boo);
+    },
+    editAreaUpdateResetCheck({ commit }) {
+      commit("editAreaUpdateReset");
     }
   },
   modules: {
