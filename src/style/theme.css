@@ -91,6 +91,17 @@ ons-fab.fab .zmdi,
   border-color: #1e88e5;
 }
 
+@media screen and (min-width: 640px) {
+  ::-webkit-scrollbar-thumb {
+    background-color: #1e88e5;
+  }
+
+  .edit-area,
+  .alert-dialog-content {
+    scrollbar-color:#1e88e5 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .mark-icon,
 .is-mark,
@@ -195,6 +206,17 @@ ons-fab.fab .zmdi,
 
 .theme1 .radio-button__checkmark:after {
   border-color: #4fc4cf;
+}
+
+@media screen and (min-width: 640px) {
+  .theme1 ::-webkit-scrollbar-thumb {
+    background-color: #4fc4cf;
+  }
+
+  .theme1 .edit-area,
+  .theme1 .alert-dialog-content {
+    scrollbar-color:#4fc4cf rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -303,6 +325,17 @@ ons-fab.fab .zmdi,
   border-color: #00ebc7;
 }
 
+@media screen and (min-width: 640px) {
+  .theme2 ::-webkit-scrollbar-thumb {
+    background-color: #00ebc7;
+  }
+
+  .theme2 .edit-area,
+  .theme2 .alert-dialog-content {
+    scrollbar-color:#00ebc7 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme2 .mark-icon,
 .theme2 .is-mark,
@@ -407,6 +440,17 @@ ons-fab.fab .zmdi,
 
 .theme3 .radio-button__checkmark:after {
   border-color: #3da9fc;
+}
+
+@media screen and (min-width: 640px) {
+  .theme3 ::-webkit-scrollbar-thumb {
+    background-color: #3da9fc;
+  }
+
+  .theme3 .edit-area,
+  .theme3 .alert-dialog-content {
+    scrollbar-color:#3da9fc rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -515,6 +559,17 @@ ons-fab.fab .zmdi,
   border-color: #7f5af0;
 }
 
+@media screen and (min-width: 640px) {
+  .theme4 ::-webkit-scrollbar-thumb {
+    background-color: #7f5af0;
+  }
+
+  .theme4 .edit-area,
+  .theme4 .alert-dialog-content {
+    scrollbar-color:#7f5af0 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme4 .mark-icon,
 .theme4 .is-mark,
@@ -621,6 +676,17 @@ ons-fab.fab .zmdi,
   border-color: #faae2b;
 }
 
+@media screen and (min-width: 640px) {
+  .theme5 ::-webkit-scrollbar-thumb {
+    background-color: #faae2b;
+  }
+
+  .theme5 .edit-area,
+  .theme5 .alert-dialog-content {
+    scrollbar-color:#faae2b rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme5 .mark-icon,
 .theme5 .is-mark,
@@ -724,7 +790,18 @@ ons-fab.fab .zmdi,
 }
 
 .theme6 .radio-button__checkmark:after {
-  border-color: #6246ea;
+  border-color: #767381;
+}
+
+@media screen and (min-width: 640px) {
+  .theme6 ::-webkit-scrollbar-thumb {
+    background-color: #767381;
+  }
+
+  .theme6 .edit-area,
+  .theme6 .alert-dialog-content {
+    scrollbar-color:#767381 rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -833,6 +910,17 @@ ons-fab.fab .zmdi,
   border-color: #0e172c;
 }
 
+@media screen and (min-width: 640px) {
+  .theme7 ::-webkit-scrollbar-thumb {
+    background-color: #0e172c;
+  }
+
+  .theme7 .edit-area,
+  .theme7 .alert-dialog-content {
+    scrollbar-color:#0e172c rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme7 .mark-icon,
 .theme7 .is-mark,
@@ -937,6 +1025,17 @@ ons-fab.fab .zmdi,
 
 .theme8 .radio-button__checkmark:after {
   border-color: #078080;
+}
+
+@media screen and (min-width: 640px) {
+  .theme8 ::-webkit-scrollbar-thumb {
+    background-color: #078080;
+  }
+
+  .theme8 .edit-area,
+  .theme8 .alert-dialog-content {
+    scrollbar-color:#078080 rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -1045,6 +1144,17 @@ ons-fab.fab .zmdi,
   border-color: #ff8e3c;
 }
 
+@media screen and (min-width: 640px) {
+  .theme9 ::-webkit-scrollbar-thumb {
+    background-color: #ff8e3c;
+  }
+
+  .theme9 .edit-area,
+  .theme9 .alert-dialog-content {
+    scrollbar-color:#ff8e3c rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme9 .mark-icon,
 .theme9 .is-mark,
@@ -1149,6 +1259,17 @@ ons-fab.fab .zmdi,
 
 .theme10 .radio-button__checkmark:after {
   border-color: #f9bc60;
+}
+
+@media screen and (min-width: 640px) {
+  .theme10 ::-webkit-scrollbar-thumb {
+    background-color: #f9bc60;
+  }
+
+  .theme10 .edit-area,
+  .theme10 .alert-dialog-content {
+    scrollbar-color:#f9bc60 rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -1257,6 +1378,17 @@ ons-fab.fab .zmdi,
   border-color: #8c7851;
 }
 
+@media screen and (min-width: 640px) {
+  .theme11 ::-webkit-scrollbar-thumb {
+    background-color: #8c7851;
+  }
+
+  .theme11 .edit-area,
+  .theme11 .alert-dialog-content {
+    scrollbar-color:#8c7851 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme11 .mark-icon,
 .theme11 .is-mark,
@@ -1361,6 +1493,17 @@ ons-fab.fab .zmdi,
 
 .theme12 .radio-button__checkmark:after {
   border-color: #eebbc3;
+}
+
+@media screen and (min-width: 640px) {
+  .theme12 ::-webkit-scrollbar-thumb {
+    background-color: #eebbc3;
+  }
+
+  .theme12 .edit-area,
+  .theme12 .alert-dialog-content {
+    scrollbar-color:#eebbc3 rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -1469,6 +1612,17 @@ ons-fab.fab .zmdi,
   border-color: #ff8906;
 }
 
+@media screen and (min-width: 640px) {
+  .theme13 ::-webkit-scrollbar-thumb {
+    background-color: #ff8906;
+  }
+
+  .theme13 .edit-area,
+  .theme13 .alert-dialog-content {
+    scrollbar-color:#ff8906 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme13 .mark-icon,
 .theme13 .is-mark,
@@ -1573,6 +1727,17 @@ ons-fab.fab .zmdi,
 
 .theme14 .radio-button__checkmark:after {
   border-color: #ffd803;
+}
+
+@media screen and (min-width: 640px) {
+  .theme14 ::-webkit-scrollbar-thumb {
+    background-color: #ffd803;
+  }
+
+  .theme14 .edit-area,
+  .theme14 .alert-dialog-content {
+    scrollbar-color:#ffd803 rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */
@@ -1681,6 +1846,17 @@ ons-fab.fab .zmdi,
   border-color: #ff8ba7;
 }
 
+@media screen and (min-width: 640px) {
+  .theme15 ::-webkit-scrollbar-thumb {
+    background-color: #ff8ba7;
+  }
+
+  .theme15 .edit-area,
+  .theme15 .alert-dialog-content {
+    scrollbar-color:#ff8ba7 rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme15 .mark-icon,
 .theme15 .is-mark,
@@ -1787,6 +1963,17 @@ ons-fab.fab .zmdi,
   border-color: #ffc0ad;
 }
 
+@media screen and (min-width: 640px) {
+  .theme16 ::-webkit-scrollbar-thumb {
+    background-color: #ffc0ad;
+  }
+
+  .theme16 .edit-area,
+  .theme16 .alert-dialog-content {
+    scrollbar-color:#ffc0ad rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* point color */
 .theme16 .mark-icon,
 .theme16 .is-mark,
@@ -1891,6 +2078,17 @@ ons-fab.fab .zmdi,
 
 .theme17 .radio-button__checkmark:after {
   border-color: #f582ae;
+}
+
+@media screen and (min-width: 640px) {
+  .theme17 ::-webkit-scrollbar-thumb {
+    background-color: #f582ae;
+  }
+
+  .theme17 .edit-area,
+  .theme17 .alert-dialog-content {
+    scrollbar-color:#f582ae rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* point color */

@@ -104,6 +104,8 @@
   .edit-area,
   .page--material__content .edit-area {
     padding-top: 5px;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
   }
 }
 </style>

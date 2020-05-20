@@ -4,7 +4,7 @@
     <div class="content">
       <div class="index-split">
         <div class="index-split__side">
-          <v-ons-gesture-detector>
+          <ons-gesture-detector>
             <div class="memo-wrap">
               <v-ons-list id="memo-list">
                 <v-ons-list-item
@@ -47,7 +47,7 @@
               </v-ons-list>
               <p v-if="emptyFlag" class="list-decription">{{ lang.noticeEmpty }}</p>
             </div>
-          </v-ons-gesture-detector>
+          </ons-gesture-detector>
         </div>
         <div class="index-split__content" v-if="isPC">
           <div class="index-split__inner">
@@ -175,6 +175,7 @@
     position: relative;
     display: block;
     flex-grow: 4;
+    padding: 0 1em;
   }
 
   .index-split__side {
@@ -378,14 +379,14 @@ export default {
         event.target.className !== "item-func" &&
         event.target.className !== "zmdi zmdi-more-vert"
       ) {
+        this.$store.dispatch("idCheck", id);
+        this.$store.dispatch("addCheck");
         if (this.isPC) {
           this.$store.dispatch("emptyCheck");
         } else {
           history.pushState(null, null, null);
           this.pageStack.push(editor);
         }
-        this.$store.dispatch("idCheck", id);
-        this.$store.dispatch("addCheck");
       }
     },
     show() {

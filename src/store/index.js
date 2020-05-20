@@ -190,7 +190,6 @@ export default new Vuex.Store({
     },
     shareCloudChange(state, isShare) {
       state.memoData.shareCloud = isShare;
-      console.log("isShare:" + isShare);
     },
     contentSync(state, newData) {
       state.memoData.memoList = newData;
@@ -215,7 +214,6 @@ export default new Vuex.Store({
         state.fbAuth.emailVerified = "";
         state.fbAuth.providerId = "";
       }
-      console.log("user:" + JSON.stringify(state.fbAuth));
     },
     reauthenticateGet(state) {
       state.fbAuth.reauthenticate = true;
@@ -294,7 +292,7 @@ export default new Vuex.Store({
       var i = 0;
       state.memoData.memoList.forEach(item => {
         var payload = { currentIndex: i };
-        if (item.content === "") {
+        if (item.content === "" && item.id !== state.currentId) {
           if (item.delete !== true) {
             commit('deleteData', payload);
           }
@@ -408,7 +406,6 @@ export default new Vuex.Store({
     contentSyncCheck({ commit, state }, data) {
       var cloudData = data && data !== "" ? data.data : [];
       var update_flag = false;
-      console.log("cloud get is dane.");
       let localData = JSON.parse(JSON.stringify(state.memoData.memoList));
       Array.prototype.forEach.call(cloudData, cloudItem => {
         var tarId = cloudItem.id;
@@ -452,8 +449,6 @@ export default new Vuex.Store({
         commit("contentSync", localData);
         commit('save');
         update_flag = false;
-      } else {
-        console.log("cloud change is none.");
       }
     },
     snapshotCheck({ dispatch, state }, flag) {
@@ -463,7 +458,6 @@ export default new Vuex.Store({
           this.snapshotState()
           this.snapshotState = null
         }
-        console.log("Start cloud monitoring");
         this.snapshotState = firebase
           .firestore().collection("/memos").doc(state.fbAuth.uid)
           .onSnapshot(data => {
@@ -477,7 +471,6 @@ export default new Vuex.Store({
           this.snapshotState()
           this.snapshotState = null
         }
-        console.log("Finish cloud monitoring");
       }
     },
     fbAuthCheck({ commit }, user) {
@@ -521,7 +514,6 @@ export default new Vuex.Store({
               //Authentication information deletion processing
               firebase.auth().currentUser.delete()
                 .then(() => {
-                  console.log("User successfully deleted!");
                   commit('fbAuthChange', "");
                   resolve();
                 })

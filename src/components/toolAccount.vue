@@ -218,18 +218,21 @@
 
 .alert-dialog-content.alert-dialog-content--auth-item .list-item__center {
   padding: 0;
+  margin: 5px 0;
 }
 
 .alert-dialog-content.alert-dialog-content--auth-item
   .list-item__center
   .content {
   width: 100%;
+  height: 100%;
 }
 
 .alert-dialog-content.alert-dialog-content--auth-item .button {
   display: flex;
   align-items: center;
   width: 100%;
+  height: 100%;
   font-size: 80%;
 }
 
@@ -240,6 +243,7 @@
   background: none;
   box-shadow: none;
   justify-content: center;
+  color: inherit;
 }
 
 .alert-dialog-content.alert-dialog-content--auth-item .button .zmdi {
@@ -546,7 +550,6 @@ export default {
                   this.$ons.notification.toast(this.lang.loggedInEmail, {
                     timeout: 2000
                   });
-                  console.log("user login success.");
                   this.accountDialogVisible = false;
                 } else {
                   //Unauthenticated, to authentication flow

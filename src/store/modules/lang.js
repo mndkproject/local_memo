@@ -263,7 +263,7 @@ export const lang = {
       if (rootState.memoData.selectLang === "en") {
         return state.langData.en;
       } else {
-        return navigator.language === 'ja' ? state.langData.ja : state.langData.en
+        return (navigator.language === 'ja' || navigator.language === "ja-JP") ? state.langData.ja : state.langData.en
       }
     },
   }

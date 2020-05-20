@@ -6,7 +6,6 @@
       collapse
       side="left"
       :open.sync="openSide"
-      swipeable
       id="menu"
     >
       <side :toggleSide="toggleSide" @close-side="toggleSide"></side>
@@ -76,6 +75,27 @@ ons-input .text-input {
   color: inherit;
   background: none;
 }
+
+/* desktop */
+@media screen and (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 50, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+  }
+
+  .alert-dialog-content {
+    scrollbar-width: thin;
+  }
+}
 </style>
 
 <script>
@@ -97,6 +117,13 @@ export default {
     },
     lang() {
       return this.$store.getters["lang/currentLang"];
+    },
+    isPC() {
+      return !this.$ons.platform.isIPhone() &&
+        !this.$ons.platform.isAndroid() &&
+        window.innerWidth >= 640
+        ? true
+        : false;
     }
   },
   mounted() {
@@ -104,6 +131,10 @@ export default {
     document.body.className = this.$store.state.memoData.themeColor
       ? this.$store.state.memoData.themeColor
       : "";
+
+    if (!this.isPC) {
+      document.getElementById("menu").setAttribute("swipeable", "");
+    }
   },
   destroyed() {
     this.$store.dispatch("snapshotCheck", "stop");
@@ -122,8 +153,6 @@ export default {
         ) {
           console.log("Temporary certification in progress");
         } else {
-          console.log("Logging in");
-
           //Cloud synchronization processing
           if (this.$store.state.memoData.shareCloud) {
             this.$store.dispatch("snapshotCheck", "start");
@@ -131,7 +160,6 @@ export default {
         }
       } else {
         this.$store.dispatch("fbAuthCheck", "");
-        console.log("Not logged in");
         this.$store.dispatch("shareCloudCheck", false);
       }
     });
@@ -157,7 +185,7 @@ export default {
       var elem = document.getElementById("menu");
       if (this.pageStack.length > 1) {
         elem.removeAttribute("swipeable");
-      } else {
+      } else if (!this.isPC) {
         elem.setAttribute("swipeable", "");
       }
     }
