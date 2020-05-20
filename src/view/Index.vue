@@ -303,14 +303,13 @@ export default {
   },
   watch: {
     otherPageMoved() {
-      if (this.otherPageMoved !== "") {
-        switch (this.otherPageMoved) {
-          case "trash":
-            this.pageStack.push(trash);
-            break;
-          default:
-            break;
-        }
+      switch (this.otherPageMoved) {
+        case "trash":
+          history.pushState(null, null, null);
+          this.pageStack.push(trash);
+          break;
+        default:
+          break;
       }
     },
     deletePop() {
