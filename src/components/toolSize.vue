@@ -23,15 +23,6 @@
           <label :for="'size-' + $index+pageNum" class="center">{{ item.name }}</label>
         </v-ons-list-item>
       </v-ons-list>
-
-      <v-ons-row style="margin-top: 1em;">
-        <v-ons-col width="40px" style="text-align: center; line-height: 31px;">{{ lang.fontSmall }}</v-ons-col>
-        <v-ons-col>
-          <v-ons-range min="0.3" max="8" step="0.1" v-model="selectedSize" style="width: 100%;"></v-ons-range>
-        </v-ons-col>
-        <v-ons-col width="40px" style="text-align: center; line-height: 31px;">{{ lang.fontLarge }}</v-ons-col>
-      </v-ons-row>
-      <p style="text-align: center;">{{ lang.fontSize }}: {{ selectedSize * 100 }}%</p>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="sizeDialogVisible = false;">{{ lang.close }}</v-ons-alert-dialog-button>
         <v-ons-alert-dialog-button @click="selectSize">Ok</v-ons-alert-dialog-button>
@@ -53,10 +44,14 @@ export default {
     return {
       sizeDialogVisible: false,
       sizes: [
-        { size: "3", name: "300%" },
-        { size: "1.5", name: "150%" },
+        { size: "0.5", name: "50%" },
+        { size: "0.8", name: "80%" },
         { size: "1", name: "100%(default)" },
-        { size: "0.8", name: "80%" }
+        { size: "1.2", name: "120%" },
+        { size: "1.5", name: "150%" },
+        { size: "1.8", name: "180%" },
+        { size: "2.4", name: "240%" },
+        { size: "3", name: "300%" }
       ],
       selectedSize: "1",
       pageNum: this.page.key

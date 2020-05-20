@@ -428,7 +428,11 @@ export default new Vuex.Store({
           } else if (localUpdate < cloudUpdate) {
             localData[localIndex].content = cloudItem.content;
             localData[localIndex].labelColor = cloudItem.labelColor;
+            localData[localIndex].mark = cloudItem.mark;
             localData[localIndex].updated_at = cloudItem.updated_at;
+            if (cloudItem.delete) {
+              localData[localIndex].delete = cloudItem.delete;
+            }
             update_flag = true;
           }
         } else {
