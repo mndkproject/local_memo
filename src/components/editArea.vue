@@ -186,6 +186,9 @@ export default {
     },
     markClass() {
       return this.isMark ? "is-mark" : "";
+    },
+    editAreaUpdate() {
+      return this.$store.state.editAreaUpdate;
     }
   },
   created() {
@@ -200,6 +203,11 @@ export default {
     },
     currentIndex() {
       this.editnow = this.currentMemo.content;
+    },
+    editAreaUpdate() {
+      this.editnow = this.editAreaUpdate
+        ? this.currentMemo.content
+        : this.editnow;
     }
   },
   methods: {
