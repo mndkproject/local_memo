@@ -13,13 +13,16 @@
       </p>
     </div>
 
-    <textarea
+    <div
       :class="isPC"
       class="edit-area"
-      v-model="editnow"
+      contenteditable="true"
       placeholder="edit..."
       :style="{ fontSize: fontSize + 'rem', borderColor: currentMemo.labelColor }"
-    ></textarea>
+      v-html="editnow"
+      @input="inputAction"
+      id="inputContent"
+    ></div>
   </div>
 </template>
 
@@ -28,6 +31,7 @@
   position: fixed;
   top: 44px;
   border-bottom: 5px solid transparent;
+  z-index: 10;
 }
 
 .page--material__content #js-note {
@@ -60,8 +64,7 @@
 }
 
 .edit-area {
-  display: flex;
-  justify-content: center;
+  position: relative;
   margin: 0 auto;
   padding: 5px;
   padding-top: 44px;
@@ -70,10 +73,18 @@
   width: 100%;
   max-width: 800px;
   height: 75vh;
-  line-height: 1.6;
+  line-height: 1.8;
   border: none;
   border-top: 5px solid transparent;
   font: inherit;
+  outline: 0;
+  overflow-y: auto;
+}
+
+.edit-area p {
+  position: relative;
+  margin: 0;
+  line-height: 1.8;
 }
 
 .page--material__content .edit-area {
@@ -88,6 +99,13 @@
   margin-right: 4px;
   cursor: default;
   font-size: inherit;
+}
+
+[contenteditable="true"]:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block;
+  opacity: 0.5;
 }
 
 /* desktop */
@@ -106,6 +124,10 @@
     padding-top: 5px;
     padding-bottom: 10px;
     scrollbar-width: thin;
+  }
+
+  .edit-link {
+    cursor: pointer;
   }
 }
 </style>
@@ -189,18 +211,48 @@ export default {
     },
     editAreaUpdate() {
       return this.$store.state.editAreaUpdateFlag;
+    },
+    editContent() {
+      return document.getElementById("inputContent");
     }
   },
   created() {
     this.debouncedGetContent = _.debounce(this.getContent, 500);
+
+    document.execCommand("DefaultParagraphSeparator", false, "p");
   },
   mounted() {
-    this.editnow = this.currentMemo.content;
+    this.editnow =
+      this.currentMemo.content !== "" ? this.currentMemo.content : this.editnow;
+
+    //paste
+    this.editContent.addEventListener("paste", function() {
+      var text = event.clipboardData.getData("text/plain");
+      document.execCommand("insertText", false, text);
+      event.preventDefault();
+    });
+
+    //link
+    this.editContent.addEventListener("click", e => {
+      if (e.path[0].className === "edit-link") {
+        if (this.isPC) {
+          window.open(e.path[0].href);
+        } else {
+          this.$ons.notification
+            .confirm(this.lang.linkConfirm, {
+              title: this.lang.confirm,
+              cancelable: true
+            })
+            .then(res => {
+              if (res === 1) {
+                window.open(e.path[0].href);
+              }
+            });
+        }
+      }
+    });
   },
   watch: {
-    editnow() {
-      this.debouncedGetContent();
-    },
     currentIndex() {
       this.editnow = this.currentMemo.content;
     },
@@ -213,9 +265,74 @@ export default {
   },
   methods: {
     getContent() {
-      if (this.editnow !== this.currentMemo.content) {
-        this.$store.dispatch("contentCheck", this.editnow);
+      if (this.editContent.innerHTML !== this.currentMemo.content) {
+        const linkCheck = function() {
+          const anchor = new RegExp("a(?: .+?)?>");
+          const urlReg = new RegExp(
+            "((https://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+))",
+            "g"
+          );
+          if (
+            this.innerHTML &&
+            this.nodeName !== "A" &&
+            this.innerHTML.indexOf("https://") !== -1
+          ) {
+            if (!anchor.test(this.innerHTML)) {
+              this.innerHTML = this.innerHTML.replace(
+                urlReg,
+                '<a href="$1" target="_blank" class="edit-link">$1</a>'
+              );
+              var range = document.createRange();
+              range.setStartAfter(this);
+              var sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          } else if (
+            this.nodeName === "A" &&
+            this.innerHTML.indexOf("https://") !== -1
+          ) {
+            const newUrl = this.innerHTML;
+            this.setAttribute("href", newUrl);
+            this.setAttribute("target", "_blank");
+            this.className = "edit-link";
+          } else if (this.nodeName === "A") {
+            this.className = "edit-link";
+          }
+        };
+        const DOMComb = (oParent, oCallback) => {
+          if (oParent.hasChildNodes()) {
+            for (
+              let oNode = oParent.firstChild;
+              oNode;
+              oNode = oNode.nextSibling
+            ) {
+              if (
+                (oNode.innerHTML === "" && oNode.nodeName !== "BR") ||
+                (oNode.innerHTML && !oNode.innerHTML.length)
+              ) {
+                oNode.remove();
+              } else {
+                DOMComb(oNode, oCallback);
+              }
+            }
+          }
+          oCallback.call(oParent);
+        };
+        DOMComb(this.editContent, linkCheck);
+
+        const editTitle = this.editContent.innerHTML
+          .replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .slice(0, 24);
+
+        this.$store.dispatch("contentCheck", {
+          editContent: this.editContent.innerHTML,
+          editTitle: editTitle
+        });
       }
+    },
+    inputAction() {
+      this.debouncedGetContent();
     }
   },
   components: {

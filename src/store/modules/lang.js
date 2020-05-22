@@ -128,6 +128,7 @@ export const lang = {
         markRemoveNotice: "目標文字数設定を一括解除しました。",
         localRemoveConfirm: "すべてのメモデータを一括で完全に削除します。ローカルとクラウドの両方からメモデータが完全に削除されます。この操作はもとに戻せません。本当に削除してよろしいですか？",
         localRemoveNotice: "すべてのメモデータを完全に削除しました。",
+        linkConfirm: "リンクを開きますか？",
       },
       en: {
         noticeClose: "Press again to finish",
@@ -255,6 +256,7 @@ export const lang = {
         markRemoveNotice: "The target character count settings have been cancelled.",
         localRemoveConfirm: "All memo data will be erased at once. The memo data is erased from both local and cloud. This operation cannot be undone. Are you sure you want to erase it?",
         localRemoveNotice: "All memo data has been erased.",
+        linkConfirm: "Open the link?",
       }
     }
   },

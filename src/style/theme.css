@@ -82,6 +82,7 @@ ons-fab.fab .zmdi,
 .current-item,
 .alert-dialog-button,
 .back-button__label,
+.edit-area a,
 .back-button__icon {
   color: #1e88e5;
   fill: #1e88e5;
@@ -199,6 +200,7 @@ ons-fab.fab .zmdi,
 .theme1 .current-item,
 .theme1 .alert-dialog-button,
 .theme1 .back-button__label,
+.theme1 .edit-area a,
 .theme1 .back-button__icon {
   color: #4fc4cf;
   fill: #4fc4cf;
@@ -316,6 +318,7 @@ ons-fab.fab .zmdi,
 .theme2 .current-item,
 .theme2 .alert-dialog-button,
 .theme2 .back-button__label,
+.theme2 .edit-area a,
 .theme2 .back-button__icon {
   color: #00ebc7;
   fill: #00ebc7;
@@ -433,6 +436,7 @@ ons-fab.fab .zmdi,
 .theme3 .current-item,
 .theme3 .alert-dialog-button,
 .theme3 .back-button__label,
+.theme3 .edit-area a,
 .theme3 .back-button__icon {
   color: #3da9fc;
   fill: #3da9fc;
@@ -550,6 +554,7 @@ ons-fab.fab .zmdi,
 .theme4 .current-item,
 .theme4 .alert-dialog-button,
 .theme4 .back-button__label,
+.theme4 .edit-area a,
 .theme4 .back-button__icon {
   color: #7f5af0;
   fill: #7f5af0;
@@ -667,6 +672,7 @@ ons-fab.fab .zmdi,
 .theme5 .current-item,
 .theme5 .alert-dialog-button,
 .theme5 .back-button__label,
+.theme5 .edit-area a,
 .theme5 .back-button__icon {
   color: #faae2b;
   fill: #faae2b;
@@ -784,6 +790,7 @@ ons-fab.fab .zmdi,
 .theme6 .current-item,
 .theme6 .alert-dialog-button,
 .theme6 .back-button__label,
+.theme6 .edit-area a,
 .theme6 .back-button__icon {
   color: #6246ea;
   fill: #6246ea;
@@ -901,6 +908,7 @@ ons-fab.fab .zmdi,
 .theme7 .current-item,
 .theme7 .alert-dialog-button,
 .theme7 .back-button__label,
+.theme7 .edit-area a,
 .theme7 .back-button__icon {
   color: #0e172c;
   fill: #0e172c;
@@ -1018,6 +1026,7 @@ ons-fab.fab .zmdi,
 .theme8 .current-item,
 .theme8 .alert-dialog-button,
 .theme8 .back-button__label,
+.theme8 .edit-area a,
 .theme8 .back-button__icon {
   color: #078080;
   fill: #078080;
@@ -1135,6 +1144,7 @@ ons-fab.fab .zmdi,
 .theme9 .current-item,
 .theme9 .alert-dialog-button,
 .theme9 .back-button__label,
+.theme9 .edit-area a,
 .theme9 .back-button__icon {
   color: #ff8e3c;
   fill: #ff8e3c;
@@ -1252,6 +1262,7 @@ ons-fab.fab .zmdi,
 .theme10 .current-item,
 .theme10 .alert-dialog-button,
 .theme10 .back-button__label,
+.theme10 .edit-area a,
 .theme10 .back-button__icon {
   color: #f9bc60;
   fill: #f9bc60;
@@ -1369,6 +1380,7 @@ ons-fab.fab .zmdi,
 .theme11 .current-item,
 .theme11 .alert-dialog-button,
 .theme11 .back-button__label,
+.theme11 .edit-area a,
 .theme11 .back-button__icon {
   color: #8c7851;
   fill: #8c7851;
@@ -1486,6 +1498,7 @@ ons-fab.fab .zmdi,
 .theme12 .current-item,
 .theme12 .alert-dialog-button,
 .theme12 .back-button__label,
+.theme12 .edit-area a,
 .theme12 .back-button__icon {
   color: #eebbc3;
   fill: #eebbc3;
@@ -1603,6 +1616,7 @@ ons-fab.fab .zmdi,
 .theme13 .current-item,
 .theme13 .alert-dialog-button,
 .theme13 .back-button__label,
+.theme13 .edit-area a,
 .theme13 .back-button__icon {
   color: #ff8906;
   fill: #ff8906;
@@ -1720,6 +1734,7 @@ ons-fab.fab .zmdi,
 .theme14 .current-item,
 .theme14 .alert-dialog-button,
 .theme14 .back-button__label,
+.theme14 .edit-area a,
 .theme14 .back-button__icon {
   color: #ffd803;
   fill: #ffd803;
@@ -1837,6 +1852,7 @@ ons-fab.fab .zmdi,
 .theme15 .current-item,
 .theme15 .alert-dialog-button,
 .theme15 .back-button__label,
+.theme15 .edit-area a,
 .theme15 .back-button__icon {
   color: #ff8ba7;
   fill: #ff8ba7;
@@ -1954,6 +1970,7 @@ ons-fab.fab .zmdi,
 .theme16 .current-item,
 .theme16 .alert-dialog-button,
 .theme16 .back-button__label,
+.theme16 .edit-area a,
 .theme16 .back-button__icon {
   color: #ffc0ad;
   fill: #ffc0ad;
@@ -2071,6 +2088,7 @@ ons-fab.fab .zmdi,
 .theme17 .current-item,
 .theme17 .alert-dialog-button,
 .theme17 .back-button__label,
+.theme17 .edit-area a,
 .theme17 .back-button__icon {
   color: #f582ae;
   fill: #f582ae;

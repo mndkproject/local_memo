@@ -116,10 +116,13 @@ export default new Vuex.Store({
       state.memoData.memoList.push({
         id: ID,
         content: state.memoData.memoList[payload.currentIndex].content,
+        title: "",
         create_at: new Date().getTime(),
         updated_at: new Date().getTime(),
         labelColor: state.memoData.memoList[payload.currentIndex].labelColor,
-        mark: state.memoData.memoList[payload.currentIndex].mark ? state.memoData.memoList[payload.currentIndex].mark : ""
+        mark: state.memoData.memoList[payload.currentIndex].mark ? state.memoData.memoList[payload.currentIndex].mark : "",
+        delete: false,
+        favorite: false
       });
     },
     deleteData(state, payload) {
@@ -127,7 +130,7 @@ export default new Vuex.Store({
         state.memoData.memoList[payload.currentIndex].favorite = false;
       }
       state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      Vue.set(state.memoData.memoList[payload.currentIndex], "delete", true);
+      state.memoData.memoList[payload.currentIndex].delete = true;
       state.currentId = "";
     },
     restorationData(state, payload) {
@@ -137,15 +140,20 @@ export default new Vuex.Store({
     erasureData(state, payload) {
       state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
       state.memoData.memoList[payload.currentIndex].content = "";
+      state.memoData.memoList[payload.currentIndex].title = "";
     },
     addData(state) {
       var ID = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
       state.memoData.memoList.push({
         id: ID,
         content: "",
+        title: "",
         create_at: new Date().getTime(),
         updated_at: new Date().getTime(),
-        labelColor: state.memoData.filterColor !== "" ? state.memoData.filterColor : "transparent"
+        labelColor: state.memoData.filterColor !== "" ? state.memoData.filterColor : "transparent",
+        mark: "",
+        delete: false,
+        favorite: false
       });
       state.currentId = ID;
     },
@@ -155,11 +163,7 @@ export default new Vuex.Store({
     },
     toggleFavorite(state, payload) {
       state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      if (state.memoData.memoList[payload.currentIndex].favorite) {
-        Vue.set(state.memoData.memoList[payload.currentIndex], "favorite", false);
-      } else {
-        Vue.set(state.memoData.memoList[payload.currentIndex], "favorite", true);
-      }
+      state.memoData.memoList[payload.currentIndex].favorite = !state.memoData.memoList[payload.currentIndex].favorite;
     },
     changeId(state, id) {
       state.currentId = id;
@@ -175,6 +179,7 @@ export default new Vuex.Store({
     },
     changeContent(state, payload) {
       state.memoData.memoList[payload.currentIndex].content = payload.newContent;
+      state.memoData.memoList[payload.currentIndex].title = payload.newTitle;
       state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
     },
     changeFilter(state, color) {
@@ -221,7 +226,7 @@ export default new Vuex.Store({
       state.fbAuth.reauthenticate = true;
     },
     setMark(state, payload) {
-      Vue.set(state.memoData.memoList[payload.currentIndex], "mark", payload.num);
+      state.memoData.memoList[payload.currentIndex].mark = payload.num;
     },
     otherPagePush(state, page) {
       state.otherPageMoved = page;
@@ -260,8 +265,9 @@ export default new Vuex.Store({
           if (item.favorite && item.favorite === true) {
             item.favorite = false;
           }
-          Vue.set(item, "delete", true);
+          item.delete = true;
           item.content = "";
+          item.title = "";
         }
       });
       state.currentId = "";
@@ -281,10 +287,21 @@ export default new Vuex.Store({
         if (JSON.parse(localStorage.local_memo.replace(',"["', ''))) {
           db = JSON.parse(localStorage.local_memo.replace(',"["', ''));
 
-          //日付形式変更の対応用、公開時には消す
+          //形式変更の対応用、公開時には消す
           db.memoList.forEach(item => {
             item.updated_at = new Date(item.updated_at).getTime();
             item.create_at = new Date(item.create_at).getTime();
+
+            if (!item.delete && item.delete !== false) {
+              item.delete = false;
+            }
+            if (!item.mark && item.mark !== "") {
+              item.mark = "";
+            }
+            if (!item.title && item.content) {
+              item.title = item.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+                .slice(0, 24);
+            }
           });
         }
       }
@@ -381,7 +398,7 @@ export default new Vuex.Store({
       }
     },
     contentCheck({ commit, getters }, newContent) {
-      var payload = { currentIndex: getters.currentIndex, newContent: newContent };
+      var payload = { currentIndex: getters.currentIndex, newContent: newContent.editContent, newTitle: newContent.editTitle };
       commit('changeContent', payload);
       commit('save');
     },
@@ -418,8 +435,23 @@ export default new Vuex.Store({
           localItem => localItem.id === tarId
         );
 
+        //形式変更対応用、後で消す
+        if (!cloudItem.mark) {
+          cloudItem.mark = "";
+        }
+        if (!cloudItem.delete) {
+          cloudItem.delete = false;
+        }
+        if (!cloudItem.title) {
+          cloudItem.title = cloudItem.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+            .slice(0, 24);
+        }
+        if (!cloudItem.favorite) {
+          cloudItem.favorite = false;
+        }
+
         if (tarItem) {
-          //日付形式変更対応用、後で消す
+          //形式変更対応用、後で消す
           tarItem.updated_at = new Date(tarItem.updated_at).getTime();
           tarItem.create_at = new Date(tarItem.create_at).getTime();
 
@@ -432,14 +464,12 @@ export default new Vuex.Store({
             update_flag = true;
           } else if (localUpdate < cloudUpdate) {
             localData[localIndex].content = cloudItem.content;
+            localData[localIndex].title = cloudItem.title;
             localData[localIndex].labelColor = cloudItem.labelColor;
             localData[localIndex].updated_at = cloudItem.updated_at;
-            if (cloudItem.mark) {
-              localData[localIndex]["mark"] = cloudItem.mark;
-            }
-            if (cloudItem.delete) {
-              localData[localIndex]["delete"] = cloudItem.delete;
-            }
+            localData[localIndex].mark = cloudItem.mark;
+            localData[localIndex].delete = cloudItem.delete;
+            localData[localIndex].favorite = cloudItem.favorite;
             update_flag = true;
           }
         } else {

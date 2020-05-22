@@ -25,7 +25,7 @@
                         :class="{'done' : String(item.content.length) > Number(item.mark)}"
                       ></i>
                     </template>
-                    {{ item.content.slice(0,24) }}
+                    <span v-if="item.title" v-html="item.title"></span>
                   </span>
                   <span
                     v-if="memoSortKey === 'updated_at'"
