@@ -240,6 +240,7 @@ export default {
         if (this.isPC) {
           window.open(e.path[0].href);
         } else {
+          document.activeElement.blur();
           this.$ons.notification
             .confirm(this.lang.linkConfirm, {
               title: this.lang.confirm,
@@ -274,7 +275,7 @@ export default {
         editorHeight = this.editContent.getBoundingClientRect().height;
         if (editorHeightDiff > 0 && editorHeightDiff < caretHeight) {
           var scrollCalc = 28 * caretLines;
-          document.getElementById("inputContent").scrollBy(0, scrollCalc);
+          this.editContent.scrollBy(0, scrollCalc);
         }
       },
       false
