@@ -232,8 +232,10 @@ export default {
       event.preventDefault();
     });
 
-    //link
+    var caretHeight = 0;
+    var caretLines = 0;
     this.editContent.addEventListener("click", e => {
+      //link
       if (e.path[0].className === "edit-link") {
         if (this.isPC) {
           window.open(e.path[0].href);
@@ -250,7 +252,33 @@ export default {
             });
         }
       }
+
+      //caret
+      var toolbarHeight = this.$ons.platform.isAndroid() ? 56 : 44;
+      caretHeight = e.clientY;
+      caretLines = Math.floor(
+        (e.clientY -
+          (this.editContent.getBoundingClientRect().top + toolbarHeight)) /
+          28
+      );
     });
+
+    //caret
+    var editorHeightDiff = 0;
+    var editorHeight = this.editContent.getBoundingClientRect().height;
+    window.addEventListener(
+      "resize",
+      () => {
+        editorHeightDiff =
+          editorHeight - this.editContent.getBoundingClientRect().height;
+        editorHeight = this.editContent.getBoundingClientRect().height;
+        if (editorHeightDiff > 0 && editorHeightDiff < caretHeight) {
+          var scrollCalc = 28 * caretLines;
+          document.getElementById("inputContent").scrollBy(0, scrollCalc);
+        }
+      },
+      false
+    );
   },
   watch: {
     currentIndex() {
