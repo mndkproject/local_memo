@@ -17,7 +17,7 @@ export default {
     lang() {
       return this.$store.getters["lang/currentLang"];
     },
-    tarId() {
+    currentId() {
       return this.$store.state.currentId;
     }
   },
@@ -30,7 +30,7 @@ export default {
         })
         .then(response => {
           if (response === 1) {
-            this.$store.dispatch("deletePopCheck", this.tarId);
+            this.$store.dispatch("deletePopCheck", this.currentId);
             this.$ons.notification.toast(this.lang.deleteNotice, {
               timeout: 2000
             });

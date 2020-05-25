@@ -134,9 +134,9 @@
               <p v-if="mailErrorMsg" class="validation">{{ mailErrorMsg }}</p>
             </div>
           </v-ons-list-item>
-          <v-ons-list-item modifier="nodivider">
+          <v-ons-list-item modifier="nodivider" @click="selectAuth('email')">
             <div class="content">
-              <v-ons-button modifier="large" @click="selectAuth('email')">
+              <v-ons-button modifier="large">
                 <i class="zmdi zmdi-email"></i>
                 {{ lang.authEmail }}
               </v-ons-button>
@@ -153,7 +153,7 @@
         <v-ons-list key="init">
           <v-ons-list-item modifier="nodivider" @click="selectAuth('google')">
             <div class="content">
-              <v-ons-button modifier="large" @click="emailAuth">
+              <v-ons-button modifier="large">
                 <i class="zmdi zmdi-google"></i>
                 {{ lang.authWithGoogle }}
               </v-ons-button>
@@ -163,7 +163,7 @@
           <v-ons-list-item modifier="nodivider" @click="selectAuth('facebook')">
               <div class="content">
                 
-              <v-ons-button modifier="large" @click="emailAuth">
+              <v-ons-button modifier="large">
                 <i class="zmdi zmdi-facebook" style="color:#1774eb;"></i>{{ lang.authWithFacebook }}
               </v-ons-button>
               </div>
@@ -171,15 +171,15 @@
           <v-ons-list-item modifier="nodivider" @click="selectAuth('twitter')">
               <div class="content">
                 
-              <v-ons-button modifier="large" @click="emailAuth">
+              <v-ons-button modifier="large">
                 <i class="zmdi zmdi-twitter" style="color:#1d9dec;"></i>{{ lang.authWithTwitter }}
               </v-ons-button>
               </div>
           </v-ons-list-item>
           -->
-          <v-ons-list-item modifier="nodivider">
+          <v-ons-list-item modifier="nodivider" @click="emailAuth">
             <div class="content">
-              <v-ons-button modifier="large" @click="emailAuth">
+              <v-ons-button modifier="large">
                 <i class="zmdi zmdi-email"></i>
                 {{ lang.authWithEmail }}
               </v-ons-button>
@@ -309,7 +309,7 @@ export default {
         }
         this.sendMailCheck();
       } else if (target === "google") {
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const provider = new firebase.auth().GoogleAuthProvider();
         firebase
           .auth()
           .signInWithPopup(provider)

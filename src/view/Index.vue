@@ -51,7 +51,7 @@
         </div>
         <div class="index-split__content" v-if="isPC">
           <div class="index-split__inner">
-            <edit-area v-if="currentEdit !== -1"></edit-area>
+            <edit-area v-if="currentId !== ''"></edit-area>
           </div>
         </div>
       </div>
@@ -259,11 +259,6 @@ export default {
         ? true
         : false;
     },
-    currentEdit() {
-      return this.$store.getters.currentIndex
-        ? this.$store.getters.currentIndex
-        : false;
-    },
     currentId() {
       return this.$store.state.currentId;
     },
@@ -297,7 +292,10 @@ export default {
         }
         this.$store.dispatch("idCheck", -2);
         this.$store.dispatch("addCheck");
-        this.$store.dispatch("contentCheck", title + "\n" + text + "\n" + url);
+        this.$store.dispatch("contentCheck", {
+          editContent: title + "\n" + text + "\n" + url,
+          editTitle: title
+        });
       }
     }
   },

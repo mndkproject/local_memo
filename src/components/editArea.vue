@@ -217,7 +217,7 @@ export default {
     }
   },
   created() {
-    this.debouncedGetContent = _.debounce(this.getContent, 500);
+    this.debouncedGetContent = _.debounce(this.getContent, 1000);
 
     document.execCommand("DefaultParagraphSeparator", false, "p");
   },

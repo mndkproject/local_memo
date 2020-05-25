@@ -161,6 +161,7 @@ export default {
       } else {
         this.$store.dispatch("fbAuthCheck", "");
         this.$store.dispatch("shareCloudCheck", false);
+        this.$store.dispatch("snapshotCheck", "stop");
       }
     });
 

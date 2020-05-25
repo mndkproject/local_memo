@@ -17,7 +17,7 @@
         <v-ons-button
           modifier="large"
           style="margin: 1em 0 0"
-          @click="removeFilter"
+          @click="selectFilter('')"
         >{{ lang.filterRemove }}</v-ons-button>
       </ul>
       <template slot="footer">
@@ -60,10 +60,6 @@ export default {
   methods: {
     selectFilter(color) {
       this.$store.dispatch("filterCheck", color);
-      this.filterDialogVisible = false;
-    },
-    removeFilter() {
-      this.$store.dispatch("filterRemoveCheck");
       this.filterDialogVisible = false;
     }
   }

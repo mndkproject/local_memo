@@ -68,7 +68,6 @@ export default {
           .then(response => {
             if (response === 1) {
               this.$store.dispatch("shareCloudCheck", true);
-              //Cloud synchronization processing
               this.$store.dispatch("snapshotCheck", "start");
               this.$ons.notification.alert(this.lang.cloudStart, {
                 title: this.lang.confirm,

@@ -48,22 +48,26 @@ export default {
     },
     sorts() {
       return [
-        { sort: "updated_at,desc", name: this.lang.sortUpdateDesc },
-        { sort: "updated_at,asc", name: this.lang.sortUpdateAsc },
         { sort: "create_at,desc", name: this.lang.sortCreateDesc },
         { sort: "create_at,asc", name: this.lang.sortCreateAsc },
+        { sort: "updated_at,desc", name: this.lang.sortUpdateDesc },
+        { sort: "updated_at,asc", name: this.lang.sortUpdateAsc },
         { sort: "content,asc", name: this.lang.sortNameDesc },
         { sort: "content,desc", name: this.lang.sortNameAsc }
       ];
     }
   },
   mounted() {
-    this.selectedSort = this.$store.getters.memoSortArr;
+    this.selectedSort = Object.values(this.$store.state.memoData.memoSort).join(
+      ","
+    );
   },
   watch: {
     sortDialogVisible() {
       if (!this.sortDialogVisible) {
-        this.selectedSort = this.$store.getters.memoSortArr;
+        this.selectedSort = Object.values(
+          this.$store.state.memoData.memoSort
+        ).join(",");
       }
     }
   },

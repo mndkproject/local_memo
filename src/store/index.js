@@ -14,11 +14,12 @@ export default new Vuex.Store({
     memoData: {
       memoList: [],
       fontSize: "1",
-      memoSort: { key: "updated_at", order: "desc" },
+      memoSort: { key: "create_at", order: "desc" },
       filterColor: "",
       themeColor: "",
       shareCloud: false,
-      selectLang: ""
+      selectLang: "",
+      syncAt: 0
     },
     currentId: "",
     labelColors: [
@@ -74,31 +75,51 @@ export default new Vuex.Store({
       //Exclusion not delete
       return getters.computedList.filter(item => item.delete && item.content !== "");
     },
-    memoSortArr: (state) => {
-      return Object.values(state.memoData.memoSort).join(',')
-    },
     currentIndex: (state) => {
       return state.memoData.memoList.findIndex(el => el.id == state.currentId)
     }
   },
   mutations: {
-    save(state) {
-      var newDB = JSON.stringify(state.memoData);
-      var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
+    save(state, targetId) {
       if (state.memoData.shareCloud) {
-        var newList = JSON.stringify(state.memoData.memoList);
-        var oldList = localStorage.local_memo ? JSON.stringify(JSON.parse(localStorage.local_memo).memoList) : "";
-        if (newList !== oldList) {
-          firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
-            .set({ data: state.memoData.memoList })
-            .then(() => {
-              console.log("cloud save is dane.");
-            })
-            .catch(error => {
-              console.log("Error : ", error);
-            })
+        const db = firebase.firestore();
+        var localSyncList = [];
+        var localSync = typeof state.memoData.syncAt === "number" ? state.memoData.syncAt : 0;
+
+        if (targetId === "sync") {
+          localSyncList = state.memoData.memoList.filter(item => item.updated_at > localSync);
+        } else if (targetId) {
+          var targetIndex = state.memoData.memoList.findIndex(item => item.id === targetId);
+          if (state.memoData.memoList[targetIndex].updated_at > localSync) {
+            localSyncList.push(state.memoData.memoList[targetIndex]);
+          }
+        }
+        if (localSyncList.length > 0) {
+          (async () => {
+            try {
+              const batch = db.batch();
+              for (let i = 0; i < localSyncList.length; i++) {
+                batch.set(
+                  db.collection("memos").doc(state.fbAuth.uid).collection("data").doc(localSyncList[i].id),
+                  localSyncList[i]
+                )
+              }
+              batch.set(
+                db.collection("memos").doc(state.fbAuth.uid),
+                { syncAt: new Date().getTime() }
+              )
+              await batch.commit()
+            } catch (err) {
+              console.log(`Error: ${JSON.stringify(err)}`)
+            }
+          })()
+          console.log("cloud sync is dane.");
         }
       }
+
+      //ターゲットがなんであれローカル保存は一括でされる
+      var newDB = JSON.stringify(state.memoData);
+      var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
       if (newDB !== oldDB) {
         localStorage.local_memo = newDB;
         console.log("local save is dane.");
@@ -111,41 +132,9 @@ export default new Vuex.Store({
         state.memoData = db;
       }
     },
-    copyData(state, payload) {
-      var ID = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
+    addData(state, newId) {
       state.memoData.memoList.push({
-        id: ID,
-        content: state.memoData.memoList[payload.currentIndex].content,
-        title: "",
-        create_at: new Date().getTime(),
-        updated_at: new Date().getTime(),
-        labelColor: state.memoData.memoList[payload.currentIndex].labelColor,
-        mark: state.memoData.memoList[payload.currentIndex].mark ? state.memoData.memoList[payload.currentIndex].mark : "",
-        delete: false,
-        favorite: false
-      });
-    },
-    deleteData(state, payload) {
-      if (state.memoData.memoList[payload.currentIndex].favorite) {
-        state.memoData.memoList[payload.currentIndex].favorite = false;
-      }
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      state.memoData.memoList[payload.currentIndex].delete = true;
-      state.currentId = "";
-    },
-    restorationData(state, payload) {
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      state.memoData.memoList[payload.currentIndex].delete = false;
-    },
-    erasureData(state, payload) {
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      state.memoData.memoList[payload.currentIndex].content = "";
-      state.memoData.memoList[payload.currentIndex].title = "";
-    },
-    addData(state) {
-      var ID = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
-      state.memoData.memoList.push({
-        id: ID,
+        id: newId,
         content: "",
         title: "",
         create_at: new Date().getTime(),
@@ -155,59 +144,80 @@ export default new Vuex.Store({
         delete: false,
         favorite: false
       });
-      state.currentId = ID;
+    },
+    copyData(state, payload) {
+      var ID = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
+      state.memoData.memoList.push({
+        id: ID,
+        content: state.memoData.memoList[payload.index].content,
+        title: "",
+        create_at: new Date().getTime(),
+        updated_at: new Date().getTime(),
+        labelColor: state.memoData.memoList[payload.index].labelColor,
+        mark: state.memoData.memoList[payload.index].mark ? state.memoData.memoList[payload.index].mark : "",
+        delete: false,
+        favorite: false
+      });
+    },
+    restorationData(state, payload) {
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].delete = false;
+    },
+    deleteData(state, payload) {
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].delete = true;
+    },
+    erasureData(state, payload) {
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].content = "";
+      state.memoData.memoList[payload.index].title = "";
+      state.memoData.memoList[payload.index].favorite = false;
+      state.memoData.memoList[payload.index].mark = "";
+      state.memoData.memoList[payload.index].labelColor = "transparent";
+      state.memoData.memoList[payload.index].delete = true;
     },
     changeLabel(state, payload) {
-      state.memoData.memoList[payload.currentIndex].labelColor = payload.color;
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].labelColor = payload.color;
     },
     toggleFavorite(state, payload) {
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
-      state.memoData.memoList[payload.currentIndex].favorite = !state.memoData.memoList[payload.currentIndex].favorite;
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].favorite = !state.memoData.memoList[payload.index].favorite;
     },
-    changeId(state, id) {
-      state.currentId = id;
-    },
-    changeSort(state, sort) {
-      state.memoData.memoSort = sort;
-    },
-    changeSize(state, size) {
-      state.memoData.fontSize = size;
-    },
-    changeLang(state, lang) {
-      state.memoData.selectLang = lang;
+    setMark(state, payload) {
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].mark = payload.num;
     },
     changeContent(state, payload) {
-      state.memoData.memoList[payload.currentIndex].content = payload.newContent;
-      state.memoData.memoList[payload.currentIndex].title = payload.newTitle;
-      state.memoData.memoList[payload.currentIndex].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].updated_at = new Date().getTime();
+      state.memoData.memoList[payload.index].content = payload.newContent;
+      state.memoData.memoList[payload.index].title = payload.newTitle;
     },
-    changeFilter(state, color) {
-      state.memoData.filterColor = color;
+    contentSync(state, cloudData) {
+      var localIndex = state.memoData.memoList.findIndex(localItem => localItem.id === cloudData.id);
+
+      /* ここから形式変更対応用、後で消す */
+      cloudData.updated_at = new Date(cloudData.updated_at).getTime();
+      cloudData.create_at = new Date(cloudData.create_at).getTime();
+      /* ここまで形式変更対応用、後で消す */
+
+      if (localIndex === -1) {
+        state.memoData.memoList.push(cloudData);
+      } else if (state.memoData.memoList[localIndex].updated_at < cloudData.updated_at) {
+        state.memoData.memoList[localIndex].updated_at = cloudData.updated_at;
+        state.memoData.memoList[localIndex].content = cloudData.content;
+        state.memoData.memoList[localIndex].title = cloudData.title;
+        state.memoData.memoList[localIndex].favorite = cloudData.favorite;
+        state.memoData.memoList[localIndex].mark = cloudData.mark;
+        state.memoData.memoList[localIndex].labelColor = cloudData.labelColor;
+        state.memoData.memoList[localIndex].delete = cloudData.delete;
+        if (cloudData.id === state.currentId) {
+          state.editAreaUpdateFlag = true;
+        }
+      }
     },
-    filterRemove(state) {
-      state.memoData.filterColor = "";
-    },
-    changeWordFilter(state, word) {
-      state.filterWord = word;
-    },
-    changeTheme(state, theme) {
-      state.memoData.themeColor = theme;
-    },
-    shareCloudChange(state, isShare) {
-      state.memoData.shareCloud = isShare;
-    },
-    contentSync(state, newData) {
-      state.memoData.memoList = newData;
-      state.editAreaUpdateFlag = true;
-      firebase.firestore().collection("/memos").doc(state.fbAuth.uid)
-        .set({ data: newData })
-        .then(() => {
-          console.log("cloud save is dane.");
-        })
-        .catch(error => {
-          console.log("Error : ", error);
-        })
+    syncAtChange(state, time) {
+      state.memoData.syncAt = time ? time : 0;
     },
     fbAuthChange(state, user) {
       if (user !== "") {
@@ -225,52 +235,35 @@ export default new Vuex.Store({
     reauthenticateGet(state) {
       state.fbAuth.reauthenticate = true;
     },
-    setMark(state, payload) {
-      state.memoData.memoList[payload.currentIndex].mark = payload.num;
+    changeId(state, id) {
+      state.currentId = id;
+    },
+    changeSort(state, sort) {
+      state.memoData.memoSort = sort;
+    },
+    changeSize(state, size) {
+      state.memoData.fontSize = size;
+    },
+    changeLang(state, lang) {
+      state.memoData.selectLang = lang;
+    },
+    changeFilter(state, color) {
+      state.memoData.filterColor = color;
+    },
+    changeWordFilter(state, word) {
+      state.filterWord = word;
+    },
+    changeTheme(state, theme) {
+      state.memoData.themeColor = theme;
+    },
+    shareCloudChange(state, isShare) {
+      state.memoData.shareCloud = isShare;
     },
     otherPagePush(state, page) {
       state.otherPageMoved = page;
     },
     deletePop(state, targetId) {
       state.deletePop = targetId;
-    },
-    labelRemove(state) {
-      state.memoData.memoList.forEach(item => {
-        if (item.labelColor && item.labelColor !== "" && item.labelColor !== "transparent") {
-          item.updated_at = new Date().getTime();
-          item.labelColor = "";
-        }
-      });
-    },
-    favRemove(state) {
-      state.memoData.memoList.forEach(item => {
-        if (item.favorite && item.favorite === true) {
-          item.updated_at = new Date().getTime();
-          item.favorite = false;
-        }
-      });
-    },
-    markRemove(state) {
-      state.memoData.memoList.forEach(item => {
-        if (item.mark && item.mark !== "") {
-          item.updated_at = new Date().getTime();
-          item.mark = "";
-        }
-      });
-    },
-    localRemove(state) {
-      state.memoData.memoList.forEach(item => {
-        if (item.content !== "") {
-          item.updated_at = new Date().getTime();
-          if (item.favorite && item.favorite === true) {
-            item.favorite = false;
-          }
-          item.delete = true;
-          item.content = "";
-          item.title = "";
-        }
-      });
-      state.currentId = "";
     },
     isProgressChange(state, boo) {
       state.isProgress = boo;
@@ -281,231 +274,186 @@ export default new Vuex.Store({
   },
   actions: {
     loadCheck({ commit }) {
-      var db = "";
+      const DB_PARSE = (localStorage.local_memo) ? JSON.parse(localStorage.local_memo.replace(',"["', '')) : "";
+      let db = "";
 
-      if (localStorage.local_memo) {
-        if (JSON.parse(localStorage.local_memo.replace(',"["', ''))) {
-          db = JSON.parse(localStorage.local_memo.replace(',"["', ''));
-
-          //形式変更の対応用、公開時には消す
-          db.memoList.forEach(item => {
-            item.updated_at = new Date(item.updated_at).getTime();
-            item.create_at = new Date(item.create_at).getTime();
-
-            if (!item.delete && item.delete !== false) {
-              item.delete = false;
-            }
-            if (!item.mark && item.mark !== "") {
-              item.mark = "";
-            }
-            if (!item.title && item.content) {
-              item.title = item.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
-                .slice(0, 24);
-            }
-          });
-        }
+      if (DB_PARSE !== "") {
+        db = DB_PARSE;
       }
+
+      /* ここから形式変更の対応用、公開時には消す */
+      if (db.memoList) {
+        db.memoList.forEach(item => {
+          item.updated_at = new Date(item.updated_at).getTime();
+          item.create_at = new Date(item.create_at).getTime();
+          if (!Object.prototype.hasOwnProperty.call(item, "delete")) {
+            item.delete = false;
+          }
+          if (!Object.prototype.hasOwnProperty.call(item, "mark")) {
+            item.mark = "";
+          }
+          if (!Object.prototype.hasOwnProperty.call(item, "labelColor")) {
+            item.labelColor = "transparent";
+          }
+          if (!Object.prototype.hasOwnProperty.call(item, "favorite")) {
+            item.favorite = false;
+          }
+          if (!Object.prototype.hasOwnProperty.call(item, "title") && item.content) {
+            item.title = item.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+              .slice(0, 24);
+          }
+        });
+      }
+      /* ここまで形式変更の対応用、公開時には消す */
 
       if (db !== "") {
         commit('load', db);
       }
     },
-    emptyCheck({ commit, state }) {
-      var i = 0;
-      state.memoData.memoList.forEach(item => {
-        var payload = { currentIndex: i };
-        if (item.content === "" && item.id !== state.currentId) {
-          if (item.delete !== true) {
-            commit('deleteData', payload);
-          }
-        }
-        if (item.delete === true && new Date().getTime() - Number(item.updated_at) > 2592000000) {
-          commit('erasureData', payload);
-        }
-        i++;
-      });
-      /*
-      if (getters.currentIndex !== "" && getters.currentIndex !== -1) {
-        if (state.memoData.memoList[getters.currentIndex].content === "") {
-          var payload = { currentIndex: getters.currentIndex };
-          commit('deleteData', payload);
-          commit('save');
-        }
+    addCheck({ commit, state, getters }) {
+      if (!state.memoData.memoList[getters.currentIndex]) {
+        var newId = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
+        commit('addData', newId);
+        commit('changeId', newId);
+        commit('save', newId);
       }
-      */
     },
     copyCheck({ commit, state }, id) {
       var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
       if (targetIndex) {
-        commit('copyData', { currentIndex: targetIndex });
-        commit('save');
-      }
-    },
-    deleteCheck({ commit, state }, id) {
-      var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
-      if (targetIndex) {
-        commit('deleteData', { currentIndex: targetIndex });
-        commit('save');
+        commit('copyData', { index: targetIndex });
+        commit('save', id);
       }
     },
     restorationCheck({ commit, state }, id) {
       var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
       if (targetIndex) {
-        commit('restorationData', { currentIndex: targetIndex });
-        commit('save');
+        commit('restorationData', { index: targetIndex });
+        commit('save', id);
+      }
+    },
+    deleteCheck({ commit, state }, id) {
+      var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
+      if (targetIndex) {
+        commit('deleteData', { index: targetIndex });
+        commit('save', id);
+        commit('changeId', "");
       }
     },
     erasureCheck({ commit, state }, id) {
       var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
       if (targetIndex) {
-        commit('erasureData', { currentIndex: targetIndex });
-        commit('save');
+        commit('erasureData', { index: targetIndex });
+        commit('save', id);
       }
     },
-    addCheck({ commit, state, getters }) {
-      if (!state.memoData.memoList[getters.currentIndex]) {
-        commit('addData');
-        commit('save');
-      }
+    localRemoveCheck({ commit, state }) {
+      state.memoData.memoList.forEach((item, index) => {
+        if (item.content !== "") {
+          commit('erasureData', { index: index });
+        }
+      });
+      commit('syncAtChange', 0);
+      commit('save', "sync");
+      commit('changeId', "");
+    },
+    emptyCheck({ dispatch, state }) {
+      state.memoData.memoList.forEach(item => {
+        if (item.delete !== true && item.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "") === "" && item.id !== state.currentId) {
+          dispatch('deleteCheck', item.id);
+        }
+        if (item.delete === true && new Date().getTime() - Number(item.updated_at) > 2592000000) {
+          dispatch('erasureCheck', item.id);
+        }
+      });
     },
     labelCheck({ commit, state }, get) {
       var targetIndex = state.memoData.memoList.findIndex(item => item.id === get.id);
       if (targetIndex) {
-        commit('changeLabel', { currentIndex: targetIndex, color: get.color });
-        commit('save');
+        commit('changeLabel', { index: targetIndex, color: get.color });
+        commit('save', get.id);
       }
+    },
+    labelRemoveCheck({ commit, state }) {
+      state.memoData.memoList.forEach((item, index) => {
+        if (item.labelColor !== "" && item.labelColor !== "transparent") {
+          commit('changeLabel', { index: index, color: "transparent" });
+        }
+      });
+      commit('save', "sync");
     },
     favoriteCheck({ commit, state }, id) {
       var targetIndex = state.memoData.memoList.findIndex(item => item.id === id);
       if (targetIndex) {
-        commit('toggleFavorite', { currentIndex: targetIndex });
-        commit('save');
+        commit('toggleFavorite', { index: targetIndex });
+        commit('save', id);
       }
     },
-    idCheck({ commit }, id) {
-      commit('changeId', id);
+    favRemoveCheck({ commit, state }) {
+      state.memoData.memoList.forEach((item, index) => {
+        if (item.favorite === true) {
+          commit('toggleFavorite', { index: index });
+        }
+      });
+      commit('save', "sync");
     },
-    sortCheck({ commit }, sort) {
-      if (sort.key && sort.order) {
-        commit('changeSort', sort);
-        commit('save');
-      }
+    setMarkCheck({ commit, state, getters }, num) {
+      commit('setMark', { index: getters.currentIndex, num: num });
+      commit('save', state.currentId);
     },
-    sizeCheck({ commit }, size) {
-      if (size) {
-        commit('changeSize', size);
-        commit('save');
-      }
+    markRemoveCheck({ commit, state }) {
+      state.memoData.memoList.forEach((item, index) => {
+        if (item.mark !== "") {
+          commit('setMark', { index: index, num: "" });
+        }
+      });
+      commit('save', "sync");
     },
-    contentCheck({ commit, getters }, newContent) {
-      var payload = { currentIndex: getters.currentIndex, newContent: newContent.editContent, newTitle: newContent.editTitle };
+    contentCheck({ commit, state, getters }, newContent) {
+      var payload = { index: getters.currentIndex, newContent: newContent.editContent, newTitle: newContent.editTitle };
       commit('changeContent', payload);
-      commit('save');
+      commit('save', state.currentId);
     },
-    filterCheck({ commit, state }, color) {
-      if (state.memoData.memoList.filter(item => item.labelColor === color).length >= 0) {
-        commit('changeFilter', color);
-        commit('save');
-      }
-    },
-    filterRemoveCheck({ commit, state }) {
-      if (state.memoData.filterColor !== "") {
-        commit('filterRemove');
-        commit('save');
-      }
-    },
-    searchCheck({ commit }, word) {
-      commit('changeWordFilter', word);
-    },
-    themeCheck({ commit }, theme) {
-      commit('changeTheme', theme);
-      commit('save');
-    },
-    shareCloudCheck({ commit }, isShare) {
-      commit('shareCloudChange', isShare);
-      commit('save');
-    },
-    contentSyncCheck({ commit, state }, data) {
-      var cloudData = data && data !== "" ? data.data : [];
-      var update_flag = false;
-      let localData = JSON.parse(JSON.stringify(state.memoData.memoList));
-      Array.prototype.forEach.call(cloudData, cloudItem => {
-        var tarId = cloudItem.id;
-        var tarItem = localData.find(
-          localItem => localItem.id === tarId
-        );
-
-        //形式変更対応用、後で消す
-        if (!cloudItem.mark) {
-          cloudItem.mark = "";
-        }
-        if (!cloudItem.delete) {
-          cloudItem.delete = false;
-        }
-        if (!cloudItem.title) {
-          cloudItem.title = cloudItem.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
-            .slice(0, 24);
-        }
-        if (!cloudItem.favorite) {
-          cloudItem.favorite = false;
-        }
-
-        if (tarItem) {
-          //形式変更対応用、後で消す
-          tarItem.updated_at = new Date(tarItem.updated_at).getTime();
-          tarItem.create_at = new Date(tarItem.create_at).getTime();
-
-          var localIndex = localData.findIndex(
-            localItem => localItem.id === tarId
-          );
-          var localUpdate = tarItem.updated_at;
-          var cloudUpdate = cloudItem.updated_at;
-          if (localUpdate > cloudUpdate) {
-            update_flag = true;
-          } else if (localUpdate < cloudUpdate) {
-            localData[localIndex].content = cloudItem.content;
-            localData[localIndex].title = cloudItem.title;
-            localData[localIndex].labelColor = cloudItem.labelColor;
-            localData[localIndex].updated_at = cloudItem.updated_at;
-            localData[localIndex].mark = cloudItem.mark;
-            localData[localIndex].delete = cloudItem.delete;
-            localData[localIndex].favorite = cloudItem.favorite;
-            update_flag = true;
-          }
-        } else {
-          localData.push(cloudItem);
-          update_flag = true;
-        }
-      });
-      Array.prototype.forEach.call(localData, resultLocalItem => {
-        var resultTarId = resultLocalItem.id;
-        var resultTarItem = cloudData.find(
-          cloudItem => cloudItem.id === resultTarId
-        );
-        if (!resultTarItem) {
-          update_flag = true;
-        }
-      });
-      if (update_flag) {
-        commit("contentSync", localData);
-        commit('save');
-        update_flag = false;
-      }
-    },
-    snapshotCheck({ dispatch, state }, flag) {
+    snapshotCheck({ commit, state }, flag) {
       if (flag === "start") {
         if (this.snapshotState) {
           console.warn('It was already watched.', this.snapshotState)
           this.snapshotState()
           this.snapshotState = null
         }
-        this.snapshotState = firebase
-          .firestore().collection("/memos").doc(state.fbAuth.uid)
-          .onSnapshot(data => {
-            var source = data.metadata.hasPendingWrites ? "Local" : "Server";
-            if (source === "Server") {
-              dispatch('contentSyncCheck', data.data());
-            }
+        var db = firebase.firestore();
+        var localSync = typeof state.memoData.syncAt === "number" ? state.memoData.syncAt : 0;
+        this.snapshotState = db.collection("memos").doc(state.fbAuth.uid).collection("data").where("updated_at", ">", localSync)
+          .onSnapshot(querySnapshot => {
+            querySnapshot.forEach(queryDocSnapshot => {
+              if (!queryDocSnapshot.metadata.hasPendingWrites) {
+                commit('contentSync', queryDocSnapshot.data());
+              }
+            });
+            (async () => {
+              var cloudData = await db.collection("memos").doc(state.fbAuth.uid).get()
+                .then(doc => {
+                  if (!doc.exists) {
+                    console.log('No such document!');
+                  } else {
+                    return doc.data();
+                  }
+                })
+                .catch(err => {
+                  console.log('Error getting document', err);
+                });
+              try {
+                var cloudSync = await cloudData.syncAt;
+              } catch (err) {
+                console.log(`Error: ${JSON.stringify(err)}`)
+                cloudSync = 0;
+              }
+              if (typeof cloudSync === "number") {
+                commit('save', "sync");
+                commit('syncAtChange', cloudSync);
+                commit('save', false);
+              }
+            })()
           });
       } else if (flag === "stop") {
         if (this.snapshotState) {
@@ -533,17 +481,34 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         if (state.fbAuth.reauthenticate) {
           //Cloud data deletion process
-          firebase.firestore().collection("/memos").doc(state.fbAuth.uid).get()
+          const db = firebase.firestore();
+          db.collection("memos").doc(state.fbAuth.uid).get()
             .then(doc => {
               if (doc.exists) {
+                dispatch("shareCloudCheck", false);
                 dispatch("snapshotCheck", "stop");
-                firebase.firestore().collection("/memos").doc(state.fbAuth.uid).delete()
-                  .then(() => {
-                    console.log("Document successfully deleted!");
-                  })
-                  .catch(error => {
-                    console.error("Error removing document: ", error);
-                  });
+
+                (async () => {
+                  try {
+                    const batch = db.batch()
+                    const listSplit = (array, n) => array.reduce((a, c, i) => i % n == 0 ? [...a, [c]] : [...a.slice(0, -1), [...a[a.length - 1], c]], []);
+                    const deleteLists = listSplit(db.collection("memos").doc(state.fbAuth.uid).collection("data"), 500);
+                    for (let i = 0; i < deleteLists.length; i++) {
+                      deleteLists[i].foreach(data => {
+                        batch.delete(data);
+                      });
+                      await batch.commit();
+                    }
+                    batch.delete(
+                      db.collection("memos").doc(state.fbAuth.uid)
+                    )
+                    await batch.commit();
+
+                    await db.app.delete();
+                  } catch (err) {
+                    console.log(`Error: ${JSON.stringify(err)}`)
+                  }
+                })()
               } else {
                 console.log("No such document!");
               }
@@ -576,7 +541,7 @@ export default new Vuex.Store({
               : "https://mndkproject.github.io/local_memo/",
           handleCodeInApp: true
         };
-        firebase.auth().currentUser.verifyBeforeUpdateEmail(mail, actionCodeSettings).then(() => {
+        firebase.auth().currentUser().verifyBeforeUpdateEmail(mail, actionCodeSettings).then(() => {
           commit('isProgressChange', false);
           resolve();
         }).catch(error => {
@@ -587,7 +552,7 @@ export default new Vuex.Store({
     },
     changePasswordCheck({ commit }, pw) {
       return new Promise(resolve => {
-        firebase.auth().currentUser.updatePassword(pw).then(() => {
+        firebase.auth().currentUser().updatePassword(pw).then(() => {
           commit('isProgressChange', false);
           resolve();
         }).catch(error => {
@@ -614,9 +579,43 @@ export default new Vuex.Store({
         });
       });
     },
-    setMarkCheck({ commit, getters }, num) {
-      commit('setMark', { currentIndex: getters.currentIndex, num: num });
-      commit('save');
+    idCheck({ commit }, id) {
+      commit('changeId', id);
+    },
+    sortCheck({ commit }, sort) {
+      if (sort.key && sort.order) {
+        commit('changeSort', sort);
+        commit('save', false);
+      }
+    },
+    sizeCheck({ commit }, size) {
+      if (size) {
+        commit('changeSize', size);
+        commit('save', false);
+      }
+    },
+    langCheck({ commit }, lang) {
+      if (lang) {
+        commit('changeLang', lang);
+        commit('save', false);
+      }
+    },
+    filterCheck({ commit, state }, color) {
+      if (color === "" || state.labelColors.indexOf(color) !== -1) {
+        commit('changeFilter', color);
+        commit('save', false);
+      }
+    },
+    searchCheck({ commit }, word) {
+      commit('changeWordFilter', word);
+    },
+    themeCheck({ commit }, theme) {
+      commit('changeTheme', theme);
+      commit('save', false);
+    },
+    shareCloudCheck({ commit }, isShare) {
+      commit('shareCloudChange', isShare);
+      commit('save', false);
     },
     otherPageMoveCheck({ commit }, page) {
       commit('changeId', "");
@@ -624,28 +623,6 @@ export default new Vuex.Store({
     },
     deletePopCheck({ commit }, targetId) {
       commit('deletePop', targetId);
-    },
-    langCheck({ commit }, lang) {
-      if (lang) {
-        commit('changeLang', lang);
-        commit('save');
-      }
-    },
-    labelRemoveCheck({ commit }) {
-      commit('labelRemove');
-      commit('save');
-    },
-    favRemoveCheck({ commit }) {
-      commit('favRemove');
-      commit('save');
-    },
-    markRemoveCheck({ commit }) {
-      commit('markRemove');
-      commit('save');
-    },
-    localRemoveCheck({ commit }) {
-      commit('localRemove');
-      commit('save');
     },
     isProgressCheck({ commit }, boo) {
       commit('isProgressChange', boo);
