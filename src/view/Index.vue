@@ -389,6 +389,13 @@ export default {
     show() {
       this.$store.dispatch("idCheck", "");
       this.$store.dispatch("emptyCheck");
+      if (
+        this.pageStack.length === 1 &&
+        window.history.length > 1 &&
+        window.matchMedia("(display-mode: standalone)").matches
+      ) {
+        window.history.go(-(window.history.length - 1));
+      }
     }
   },
   props: ["pageStack", "page", "toggleSide"],

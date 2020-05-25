@@ -309,6 +309,7 @@ export default {
         }
         this.sendMailCheck();
       } else if (target === "google") {
+        this.$store.dispatch("isProgressCheck", true);
         const provider = new firebase.auth().GoogleAuthProvider();
         firebase
           .auth()
@@ -321,6 +322,9 @@ export default {
           })
           .catch(error => {
             console.log(error.message);
+          })
+          .finally(() => {
+            this.$store.dispatch("isProgressCheck", false);
           });
       }
     },
@@ -377,31 +381,36 @@ export default {
         .then(mail => {
           if (mail && mail !== "") {
             this.$store.dispatch("isProgressCheck", true);
-            this.$store.dispatch("resetPasswordCheck", mail).then(res => {
-              if (!res) {
-                this.$ons.notification.alert(this.lang.resetPasswordNotice, {
-                  title: this.lang.confirm,
-                  cancelable: true
-                });
-              } else {
-                var errorMsg;
-                switch (res.code) {
-                  case "auth/invalid-email":
-                    errorMsg = this.lang.resetPasswordErrInvalid;
-                    break;
-                  case "auth/user-not-found":
-                    errorMsg = this.lang.resetPasswordErrNotfound;
-                    break;
-                  default:
-                    errorMsg = this.lang.resetPasswordErrOther;
-                    break;
+            this.$store
+              .dispatch("resetPasswordCheck", mail)
+              .then(res => {
+                if (!res) {
+                  this.$ons.notification.alert(this.lang.resetPasswordNotice, {
+                    title: this.lang.confirm,
+                    cancelable: true
+                  });
+                } else {
+                  var errorMsg;
+                  switch (res.code) {
+                    case "auth/invalid-email":
+                      errorMsg = this.lang.resetPasswordErrInvalid;
+                      break;
+                    case "auth/user-not-found":
+                      errorMsg = this.lang.resetPasswordErrNotfound;
+                      break;
+                    default:
+                      errorMsg = this.lang.resetPasswordErrOther;
+                      break;
+                  }
+                  this.$ons.notification.alert(errorMsg, {
+                    title: this.lang.confirm,
+                    cancelable: true
+                  });
                 }
-                this.$ons.notification.alert(errorMsg, {
-                  title: this.lang.confirm,
-                  cancelable: true
-                });
-              }
-            });
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
+              });
           }
         });
     },
@@ -425,6 +434,7 @@ export default {
         })
         .then(response => {
           if (response === 1) {
+            this.$store.dispatch("isProgressCheck", true);
             this.$store
               .dispatch("reauthenticateCheck", this.inputPassword)
               .then(res => {
@@ -470,6 +480,9 @@ export default {
                     cancelable: true
                   });
                 }
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
               });
           }
         });
@@ -492,42 +505,51 @@ export default {
         .then(pw => {
           if (pw && pw !== "") {
             this.$store.dispatch("isProgressCheck", true);
-            this.$store.dispatch("reauthenticateCheck", pw).then(res => {
-              if (!res) {
-                this.$store
-                  .dispatch("changeEmailCheck", this.inputEmail)
-                  .then(() => {
-                    this.$ons.notification.alert(this.lang.changeEmailNotice, {
-                      title: this.lang.confirm,
-                      cancelable: true
+            this.$store
+              .dispatch("reauthenticateCheck", pw)
+              .then(res => {
+                if (!res) {
+                  this.$store
+                    .dispatch("changeEmailCheck", this.inputEmail)
+                    .then(() => {
+                      this.$ons.notification.alert(
+                        this.lang.changeEmailNotice,
+                        {
+                          title: this.lang.confirm,
+                          cancelable: true
+                        }
+                      );
+                      this.isChangeAuthMail = false;
+                      this.accountDialogVisible = false;
                     });
-                    this.isChangeAuthMail = false;
-                    this.accountDialogVisible = false;
+                } else {
+                  var errorMsg;
+                  switch (res.code) {
+                    case "auth/wrong-password":
+                      errorMsg = this.lang.emailErrPw;
+                      break;
+                    case "auth/too-many-requests":
+                      errorMsg = this.lang.emailErrMany;
+                      break;
+                    default:
+                      errorMsg = this.lang.emailErrOther;
+                      break;
+                  }
+                  this.$ons.notification.alert(errorMsg, {
+                    title: this.lang.confirm,
+                    cancelable: true
                   });
-              } else {
-                var errorMsg;
-                switch (res.code) {
-                  case "auth/wrong-password":
-                    errorMsg = this.lang.emailErrPw;
-                    break;
-                  case "auth/too-many-requests":
-                    errorMsg = this.lang.emailErrMany;
-                    break;
-                  default:
-                    errorMsg = this.lang.emailErrOther;
-                    break;
                 }
-                this.$ons.notification.alert(errorMsg, {
-                  title: this.lang.confirm,
-                  cancelable: true
-                });
-              }
-            });
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
+              });
           }
         });
     },
     sendMailCheck() {
       //Check if an account has been created
+      this.$store.dispatch("isProgressCheck", true);
       firebase
         .auth()
         .fetchSignInMethodsForEmail(this.inputEmail)
@@ -560,6 +582,9 @@ export default {
                 var errorMessage = " error: " + error.message;
                 this.$ons.notification.toast(errorMessage, { timeout: 2000 });
                 console.log(error.message);
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
               });
           } else {
             //Account not created, account created
@@ -577,6 +602,9 @@ export default {
                 var errorMessage = " error: " + error.message;
                 this.$ons.notification.toast(errorMessage, { timeout: 2000 });
                 console.log(error.message);
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
               });
           }
         })
@@ -585,6 +613,7 @@ export default {
             timeout: 2000
           });
           console.log(error.message);
+          this.$store.dispatch("isProgressCheck", false);
         });
     },
     mailLinkFlow(mail) {
@@ -596,6 +625,7 @@ export default {
         .then(response => {
           if (response === 1) {
             //Send confirmation email
+            this.$store.dispatch("isProgressCheck", true);
             var actionCodeSettings = {
               url:
                 process.env.NODE_ENV === "development"
@@ -616,6 +646,9 @@ export default {
                   timeout: 2000
                 });
                 console.log(error.message);
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
               });
           } else {
             this.$ons.notification.toast(this.lang.sendEmailCancel, {
@@ -632,6 +665,7 @@ export default {
         })
         .then(response => {
           if (response === 1) {
+            this.$store.dispatch("isProgressCheck", true);
             this.$store.dispatch("shareCloudCheck", false);
             this.$store.dispatch("snapshotCheck", "stop");
             firebase
@@ -649,6 +683,9 @@ export default {
                   title: this.lang.confirm,
                   cancelable: true
                 });
+              })
+              .finally(() => {
+                this.$store.dispatch("isProgressCheck", false);
               });
           }
         });
@@ -670,37 +707,43 @@ export default {
               })
               .then(pw => {
                 if (pw && pw !== "") {
-                  this.$store.dispatch("reauthenticateCheck", pw).then(res => {
-                    if (!res) {
-                      this.$store.dispatch("removeAuthCheck").then(() => {
-                        this.$ons.notification.alert(
-                          this.lang.removeAuthNotice,
-                          {
-                            title: this.lang.confirm,
-                            cancelable: true
-                          }
-                        );
-                        this.accountDialogVisible = false;
-                      });
-                    } else {
-                      var errorMsg;
-                      switch (res.code) {
-                        case "auth/wrong-password":
-                          errorMsg = this.lang.emailErrPw;
-                          break;
-                        case "auth/too-many-requests":
-                          errorMsg = this.lang.emailErrMany;
-                          break;
-                        default:
-                          errorMsg = this.lang.emailErrOther;
-                          break;
+                  this.$store.dispatch("isProgressCheck", true);
+                  this.$store
+                    .dispatch("reauthenticateCheck", pw)
+                    .then(res => {
+                      if (!res) {
+                        this.$store.dispatch("removeAuthCheck").then(() => {
+                          this.$ons.notification.alert(
+                            this.lang.removeAuthNotice,
+                            {
+                              title: this.lang.confirm,
+                              cancelable: true
+                            }
+                          );
+                          this.accountDialogVisible = false;
+                        });
+                      } else {
+                        var errorMsg;
+                        switch (res.code) {
+                          case "auth/wrong-password":
+                            errorMsg = this.lang.emailErrPw;
+                            break;
+                          case "auth/too-many-requests":
+                            errorMsg = this.lang.emailErrMany;
+                            break;
+                          default:
+                            errorMsg = this.lang.emailErrOther;
+                            break;
+                        }
+                        this.$ons.notification.alert(errorMsg, {
+                          title: this.lang.confirm,
+                          cancelable: true
+                        });
                       }
-                      this.$ons.notification.alert(errorMsg, {
-                        title: this.lang.confirm,
-                        cancelable: true
-                      });
-                    }
-                  });
+                    })
+                    .finally(() => {
+                      this.$store.dispatch("isProgressCheck", false);
+                    });
                 }
               });
           }

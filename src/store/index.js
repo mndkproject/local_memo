@@ -113,7 +113,6 @@ export default new Vuex.Store({
               console.log(`Error: ${JSON.stringify(err)}`)
             }
           })()
-          console.log("cloud sync is dane.");
         }
       }
 
@@ -122,9 +121,6 @@ export default new Vuex.Store({
       var oldDB = localStorage.local_memo ? localStorage.local_memo : "";
       if (newDB !== oldDB) {
         localStorage.local_memo = newDB;
-        console.log("local save is dane.");
-      } else {
-        console.log("local change is none.");
       }
     },
     load(state, db) {

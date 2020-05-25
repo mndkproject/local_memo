@@ -23,6 +23,12 @@
         ></component>
       </v-ons-navigator>
     </v-ons-splitter-content>
+    <v-ons-modal :visible="isProgress">
+      <p style="text-align: center">
+        Loading
+        <v-ons-icon icon="fa-spinner" spin></v-ons-icon>
+      </p>
+    </v-ons-modal>
   </v-ons-splitter>
 </template>
 
@@ -124,6 +130,9 @@ export default {
         window.innerWidth >= 640
         ? true
         : false;
+    },
+    isProgress() {
+      return this.$store.state.isProgress;
     }
   },
   mounted() {
