@@ -69,11 +69,16 @@ ons-fab.fab {
   font-size: 22px;
 }
 
+.fas {
+  font-size: 20px;
+}
+
 ons-fab.fab .zmdi {
   font-size: 25px;
 }
 
-#memo-list .list-item--memo .zmdi {
+#memo-list .list-item--memo .zmdi,
+#memo-list .list-item--memo .fas {
   font-size: inherit;
 }
 

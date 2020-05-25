@@ -18,7 +18,7 @@
                   :class="{'current-item':currentId === item.id}"
                 >
                   <span class="list-item__title">
-                    <i v-if="item.favorite" class="zmdi zmdi-bookmark"></i>
+                    <i v-if="item.favorite" class="fas fa-thumbtack"></i>
                     <template v-if="item.mark && item.mark !== ''">
                       <i
                         class="zmdi zmdi-check-circle mark-icon"
@@ -68,7 +68,7 @@
         </li>
       </ul>
       <p class="func-text">
-        <i class="zmdi zmdi-bookmark" :class="favColor" @click="selectFavorite"></i>
+        <i class="fas fa-thumbtack" :class="favColor" @click="selectFavorite"></i>
         <i class="zmdi zmdi-copy" @click="copyDialog"></i>
         <i class="zmdi zmdi-delete" @click="deleteDialog"></i>
       </p>
@@ -133,7 +133,8 @@
   margin-top: 2em;
 }
 
-.alert-dialog--index .func-text .zmdi {
+.alert-dialog--index .func-text .zmdi,
+.alert-dialog--index .func-text .fas {
   margin: 0 1em;
 }
 

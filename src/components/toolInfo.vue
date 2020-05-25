@@ -78,6 +78,7 @@
 
 .info-mark i {
   margin: 0 4px;
+  cursor: inherit;
 }
 
 .mark-btn {
