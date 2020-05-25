@@ -113,13 +113,18 @@ export default {
     },
     chars() {
       return String(
-        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
-          .length
+        this.currentMemo.content
+          .replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/\n/g, "").length
       );
     },
     bytes() {
       return encodeURIComponent(
-        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+        this.currentMemo.content
+          .replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/\n/g, "")
       ).replace(/%../g, "x").length;
     },
     lines() {

@@ -158,10 +158,10 @@ export default {
       return this.$store.state.memoData.fontSize;
     },
     chars() {
-      return String(
-        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
-          .length
-      );
+      return this.currentMemo.content
+        .replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/\n/g, "").length;
     },
     lines() {
       var charArr = this.currentMemo.content.split("<p>");
