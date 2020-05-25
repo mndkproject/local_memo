@@ -8,7 +8,7 @@
         <i class="zmdi zmdi-check-circle mark-icon" v-if="isMark"></i>
         {{ lang.total }}
         <span :class="markClass">{{ chars }}</span>
-        {{ markNum ? "/"+markNum : "" }} ({{ lines }}{{ lang.line }} {{ sheets }}{{ lang.sheet }})
+        {{ markNum ? "/"+markNum : "" }} ({{ lines }}{{ lang.line }})
         <tool-info></tool-info>
       </p>
     </div>
@@ -158,38 +158,22 @@ export default {
       return this.$store.state.memoData.fontSize;
     },
     chars() {
-      return String(this.currentMemo.content.length);
+      return String(
+        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .length
+      );
     },
     lines() {
-      return this.currentMemo.content.split("\n").length;
-    },
-    sheets() {
-      var text = String(this.currentMemo.content);
-      var lines = 0;
-
-      var textArray = text.split("\n");
-
-      textArray.forEach(t => {
-        if (t.length === 0) {
-          lines += 1;
-        } else {
-          t = t.slice(0, 1) === ("　" || "「") ? t : "　" + t;
-          t = t
-            .replace("。」", "」")
-            .replace(/(\d{2})/g, "0")
-            .replace(/[a-zA-Z]{2}/g, "a");
-
-          let start = 0;
-          let end = start + 21;
-          while (start < t.length) {
-            lines++;
-            start = t.slice(-1) === ("。" || "、" || "」") ? end : end - 1;
-            end = start + 21;
-          }
+      var charArr = this.currentMemo.content.split("<p>");
+      var lineCount = 0;
+      charArr.forEach(line => {
+        var brCount = line.match(/<br>/g);
+        if (brCount >= 2) {
+          lineCount += brCount - 1;
         }
+        lineCount++;
       });
-
-      return ((lines / 20) | 0) + 1;
+      return lineCount;
     },
     isPC() {
       return !this.$ons.platform.isIPhone() &&

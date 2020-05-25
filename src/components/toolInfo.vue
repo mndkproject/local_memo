@@ -52,14 +52,6 @@
             <span class="info-content">{{ lines }}{{ lang.line }}</span>
           </div>
         </v-ons-list-item>
-        <v-ons-list-item>
-          <div class="center">
-            <span class="info-title">{{ lang.sheetNum }}</span>
-            <span
-              class="info-content"
-            >{{ sheets }}{{ lang.sheet }} (20{{ lang.chars }}x20{{ lang.line }})</span>
-          </div>
-        </v-ons-list-item>
       </v-ons-list>
       <template slot="footer">
         <v-ons-alert-dialog-button @click="infoDialogVisible = false;">{{ lang.close }}</v-ons-alert-dialog-button>
@@ -120,27 +112,27 @@ export default {
       ];
     },
     chars() {
-      return String(this.currentMemo.content.length);
+      return String(
+        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .length
+      );
     },
     bytes() {
-      return encodeURIComponent(this.currentMemo.content).replace(/%../g, "x")
-        .length;
+      return encodeURIComponent(
+        this.currentMemo.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+      ).replace(/%../g, "x").length;
     },
     lines() {
-      return this.currentMemo.content.split("\n").length;
-    },
-    sheets() {
-      var lines = this.currentMemo.content.split("\n");
-      var count = 0;
-      lines.forEach(line => {
-        if (line.length === 0) {
-          count += 1;
-        } else {
-          line = line.slice(-1) === ("。" || ".") ? line.slice(0, -1) : line;
-          count += ((line.length / 20) | 0) + (line.length % 20 > 0 ? 1 : 0);
+      var charArr = this.currentMemo.content.split("<p>");
+      var lineCount = 0;
+      charArr.forEach(line => {
+        var brCount = line.match(/<br>/g);
+        if (brCount >= 2) {
+          lineCount += brCount - 1;
         }
+        lineCount++;
       });
-      return ((count / 20) | 0) + 1;
+      return lineCount;
     },
     markNum() {
       return this.currentMemo.mark ? this.currentMemo.mark : "";
