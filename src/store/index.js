@@ -146,7 +146,8 @@ export default new Vuex.Store({
       state.memoData.memoList.push({
         id: ID,
         content: state.memoData.memoList[payload.index].content,
-        title: "",
+        title: state.memoData.memoList[payload.index].content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")
+          .slice(0, 24),
         create_at: new Date().getTime(),
         updated_at: new Date().getTime(),
         labelColor: state.memoData.memoList[payload.index].labelColor,
