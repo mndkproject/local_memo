@@ -79,6 +79,7 @@
   font: inherit;
   outline: 0;
   overflow-y: auto;
+  user-select: text;
 }
 
 .edit-area p {
