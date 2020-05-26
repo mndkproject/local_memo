@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0a26226ca01e0959a162",
-    "url": "css/app.457dab2a.css"
+    "revision": "9a55d53dfa335c947ae6",
+    "url": "css/app.82e18e75.css"
   },
   {
     "revision": "c0cde02f4ed699d340e8",
@@ -132,16 +132,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/fa-solid-900.49279363.svg"
   },
   {
+    "revision": "8090e44c85a7ff999bbbebfd2e4bb5d9",
+    "url": "img/icons/favicon-16x16.png"
+  },
+  {
+    "revision": "7edd10cc9179b066739e3bad74a048e6",
+    "url": "img/icons/favicon-32x32.png"
+  },
+  {
     "revision": "665921072642ed354618b32af7425a22",
     "url": "img/ionicons.66592107.svg"
   },
   {
-    "revision": "6f3d9b279d967d6a09ffd5bbdfc8c826",
+    "revision": "2f24841c20ba2492ca7947055c941743",
     "url": "index.html"
   },
   {
-    "revision": "0a26226ca01e0959a162",
-    "url": "js/app.180d6862.js"
+    "revision": "9a55d53dfa335c947ae6",
+    "url": "js/app.f0e8a9c2.js"
   },
   {
     "revision": "c0cde02f4ed699d340e8",
@@ -152,7 +160,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "manifest.json"
   },
   {
+    "url": "precache-manifest.32d63e55a8787426e915fdd993911fd3.js"
+  },
+  {
     "revision": "735ab4f94fbcd57074377afca324c813",
     "url": "robots.txt"
+  },
+  {
+    "revision": "f620a1405eb1788cf551cbcdc11166cc",
+    "url": "service-worker.js"
   }
 ]);
