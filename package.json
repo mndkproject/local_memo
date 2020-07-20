@@ -12,7 +12,7 @@
     "core-js": "^3.6.4",
     "firebase": "^7.14.3",
     "gh-pages": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "onsenui": "^2.10.10",
     "register-service-worker": "^1.7.1",
     "vue": "^2.5.22",
